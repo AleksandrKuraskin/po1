@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,59 +16,67 @@ void usage(char *func)
     exit(EXIT_FAILURE);
 }
 
-typedef struct
-{
-    int *fd;
-} pipe_t;
-
-void close_unused_pipes(int n, int proc_index, pipe_t **pipes)
+void close_unused_pipes(int n, int proc_index, int pipes[n][2])
 {
     for (int i = 0; i < n; i++)
     {
         if (i == (proc_index + 1) % n)
         {
-            printf("[%d] Closing pipe fd (%d)...", getpid(), pipes[i]->fd[0]);
-            if (close(pipes[i]->fd[0]))
-                ERR("close");
+            if (close(pipes[i][0]))
+            {
+                if (errno != EBADF)
+                    ERR("close");
+            }
+            printf("[%d] Closing pipe fd (%d)...\n", getpid(), pipes[i][0]);
         }
         else if (i == (proc_index - 1) % n)
         {
-            printf("[%d] Closing pipe fd (%d)...", getpid(), pipes[i]->fd[1]);
-            if (close(pipes[i]->fd[1]))
-                ERR("close");
+            printf("[%d] Closing pipe fd (%d)...\n", getpid(), pipes[i][1]);
+            if (close(pipes[i][1]))
+            {
+                if (errno != EBADF)
+                    ERR("close");
+            }
         }
         else
         {
-            printf("[%d] Closing pipe fd (%d)...", getpid(), pipes[i]->fd[0]);
-            if (close(pipes[i]->fd[0]))
-                ERR("close");
-            printf("[%d] Closing pipe fd (%d)...", getpid(), pipes[i]->fd[1]);
-            if (close(pipes[i]->fd[1]))
-                ERR("close");
+            printf("[%d] Closing pipe fd (%d)...\n", getpid(), pipes[i][0]);
+            if (close(pipes[i][0]))
+            {
+                if (errno != EBADF)
+                    ERR("close");
+            }
+            printf("[%d] Closing pipe fd (%d)...\n", getpid(), pipes[i][1]);
+            if (close(pipes[i][1]))
+            {
+                if (errno != EBADF)
+                    ERR("close");
+            }
         }
     }
 }
 
-void close_used_pipes(int n, int proc_index, pipe_t **pipes)
+void close_used_pipes(int n, int proc_index, int pipes[n][2])
 {
-    if (close(pipes[(proc_index + 1) % n]->fd[1]))
+    printf("[%d] Closing pipe fd (%d)...\n", getpid(), pipes[(proc_index + 1) % n][0]);
+    if (close(pipes[(proc_index + 1) % n][1]))
     {
-        printf("[%d] Closing pipe fd (%d)...", getpid(), pipes[(proc_index + 1) % n]->fd[0]);
-        ERR("close");
+        if (errno != EBADF)
+            ERR("close");
     }
-    if (close(pipes[(proc_index - 1) % n]->fd[0]))
+    printf("[%d] Closing pipe fd (%d)...\n", getpid(), pipes[(proc_index + 1) % n][0]);
+    if (close(pipes[(proc_index - 1) % n][0]))
     {
-        printf("[%d] Closing pipe fd (%d)...", getpid(), pipes[(proc_index + 1) % n]->fd[0]);
-        ERR("close");
+        if (errno != EBADF)
+            ERR("close");
     }
 }
 
-void create_pipe_loop(int n, pipe_t **pipes)
+void create_pipe_loop(int n, int pipes[n][2])
 {
     for (int i = 0; i < n; i++)
     {
-        printf("%d TEST\n", i);
-        if (pipe(pipes[i]->fd) == -1)
+        if (pipe(pipes[i]) == -1)
             ERR("pipe");
     }
 
@@ -84,6 +93,7 @@ void create_pipe_loop(int n, pipe_t **pipes)
                 ERR("fork");
         }
     }
+    close_unused_pipes(n, 0, pipes);
     close_used_pipes(n, 0, pipes);
 }
 
@@ -98,19 +108,9 @@ int main(int argc, char **argv)
         }
     }
 
-    pipe_t *pipes = (pipe_t *)malloc(sizeof(pipe_t) * n);
-    if (!pipes)
-    {
-        ERR("malloc");
-    }
-    for (int i = 0; i < n; i++)
-    {
-        if (NULL == (pipes[i].fd = (int *)malloc(sizeof(int) * 2)))
-            ERR("malloc");
-    }
+    int pipes[n][2];
 
-    create_pipe_loop(n, &pipes);
-    free(pipes);
+    create_pipe_loop(n, pipes);
 
     return EXIT_SUCCESS;
 }
