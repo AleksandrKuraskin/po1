@@ -20,44 +20,50 @@ namespace ASD
             var cL = Z.Length;
             var Zs = new int[cL + 1];
             var d = 2 * umbrellaRadius + 1;
-            Zs[0] = 0;
-            for (var i = 1; i <= cL; i++)
+            for (var i = 0; i < cL; i++)
             {
-                Zs[i] = Z[i-1] + Zs[i - 1];
+                Zs[i+1] = Z[i] + Zs[i];
             }
-            var T = new int[umbrellaCount,cL];
+            var T = new int[umbrellaCount + 1, cL + 1];
+            var U = new int[umbrellaCount + 1, cL + 1];
 
-            for (var u = 0; u < umbrellaCount; u++)
+            for (var u = 1; u <= umbrellaCount; u++)
             {
-                for (var c = 0; c < cL; c++)
+                for (var c = 1; c <= cL; c++)
                 {
-                    if (c < d)
+                    var ind = Math.Max(0, c - d);
+                    T[u, c] = T[u, c - 1];
+                    
+                    var cP = T[u - 1, ind] + (Zs[c] - Zs[ind]);
+                    if (cP > T[u, c])
                     {
-                        T[u, c] = Zs[c + 1];
-                        continue;
-                    }
-                    if (u == 0)
-                    {
-                        var inRad = Zs[c + 1] - Zs[c + 1 - d];
-                        if (inRad > T[u, c - 1])
-                        {
-                            T[u, c] = inRad;
-                        }
-                        else
-                        {
-                            T[u, c] = T[u, c - 1];
-                        }
-                    }
-                    else
-                    {
-                        T[u, c] = T[u - 1, c - d] + (Zs[c + 1] - Zs[c + 1 - d]);
+                        T[u, c] = cP;
+                        U[u, c] = ind;
                     }
                 }
             }
 
-            var profit = T[umbrellaCount - 1, cL - 1];
+            var uP = new int[umbrellaCount];
+            var uC = umbrellaCount;
+            var cI = cL;
+
+            while (uC > 0 && cI > 0)
+            {
+                var p = U[uC, cI];
+                if (p != 0)
+                {
+                    uP[uC - 1] = cI - 1 - umbrellaRadius;
+                    cI = p;
+                    uC--;
+                }
+                else
+                {
+                    cI--;
+                }
+            }
             
-            return (profit, null);
+            var profit = T[umbrellaCount, cL];
+            return (profit, uP);
         }
 
 

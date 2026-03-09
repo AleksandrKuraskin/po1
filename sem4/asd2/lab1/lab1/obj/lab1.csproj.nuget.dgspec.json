@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/samba/kuraskina/Documents/mini_learning/sem4/asd2/lab1/lab1/lab1.csproj": {}
+    "/media/projects/Studia/mini_learning/sem4/asd2/lab1/lab1/lab1.csproj": {}
   },
   "projects": {
-    "/home/samba/kuraskina/Documents/mini_learning/sem4/asd2/lab1/lab1/lab1.csproj": {
+    "/media/projects/Studia/mini_learning/sem4/asd2/lab1/lab1/lab1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/samba/kuraskina/Documents/mini_learning/sem4/asd2/lab1/lab1/lab1.csproj",
+        "projectUniqueName": "/media/projects/Studia/mini_learning/sem4/asd2/lab1/lab1/lab1.csproj",
         "projectName": "lab1",
-        "projectPath": "/home/samba/kuraskina/Documents/mini_learning/sem4/asd2/lab1/lab1/lab1.csproj",
-        "packagesPath": "/home/samba/kuraskina/.nuget/packages/",
-        "outputPath": "/home/samba/kuraskina/Documents/mini_learning/sem4/asd2/lab1/lab1/obj/",
+        "projectPath": "/media/projects/Studia/mini_learning/sem4/asd2/lab1/lab1/lab1.csproj",
+        "packagesPath": "/home/alkura/.nuget/packages/",
+        "outputPath": "/media/projects/Studia/mini_learning/sem4/asd2/lab1/lab1/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/samba/kuraskina/.nuget/NuGet/NuGet.Config"
+          "/home/alkura/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -59,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "/home/alkura/.dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
