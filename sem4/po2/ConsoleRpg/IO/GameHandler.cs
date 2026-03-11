@@ -1,6 +1,6 @@
 namespace ConsoleRpg.IO;
 
-public interface IHandler
+public class GameHandler
 {
     
 }

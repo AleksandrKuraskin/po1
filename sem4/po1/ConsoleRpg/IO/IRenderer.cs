@@ -1,6 +1,8 @@
+using ConsoleRpg.Core;
+
 namespace ConsoleRpg.IO;
 
-public class IRenderer
+public interface IRenderer
 {
-    
+    void Render(Game game);
 }

@@ -33,13 +33,15 @@ namespace ASD
                 {
                     var ind = Math.Max(0, c - d);
                     T[u, c] = T[u, c - 1];
+                    U[u, c] = -1;
                     
                     var cP = T[u - 1, ind] + (Zs[c] - Zs[ind]);
-                    if (cP > T[u, c])
+                    if (cP <= T[u, c])
                     {
-                        T[u, c] = cP;
-                        U[u, c] = ind;
+                        continue;
                     }
+                    T[u, c] = cP;
+                    U[u, c] = ind;
                 }
             }
 
@@ -50,9 +52,9 @@ namespace ASD
             while (uC > 0 && cI > 0)
             {
                 var p = U[uC, cI];
-                if (p != 0)
+                if (p >= 0)
                 {
-                    uP[uC - 1] = cI - 1 - umbrellaRadius;
+                    uP[uC - 1] = Math.Max(0, cI - 1 - umbrellaRadius);
                     cI = p;
                     uC--;
                 }
@@ -76,7 +78,74 @@ namespace ASD
         /// <returns></returns>
         public (int profit, (int position, int model)[] umbrellas) Stage2(int[] Z, (int radius, int cost)[] umbrellaType)
         {
-            return (0, null);
+            var zL = Z.Length;
+            var uL = umbrellaType.Length;
+
+            var Zs = new int[zL + 1];
+            for (var i = 0; i < zL; i++)
+            {
+                Zs[i + 1] = Zs[i] + Z[i];
+            }
+
+            var T = new int[zL + 1];
+            var U = new int[zL + 1];
+            var M = new int[zL + 1];
+
+            for (var j = 1; j <= zL; j++)
+            {
+                T[j] = T[j - 1];
+                U[j] = j - 1;
+                M[j] = -1;
+
+                for (var k = 0; k < uL; k++)
+                {
+                    var d = 2 * umbrellaType[k].radius + 1;
+                    var ind = Math.Max(0, j - d);
+            
+                    var currentProfit = Zs[j] - Zs[ind];
+                    var totalProfit = T[ind] + currentProfit - umbrellaType[k].cost;
+
+                    if (totalProfit <= T[j])
+                    {
+                        continue;
+                    }
+                    
+                    T[j] = totalProfit;
+                    U[j] = ind;
+                    M[j] = k;
+                }
+            }
+            
+            var uC = 0;
+            var tmp = zL;
+            while (tmp > 0)
+            {
+                if (M[tmp] != -1)
+                {
+                    uC++;
+                }
+                tmp = U[tmp];
+            }
+            
+            var u = new (int position, int model)[uC];
+            tmp = zL;
+            var index = uC - 1;
+
+            while (tmp > 0)
+            {
+                var model = M[tmp];
+                if (model != -1)
+                {
+                    var p = Math.Max(0, tmp - 1 - umbrellaType[model].radius);
+            
+                    u[index--] = (p, model);
+                    
+                }
+                
+                tmp = U[tmp];
+            }
+
+            return (T[zL], u);
         }
     }
 }

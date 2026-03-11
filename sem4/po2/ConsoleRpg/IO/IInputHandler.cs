@@ -1,6 +1,6 @@
 namespace ConsoleRpg.IO;
 
-public class ConsoleRenderer
+public interface IInputHandler
 {
     
 }
