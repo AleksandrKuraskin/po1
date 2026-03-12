@@ -26,10 +26,7 @@ public class ConsoleRenderer : IRenderer
             $"[gold1]Gold:[/] {p.Wallet.GoldValue}\n[silver]Coins:[/] {p.Wallet.CoinValue}\n\n" +
             $"[blue]--- Equipment ---[/]\n" +
             $"Left hand: {p.Equipment.LeftHand?.Name ?? "Empty"}\n" +
-            $"Right hand: {p.Equipment.RightHand?.Name ?? "Empty"}\n" +
-            (p.Equipment.LeftHand == p.Equipment.RightHand && p.Equipment.LeftHand != null ?
-                "[green](Two handed)[/]\n" :
-                "")
+            $"Right hand: {p.Equipment.RightHand?.Name ?? "Empty"}\n"
         ).Header("[blue]Status[/]").BorderColor(Color.Blue);
 
         return eqPanel;
