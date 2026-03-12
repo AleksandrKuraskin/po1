@@ -5,6 +5,7 @@ namespace ConsoleRpg.Systems;
 public class Inventory : IInventory
 {
     private readonly IItem?[] _items = new IItem?[10];
+    public bool DropModeActive { get; set; } = false;
 
     public bool TryAddItem(IItem item)
     {

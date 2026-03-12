@@ -15,6 +15,7 @@ public abstract class Currency(int value) : IItem
 
     public void OnPickUp(Player player, Logger logger)
     {
+        AddToWallet(player.Wallet, logger);
         logger.Log($"You picked up {this.GetType().Name}");
     }
     

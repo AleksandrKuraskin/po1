@@ -15,8 +15,9 @@ public class ActionHandler : InputHandlerBase
         }
         else if (key == ConsoleKey.Q)
         {
-            game.DropModeActive = !game.DropModeActive;
-            game.Logger.Log(game.DropModeActive ? "DROP MODE: Choose item from inventory to drop (0-9)." :
+            game.Player.Inventory.DropModeActive = !game.Player.Inventory.DropModeActive;
+            game.Logger.Log(game.Player.Inventory.DropModeActive ?
+                "DROP MODE: Choose item from inventory to drop (0-9)." :
                 "Drop mode disabled.");
         }
         else

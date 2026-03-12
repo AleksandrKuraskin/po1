@@ -8,19 +8,23 @@ public class InventoryHandler : InputHandlerBase
     {
         if (key >= ConsoleKey.D0 && key <= ConsoleKey.D9)
         {
-            var slot = key == ConsoleKey.D0 ? 9 : (key - ConsoleKey.D1);
+            var slot = key == ConsoleKey.D0 ? 9 : key - ConsoleKey.D1;
             
-            if (game.DropModeActive)
+            if (game.Player.Inventory.DropModeActive)
             {
                 var item = game.Player.Inventory.RemoveItem(slot);
                 if (item != null) item.OnDrop(game.Map, game.Player.X, game.Player.Y, game.Logger);
                 else game.Logger.Log("This slot is empty.");
-                game.DropModeActive = false;
+                game.Player.Inventory.DropModeActive = false;
             }
             else
             {
                 var item = game.Player.Inventory.GetItem(slot);
-                if (item != null) item.TryEquip(game.Player, game.Logger);
+                if (item != null)
+                {
+                    item.TryEquip(game.Player, game.Logger);
+                    game.Player.Inventory.RemoveItem(slot);
+                }
                 else game.Logger.Log("This slot is empty.");
             }
         }

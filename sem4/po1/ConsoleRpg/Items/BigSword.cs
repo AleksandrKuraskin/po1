@@ -5,5 +5,5 @@ public class BigSword : Weapon
     public override char Symbol => 'B';
     public override string Name => "Big Sword";
     
-    public override bool IsTwoHanded { get; protected set; } = false;
+    public override bool IsTwoHanded { get; protected set; } = true;
 }

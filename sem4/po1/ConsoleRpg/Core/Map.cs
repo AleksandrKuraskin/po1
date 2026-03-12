@@ -4,7 +4,7 @@ namespace ConsoleRpg.Core;
 
 public class Map
 {
-    private Random _rng = new Random();
+    private readonly Random _rng = new Random();
 
     public int Width { get; }
     public int Height { get; }

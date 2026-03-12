@@ -12,7 +12,6 @@ public class Game
     private bool _running;
     public Map Map { get; set; }
     public Logger Logger { get; set; }
-    public bool DropModeActive { get; set; } = false;
     public Player Player { get; }
     
 

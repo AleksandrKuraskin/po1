@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/media/projects/Studia/mini_learning/sem4/po2/ConsoleRpg/ConsoleRpg.csproj": {}
+    "/home/samba/kuraskina/Documents/mini_learning/sem4/po1/ConsoleRpg/ConsoleRpg.csproj": {}
   },
   "projects": {
-    "/media/projects/Studia/mini_learning/sem4/po2/ConsoleRpg/ConsoleRpg.csproj": {
+    "/home/samba/kuraskina/Documents/mini_learning/sem4/po1/ConsoleRpg/ConsoleRpg.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/media/projects/Studia/mini_learning/sem4/po2/ConsoleRpg/ConsoleRpg.csproj",
+        "projectUniqueName": "/home/samba/kuraskina/Documents/mini_learning/sem4/po1/ConsoleRpg/ConsoleRpg.csproj",
         "projectName": "ConsoleRpg",
-        "projectPath": "/media/projects/Studia/mini_learning/sem4/po2/ConsoleRpg/ConsoleRpg.csproj",
-        "packagesPath": "/home/alkura/.nuget/packages/",
-        "outputPath": "/media/projects/Studia/mini_learning/sem4/po2/ConsoleRpg/obj/",
+        "projectPath": "/home/samba/kuraskina/Documents/mini_learning/sem4/po1/ConsoleRpg/ConsoleRpg.csproj",
+        "packagesPath": "/home/samba/kuraskina/.nuget/packages/",
+        "outputPath": "/home/samba/kuraskina/Documents/mini_learning/sem4/po1/ConsoleRpg/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/alkura/.nuget/NuGet/NuGet.Config"
+          "/home/samba/kuraskina/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -65,7 +65,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/alkura/.dotnet/sdk/9.0.310/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/samba/kuraskina/.dotnet/sdk/9.0.312/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
