@@ -1,5 +1,0 @@
-/home/samba/kuraskina/Documents/mini_learning/sem4/po2/ConsoleRpg/obj/Debug/net9.0/ConsoleRpg.GeneratedMSBuildEditorConfig.editorconfig
-/home/samba/kuraskina/Documents/mini_learning/sem4/po2/ConsoleRpg/obj/Debug/net9.0/ConsoleRpg.AssemblyInfoInputs.cache
-/home/samba/kuraskina/Documents/mini_learning/sem4/po2/ConsoleRpg/obj/Debug/net9.0/ConsoleRpg.AssemblyInfo.cs
-/home/samba/kuraskina/Documents/mini_learning/sem4/po2/ConsoleRpg/obj/Debug/net9.0/ConsoleRpg.csproj.CoreCompileInputs.cache
-/home/samba/kuraskina/Documents/mini_learning/sem4/po2/ConsoleRpg/obj/Debug/net9.0/ConsoleRpg.sourcelink.json
