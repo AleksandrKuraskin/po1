@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS= -std=gnu99 -Wall
 
 
-NAME=zad1
+NAME=zad4
 
 .PHONY: all clean
 
