@@ -1,7 +1,8 @@
 using ConsoleRpg.Core;
+using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Systems;
 
-namespace ConsoleRpg.Items;
+namespace ConsoleRpg.Items.Currency;
 
 public class Gold(int value) : Currency(value)
 {
@@ -11,5 +12,6 @@ public class Gold(int value) : Currency(value)
     protected override void AddToWallet(Wallet wallet, Logger logger)
     {
         wallet.AddGold(Value);
+        logger.Log($"Picked x{Value} gold.", LogType.Loot);
     }
 }

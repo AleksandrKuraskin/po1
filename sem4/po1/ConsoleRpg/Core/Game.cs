@@ -1,6 +1,9 @@
+using System;
 using ConsoleRpg.Entities;
 using ConsoleRpg.IO.Renderers;
-using ConsoleRpg.IO;
+using ConsoleRpg.IO.Handlers;
+using ConsoleRpg.Items;
+using ConsoleRpg.Core.Logger;
 using Spectre.Console;
 
 namespace ConsoleRpg.Core;
@@ -11,15 +14,16 @@ public class Game
     private readonly IInputHandler _inputHandler;
     private bool _running;
     public Map Map { get; set; }
-    public Logger Logger { get; set; }
+    public Logger.Logger Logger { get; set; }
     public Player Player { get; }
     
 
     public Game()
     {
         Console.CursorVisible = false;
+        ItemFactory.Initialize();
         Map = new Map();
-        Logger = new Logger();
+        Logger = new Logger.Logger();
         _renderer = new ConsoleRenderer();
         _running = true;
         
@@ -27,13 +31,6 @@ public class Game
         Map.SpawnPlayer(Player);
         
         var gameHandler = new GameHandler();
-        var movementHandler = new MovementHandler();
-        var actionHandler = new ActionHandler();
-        var inventoryHandler = new InventoryHandler();
-        
-        gameHandler.SetNext(movementHandler);
-        movementHandler.SetNext(actionHandler);
-        actionHandler.SetNext(inventoryHandler);
         _inputHandler = gameHandler;
     }
     public void Run()

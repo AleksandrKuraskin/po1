@@ -4,8 +4,10 @@ namespace ConsoleRpg.Systems;
 
 public interface IInventory
 {
-    bool TryAddItem(IItem item);
-    IItem? GetItem(int index);
-    IItem? RemoveItem(int index);
+    int Capacity { get; }
+    int SelectedIndex { get; }
+    bool TryAddItem(IItem item, int index = -1);
+    IItem? GetItemAt(int index);
+    IItem? RemoveItemAt(int index);
     IItem?[] GetItems();
 }

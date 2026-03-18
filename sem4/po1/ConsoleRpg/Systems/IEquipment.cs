@@ -1,13 +1,13 @@
 using ConsoleRpg.Core;
+using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Items;
 
 namespace ConsoleRpg.Systems;
 
 public interface IEquipment
 {
-    void EquipLeftHand(Weapon weapon);
-    void EquipRightHand(Weapon weapon);
-    void EquipTwoHanded(Weapon weapon);
-    bool TryUnequip(Inventory inventory, Weapon weapon, Logger logger);
-    void UnequipAll(Inventory inventory, Logger logger);
+    IItem? EquipOneHanded(IInventory inventory, IItem? item, bool leftHand, Logger logger);
+    IItem? EquipTwoHanded(IInventory inventory, IItem? item, Logger logger);
+    void SwapHands();
+    int GetTotalDamage();
 }

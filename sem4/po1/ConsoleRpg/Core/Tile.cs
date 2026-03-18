@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Items;
 
@@ -19,6 +20,9 @@ public class Tile(bool isWall)
     }
     
     public void AddItem(IItem item) => _items.Add(item);
+    
+    public IItem? GetTopItem() => _items.Count == 0 ? null : _items[^1];
+    public List<IItem> GetItems() => _items;
     public IItem? RemoveTopItem()
     {
         if (_items.Count == 0) return null;

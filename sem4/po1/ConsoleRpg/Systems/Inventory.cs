@@ -2,31 +2,40 @@ using ConsoleRpg.Items;
 
 namespace ConsoleRpg.Systems;
 
-public class Inventory : IInventory
+public class Inventory(int cap = 10) : IInventory
 {
-    private readonly IItem?[] _items = new IItem?[10];
-    public bool DropModeActive { get; set; } = false;
+    public int Capacity { get; }= cap;
+    private readonly IItem?[] _items = new IItem?[cap];
+    
+    public int SelectedIndex { get; set; }
 
-    public bool TryAddItem(IItem item)
+    public bool TryAddItem(IItem item, int index = -1)
     {
+        if (index >= 0 && index < _items.Length)
+        {
+            if (_items[index] != null) return false;
+            _items[index] = item;
+            return true;
+        }
         for (var i = 0; i < _items.Length; i++)
         {
-            if (_items[i] == null)
+            if (_items[i] != null)
             {
-                _items[i] = item;
-                return true;
+                continue;
             }
+            _items[i] = item;
+            return true;
         }
         return false;
     }
 
-    public IItem? GetItem(int slotIndex)
+    public IItem? GetItemAt(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= _items.Length) return null;
         return _items[slotIndex];
     }
 
-    public IItem? RemoveItem(int slotIndex)
+    public IItem? RemoveItemAt(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= _items.Length) return null;
         var item = _items[slotIndex];

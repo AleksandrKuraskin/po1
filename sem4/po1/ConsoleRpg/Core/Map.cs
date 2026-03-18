@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Entities;
+using ConsoleRpg.Items;
 
 namespace ConsoleRpg.Core;
 
@@ -65,7 +68,14 @@ public class Map
 
             if (nextX > 0 && nextX < Width - 1 && nextY > 0 && nextY < Height - 1 && _tiles[nextY, nextX].IsWall)
             {
-                _tiles[startY + dir.dy / 2, startX + dir.dx / 2].IsWall = false;
+                var newX = startX + dir.dx / 2;
+                var newY = startY + dir.dy / 2;
+                _tiles[newY, newX].IsWall = false;
+                if (_rng.NextDouble() <= 0.10)
+                {
+                    _tiles[newY, newX].AddItem(ItemFactory.GetRandomItem(_rng));
+                }
+                
                 GenerateMap(nextX, nextY);
             }
         }

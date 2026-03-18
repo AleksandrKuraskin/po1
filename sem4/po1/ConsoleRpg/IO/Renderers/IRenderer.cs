@@ -1,6 +1,6 @@
 using ConsoleRpg.Core;
 
-namespace ConsoleRpg.IO;
+namespace ConsoleRpg.IO.Renderers;
 
 public interface IRenderer
 {
