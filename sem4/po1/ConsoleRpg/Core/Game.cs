@@ -4,6 +4,7 @@ using ConsoleRpg.IO.Renderers;
 using ConsoleRpg.IO.Handlers;
 using ConsoleRpg.Items;
 using ConsoleRpg.Core.Logger;
+using ConsoleRpg.IO.States;
 using Spectre.Console;
 
 namespace ConsoleRpg.Core;
@@ -11,7 +12,7 @@ namespace ConsoleRpg.Core;
 public class Game
 {
     private readonly ConsoleRenderer _renderer;
-    private readonly IInputHandler _inputHandler;
+    private IInputState _currentInputState;
     private bool _running;
     public Map Map { get; set; }
     public Logger.Logger Logger { get; set; }
@@ -26,13 +27,17 @@ public class Game
         Logger = new Logger.Logger();
         _renderer = new ConsoleRenderer();
         _running = true;
+        _currentInputState = new MoveState();
         
         Player = new Player(0, 0);
         Map.SpawnPlayer(Player);
-        
-        var gameHandler = new GameHandler();
-        _inputHandler = gameHandler;
     }
+
+    public void ChangeInputState(IInputState newState)
+    {
+        _currentInputState = newState;
+    }
+    
     public void Run()
     {
         AnsiConsole.AlternateScreen(() =>
@@ -40,12 +45,9 @@ public class Game
             while (_running)
             {
                 _renderer.Render(this);
-                if (!Console.KeyAvailable)
-                {
-                    continue;
-                }
                 var key = Console.ReadKey(true).Key;
-                _inputHandler.Handle(key, this);
+                var command = _currentInputState.HandleInput(key);
+                command.Execute(this);
                 _renderer.Render(this);
             }
         });

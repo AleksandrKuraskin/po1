@@ -5,5 +5,5 @@ namespace ConsoleRpg.IO.States;
 
 public interface IInputState
 {
-    ICommand HandleInput(ConsoleKey key, GameHandler handler);
+    ICommand HandleInput(ConsoleKey key);
 }
