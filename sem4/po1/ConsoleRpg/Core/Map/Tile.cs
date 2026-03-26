@@ -8,7 +8,7 @@ public class Tile(bool isWall)
 {
     public bool IsWall { get; set; } = isWall;
     public Player? Player { get; set; }
-    private List<IItem> _items = [];
+    private readonly List<IItem> _items = [];
     public char GetSymbol()
     {
         if (Player != null) return '¶';
@@ -21,13 +21,13 @@ public class Tile(bool isWall)
     
     public void AddItem(IItem item) => _items.Add(item);
     
-    public IItem? GetTopItem() => _items.Count == 0 ? null : _items[^1];
+    public IItem? GetTopItem() => _items.Count == 0 ? null : _items[0];
     public List<IItem> GetItems() => _items;
     public IItem? RemoveTopItem()
     {
         if (_items.Count == 0) return null;
-        var item = _items[^1];
-        _items.RemoveAt(_items.Count - 1);
+        var item = _items[0];
+        _items.RemoveAt(0);
         return item;
     }
 }

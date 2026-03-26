@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Items;
 
-namespace ConsoleRpg.Core;
+namespace ConsoleRpg.Core.Map;
 
 public class Map
 {
@@ -71,10 +71,6 @@ public class Map
                 var newX = startX + dir.dx / 2;
                 var newY = startY + dir.dy / 2;
                 _tiles[newY, newX].IsWall = false;
-                if (_rng.NextDouble() <= 0.10)
-                {
-                    _tiles[newY, newX].AddItem(ItemFactory.GetRandomItem(_rng));
-                }
                 
                 GenerateMap(nextX, nextY);
             }
