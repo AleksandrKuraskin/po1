@@ -1,5 +1,6 @@
 using ConsoleRpg.Core;
 using ConsoleRpg.Core.Logger;
+using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems;
 using ConsoleRpg.Systems.Stats;

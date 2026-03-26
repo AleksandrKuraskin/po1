@@ -26,7 +26,7 @@ public class EquipSelectedCommand(bool isLeftHand) : ICommand
 
         if (dropItem != null)
         {
-            game.Map.GetTile(game.Player.X, game.Player.Y).AddItem(dropItem);
+            game.MapContext.Map.GetTile(game.Player.X, game.Player.Y).AddItem(dropItem);
         }
     }
 }

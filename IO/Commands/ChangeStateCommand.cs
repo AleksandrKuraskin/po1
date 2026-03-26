@@ -4,18 +4,12 @@ using ConsoleRpg.IO.States;
 
 namespace ConsoleRpg.IO.Commands;
 
-public class ChangeStateCommand(GameHandler handler, IInputState newState, bool moveState) : ICommand
+public class ChangeStateCommand(IInputState currentState) : ICommand
 {
     public void Execute(Game game)
     {
-        handler.SetState(newState);
-        if (!moveState)
-        {
-            game.Logger.Log($"Inventory management state.");
-        }
-        else
-        {
-            game.Logger.Log($"Movement state.");
-        }
+        var newState = currentState.GetNewState(game);
+        game.ChangeInputState(newState);;
+        game.Logger.Log($"{newState.Name}");
     }
 }

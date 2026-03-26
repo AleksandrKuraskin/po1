@@ -1,0 +1,13 @@
+using ConsoleRpg.IO.Renderers.Components;
+
+namespace ConsoleRpg.Core.Map;
+
+public class MapContext
+{
+    public Map Map { get; set; } = new Map();
+    public (int x, int y) SpawnPoint { get; set; } = (0, 0);
+
+    public List<Room> Rooms = new();
+    public bool Itemized { get; set; }
+    public List<IUIComponent> SidebarComponents = new();
+}

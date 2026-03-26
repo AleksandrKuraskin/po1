@@ -9,6 +9,6 @@ public class MoveCommand(int dx, int dy) : ICommand
 
     public void Execute(Game game)
     {
-        game.Map.TryMove(game.Player, _dx, _dy);
+        game.MapContext.Map.TryMove(game.Player, _dx, _dy);
     }
 }

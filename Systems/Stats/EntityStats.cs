@@ -4,6 +4,7 @@ public class EntityStats(int maxHealth, int strength, int intelligence, int agil
 {
     public static EntityStats Empty = new(0, 0, 0, 0, 0);
     
+    public Stat CurrentHealth { get; set; } = new Stat(maxHealth);
     public Stat MaxHealth { get; } = new Stat(maxHealth);
     public Stat Strength { get; } = new Stat(strength);
     public Stat Intelligence { get; } = new Stat(intelligence);
