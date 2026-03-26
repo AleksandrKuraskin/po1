@@ -1,0 +1,5 @@
+1. Add major builder interface
+2. Move Build method to given class inheriting from interface
+3. Dont hard code keybinds in instructions.
+4. Change rendering: add logs and binds (prob binds move to new state) to the map rendering column.
+5. Fix chain generation
