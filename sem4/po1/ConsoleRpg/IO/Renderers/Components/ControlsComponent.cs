@@ -1,6 +1,15 @@
+using ConsoleRpg.Core;
+using Spectre.Console;
+using Spectre.Console.Rendering;
+
 namespace ConsoleRpg.IO.Renderers.Components;
 
-public class ControlsComponent
+public class ControlsComponent : IUIComponent
 {
-    
+    public IRenderable Build(Game game)
+    {
+        var controlsString = game.CurrentInputState.GetInstructions();
+        var innerText = $"[gray]{controlsString}[/]";
+        return new Panel(new Markup(innerText)).Header("[bold grey]Controls[/]").Expand();
+    }
 }

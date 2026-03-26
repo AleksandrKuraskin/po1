@@ -1,9 +1,11 @@
 using System;
+using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
 using ConsoleRpg.IO.Renderers;
 using ConsoleRpg.IO.Handlers;
 using ConsoleRpg.Items;
-using ConsoleRpg.Core.Logger;
+using ConsoleRpg.IO.Commands;
+using ConsoleRpg.IO.Renderers.Components;
 using ConsoleRpg.IO.States;
 using Spectre.Console;
 
@@ -12,41 +14,51 @@ namespace ConsoleRpg.Core;
 public class Game
 {
     private readonly ConsoleRenderer _renderer;
-    private IInputState _currentInputState;
     private bool _running;
-    public Map Map { get; set; }
-    public Logger.Logger Logger { get; set; }
+    public MapContext MapContext { get; }
+    public Logger.Logger Logger { get; }
     public Player Player { get; }
-    
+    public IInputState CurrentInputState {get; private set;}
 
+    public IInputHandler GlobalInputHandler { get; }
+
+    private IInputHandler InitializeInputHandler()
+    {
+        var escapeGame = new KeyBindHandler(ConsoleKey.Escape, new ExitGameCommand());
+        return escapeGame;
+    }
     public Game()
     {
-        Console.CursorVisible = false;
         ItemFactory.Initialize();
-        Map = new Map();
-        Logger = new Logger.Logger();
+        var builder = new MapBuilder();
+        var director = new MapDirector(builder);
+        GlobalInputHandler = InitializeInputHandler();
         _renderer = new ConsoleRenderer();
+        MapContext = director.ConstructRandomMap();
+        CurrentInputState = new MoveState(MapContext, GlobalInputHandler);
         _running = true;
-        _currentInputState = new MoveState();
-        
-        Player = new Player(0, 0);
-        Map.SpawnPlayer(Player);
+        Logger = new Logger.Logger();
+
+        var spawn = MapContext.SpawnPoint;
+        Player = new Player(spawn.x, spawn.y);
+        MapContext.Map.SpawnPlayer(Player);
     }
 
     public void ChangeInputState(IInputState newState)
     {
-        _currentInputState = newState;
+        CurrentInputState = newState;
     }
     
     public void Run()
     {
+        Console.CursorVisible = false;
         AnsiConsole.AlternateScreen(() =>
         {
             while (_running)
             {
                 _renderer.Render(this);
                 var key = Console.ReadKey(true).Key;
-                var command = _currentInputState.HandleInput(key);
+                var command = CurrentInputState.HandleInput(key);
                 command.Execute(this);
                 _renderer.Render(this);
             }

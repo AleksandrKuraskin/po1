@@ -1,4 +1,5 @@
 using ConsoleRpg.Core;
+using ConsoleRpg.Core.Logger;
 using ConsoleRpg.IO.Commands;
 
 namespace ConsoleRpg.IO.Handlers;
@@ -21,6 +22,6 @@ public abstract class InputHandlerBase : IInputHandler
 
     public virtual ICommand Handle(ConsoleKey key)
     {
-        return _next != null ? _next.Handle(key) : new NullCommand();
+        return _next != null ? _next.Handle(key) : new LogMessageCommand("Invalid key: " + key, LogType.Error);
     }
 }
