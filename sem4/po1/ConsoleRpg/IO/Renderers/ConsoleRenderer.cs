@@ -26,12 +26,16 @@ public class ConsoleRenderer : IRenderer
         var logPanel = new LogsComponent().Build(game);
         var controlsPanel = new ControlsComponent().Build(game);
 
+        var mainGrid = new Grid()
+            .AddColumn(new GridColumn())
+            .AddRow(mapPanel)
+            .AddRow(logPanel)
+            .AddRow(controlsPanel);
+
         var layout = new Grid()
-                .AddColumn(new GridColumn().Width(45))
-                .AddColumn(new GridColumn())
-                .AddRow(mapPanel, sidebarGrid)
-                .AddRow(logPanel)
-                .AddRow(controlsPanel);
+            .AddColumn(new GridColumn().Width(45))
+            .AddColumn(new GridColumn())
+            .AddRow(mainGrid, sidebarGrid);
         
         Console.SetCursorPosition(0, 0);
         AnsiConsole.Write(layout);

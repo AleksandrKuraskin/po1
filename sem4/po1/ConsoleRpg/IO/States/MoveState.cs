@@ -9,53 +9,42 @@ public class MoveState: IInputState
 {
     private readonly IInputHandler _inputChain;
     private readonly IInputHandler _globalInputChain;
+    private readonly List<ActionInfo> _globalInstructions;
     
     public string Name { get; } = "Move State";
 
-    public List<string> Instructions { get; }
+    public List<ActionInfo> Instructions { get; }
 
-    public MoveState(MapContext context, IInputHandler globalChain)
+    public MoveState(MapContext context, IInputHandler globalChain, List<ActionInfo> globalInstructions)
     {
         _globalInputChain = globalChain;
+        _globalInstructions = globalInstructions;
+
+        Instructions = _globalInstructions;
         
-        var moveUp = new KeyBindHandler(ConsoleKey.W, new MoveCommand(0, -1));
-        var moveDown = new KeyBindHandler(ConsoleKey.S, new MoveCommand(0, 1));
-        var moveLeft = new KeyBindHandler(ConsoleKey.A, new MoveCommand(-1, 0));
-        var moveRight = new KeyBindHandler(ConsoleKey.D, new MoveCommand(1, 0));
+        var moveUp = new KeyBindHandler(new ActionInfo(ConsoleKey.W, new MoveCommand(0, -1), "Move up"), Instructions);
+        var moveDown = new KeyBindHandler(new ActionInfo(ConsoleKey.S, new MoveCommand(0, 1), "Move down"), Instructions);
+        var moveLeft = new KeyBindHandler(new ActionInfo(ConsoleKey.A, new MoveCommand(-1, 0), "Move left"), Instructions);
+        var moveRight = new KeyBindHandler(new ActionInfo(ConsoleKey.D, new MoveCommand(1, 0), "Move right"), Instructions);
         
+        moveUp
+            .SetNext(moveDown)
+            .SetNext(moveLeft)
+            .SetNext(moveRight);
         if (context.Itemized)
         {
-            var swapHands = new KeyBindHandler(ConsoleKey.F, new SwapHandsCommand());
-            var pickUp = new KeyBindHandler(ConsoleKey.E, new PickUpCommand());
-            var changeState = new KeyBindHandler(ConsoleKey.I, new ChangeStateCommand(this));
-            moveUp
-                .SetNext(moveDown)
-                .SetNext(moveLeft)
-                .SetNext(moveRight)
+            var swapHands = new KeyBindHandler(new ActionInfo(ConsoleKey.F, new SwapHandsCommand(), "Swap hands"), Instructions);
+            var pickUp = new KeyBindHandler(new ActionInfo(ConsoleKey.E, new PickUpCommand(), "Pick up"), Instructions);
+            var changeState = new KeyBindHandler(new ActionInfo(ConsoleKey.I, new ChangeStateCommand(this), "Inventory management"), Instructions);
+            moveRight
                 .SetNext(swapHands)
                 .SetNext(pickUp)
                 .SetNext(changeState)
                 .SetNext(_globalInputChain);
-            
-            Instructions = new List<string>
-            {
-                "WSAD-Move",
-                "F-Swap Hands",
-                "E-Pick Up",
-                "I-Inventory Management"
-            };
         }
         else
         {
-            moveUp
-                .SetNext(moveDown)
-                .SetNext(moveLeft)
-                .SetNext(moveRight)
-                .SetNext(_globalInputChain);
-            Instructions = new List<string>
-            {
-                "WSAD-Move"
-            };
+            moveRight.SetNext(_globalInputChain);
         }
         
         _inputChain = moveUp;
@@ -66,12 +55,13 @@ public class MoveState: IInputState
         var output = "";
         foreach (var instruction in Instructions)
         {
-            output = output + " " + instruction;
+            var instructionString = instruction.Key + " - " + instruction.Description;
+            output = output + "\n" + instructionString;
         }
         return output;
     }
 
-    public IInputState GetNewState(Game game) => new InventoryState(_globalInputChain);
+    public IInputState GetNewState(Game game) => new InventoryState(_globalInputChain, _globalInstructions);
     
     public ICommand HandleInput(ConsoleKey key)
     {

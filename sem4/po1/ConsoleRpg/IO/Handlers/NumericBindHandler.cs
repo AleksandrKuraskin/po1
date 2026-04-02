@@ -9,8 +9,6 @@ public class NumericBindHandler : InputHandlerBase
         if (key >= ConsoleKey.D0 && key <= ConsoleKey.D9)
         {
             var slotIndex = key == ConsoleKey.D0 ? 9 : key - ConsoleKey.D1;
-            Console.WriteLine(slotIndex);
-            
             return new NavigateInventoryCommand(slotIndex);
         }
         

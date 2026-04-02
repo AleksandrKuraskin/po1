@@ -8,31 +8,27 @@ public class InventoryState: IInputState
 {
     private readonly IInputHandler _inputChain;
     private readonly IInputHandler _globalInputChain;
+    private readonly List<ActionInfo> _globalInstructions;
     
     public string Name { get; } = "Inventory Management State";
 
-    public List<string> Instructions { get; } = new ()
-    {
-        "WS - Move Up/Down",
-        "1-9 - Select Item",
-        "Q - Drop Selected Item",
-        "F - Swap Hands",
-        "LP - Equip Left/Right Hand",
-        "I - Close Inventory"
-    };
+    public List<ActionInfo> Instructions { get; }
 
-    public InventoryState(IInputHandler globalChain)
+    public InventoryState(IInputHandler globalChain, List<ActionInfo> globalInstructions)
     {
         _globalInputChain = globalChain;
+        _globalInstructions = globalInstructions;
+        Instructions = _globalInstructions;
         
-        var prevItem = new KeyBindHandler(ConsoleKey.W, new NavigateInventoryCommand(-1));
+        
+        var prevItem = new KeyBindHandler(new ActionInfo(ConsoleKey.W, new NavigateInventoryCommand(-1), "Prev item"), Instructions);
         var itemAtIndex = new NumericBindHandler();
-        var nextItem = new KeyBindHandler(ConsoleKey.S, new NavigateInventoryCommand(-2));
-        var dropItem = new KeyBindHandler(ConsoleKey.Q, new DropSelectedCommand());
-        var swapHands = new KeyBindHandler(ConsoleKey.F, new SwapHandsCommand());
-        var equipLeft = new KeyBindHandler(ConsoleKey.L, new EquipSelectedCommand(true));
-        var equipRight = new KeyBindHandler(ConsoleKey.P, new EquipSelectedCommand(false));
-        var changeState = new KeyBindHandler(ConsoleKey.I, new ChangeStateCommand(this));
+        var nextItem = new KeyBindHandler(new ActionInfo(ConsoleKey.S, new NavigateInventoryCommand(-2), "Next item"), Instructions);
+        var dropItem = new KeyBindHandler(new ActionInfo(ConsoleKey.Q, new DropSelectedCommand(), "Drop item"), Instructions);
+        var swapHands = new KeyBindHandler(new ActionInfo(ConsoleKey.F, new SwapHandsCommand(), "Swap hands"), Instructions);
+        var equipLeft = new KeyBindHandler(new ActionInfo(ConsoleKey.L, new EquipSelectedCommand(true), "Equip left"), Instructions);
+        var equipRight = new KeyBindHandler(new ActionInfo(ConsoleKey.P, new EquipSelectedCommand(false), "Equip right"), Instructions);
+        var changeState = new KeyBindHandler(new ActionInfo(ConsoleKey.I, new ChangeStateCommand(this), "Movement state"), Instructions);
 
         prevItem
             .SetNext(nextItem)
@@ -52,12 +48,13 @@ public class InventoryState: IInputState
         var output = "";
         foreach (var instruction in Instructions)
         {
-            output = output + " " + instruction;
+            var instructionString = instruction.Key + " - " + instruction.Description;
+            output = output + "\n" + instructionString;
         }
         return output;
     }
     
-    public IInputState GetNewState(Game game) => new MoveState(game.MapContext, _globalInputChain);
+    public IInputState GetNewState(Game game) => new MoveState(game.MapContext, _globalInputChain, _globalInstructions);
     
     public ICommand HandleInput(ConsoleKey key)
     {

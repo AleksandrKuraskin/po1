@@ -21,10 +21,11 @@ public class Game
     public IInputState CurrentInputState {get; private set;}
 
     public IInputHandler GlobalInputHandler { get; }
+    public List<ActionInfo> GlobalInstructions { get; } = new();
 
     private IInputHandler InitializeInputHandler()
     {
-        var escapeGame = new KeyBindHandler(ConsoleKey.Escape, new ExitGameCommand());
+        var escapeGame = new KeyBindHandler(new ActionInfo(ConsoleKey.Escape, new ExitGameCommand(), "Exit game"), GlobalInstructions);
         return escapeGame;
     }
     public Game()
@@ -34,8 +35,9 @@ public class Game
         var director = new MapDirector(builder);
         GlobalInputHandler = InitializeInputHandler();
         _renderer = new ConsoleRenderer();
-        MapContext = director.ConstructRandomMap();
-        CurrentInputState = new MoveState(MapContext, GlobalInputHandler);
+        director.ConstructRandomMap();
+        MapContext = builder.Build();
+        CurrentInputState = new MoveState(MapContext, GlobalInputHandler, GlobalInstructions);
         _running = true;
         Logger = new Logger.Logger();
 
