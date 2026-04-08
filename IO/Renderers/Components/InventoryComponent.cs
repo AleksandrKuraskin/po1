@@ -7,6 +7,7 @@ namespace ConsoleRpg.IO.Renderers.Components;
 
 public class InventoryComponent : IUIComponent
 {
+    public string Name => "Inventory";
     public IRenderable Build(Game game)
     {
         var invBuilder = new StringBuilder();
@@ -31,6 +32,6 @@ public class InventoryComponent : IUIComponent
                     invBuilder.AppendLine($"{slotText}");
             }
         }
-        return new Panel(new Markup(invBuilder.ToString())).Header("[bold green]Inventory[/]").Expand();
+        return new Panel(new Markup(invBuilder.ToString())).Header("[bold green]Inventory[/]").RoundedBorder().Expand();
     }
 }

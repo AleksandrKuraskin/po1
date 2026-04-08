@@ -4,12 +4,12 @@ using ConsoleRpg.IO.Renderers.Components;
 
 namespace ConsoleRpg.Core.Map;
 
-public class MapBuilder : IMapBuilder
+public class MapBuilder : IBuilder
 {
     private MapContext? _context;
     private readonly List<IMapProcedure> _procedures = new();
 
-    public IMapBuilder StartFilledDungeon()
+    public IBuilder StartFilledDungeon()
     {
         _context = new MapContext();
         _procedures.Clear();
@@ -18,7 +18,7 @@ public class MapBuilder : IMapBuilder
         return this;
     }
 
-    public IMapBuilder StartEmptyDungeon()
+    public IBuilder StartEmptyDungeon()
     {
         _context = new MapContext();
         _procedures.Clear();
@@ -27,11 +27,12 @@ public class MapBuilder : IMapBuilder
         return this;
     }
 
-    public IMapBuilder AddCentralHall(int w, int h) { _procedures.Add(new CentralHallProcedure(w, h)); return this; }
-    public IMapBuilder AddCorridors() { _procedures.Add(new CorridorsProcedure()); return this; }
-    public IMapBuilder AddRooms() { _procedures.Add(new RoomsProcedure()); return this; }
-    public IMapBuilder AddWeapons(int count) { _procedures.Add(new WeaponsProcedure(count)); return this; }
-    public IMapBuilder AddItems(int count) {_procedures.Add(new ItemProcedure(count)); return this;}
+    public IBuilder AddCentralHall(int w, int h) { _procedures.Add(new CentralHallProcedure(w, h)); return this; }
+    public IBuilder AddCorridors() { _procedures.Add(new CorridorsProcedure()); return this; }
+    public IBuilder AddRooms() { _procedures.Add(new RoomsProcedure()); return this; }
+    public IBuilder AddWeapons(int count) { _procedures.Add(new WeaponsProcedure(count)); return this; }
+    public IBuilder AddItems(int count) {_procedures.Add(new ItemProcedure(count)); return this;}
+    public IBuilder AddEnemies(int count) {_procedures.Add(new EnemyProcedure(count)); return this;}
 
     public MapContext Build()
     {

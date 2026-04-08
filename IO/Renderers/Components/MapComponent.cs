@@ -7,6 +7,8 @@ namespace ConsoleRpg.IO.Renderers.Components;
 
 public class MapComponent : IUIComponent
 {
+    
+    public string Name => "Map";
     public IRenderable Build(Game game)
     {
         var mapBuilder = new StringBuilder();
@@ -35,6 +37,6 @@ public class MapComponent : IUIComponent
             }
             mapBuilder.AppendLine();
         }
-        return new Panel(new Markup(mapBuilder.ToString())).Header("[bold cyan]Dungeon Map[/]").Expand();
+        return new Panel(new Markup(mapBuilder.ToString())).Header("[bold cyan]Dungeon Map[/]").RoundedBorder().Expand();
     }
 }

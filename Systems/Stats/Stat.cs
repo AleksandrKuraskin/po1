@@ -5,9 +5,7 @@ namespace ConsoleRpg.Systems.Stats;
 
 public class Stat(int value)
 {
-    private int BaseValue { get; set; } = value;
-
-    private int _value;
+    public int BaseValue { get; set; } = value;
     public int Value {
         get
         {
@@ -16,12 +14,7 @@ public class Stat(int value)
             {
                 finalValue = modifier.Apply(finalValue, BaseValue);
             }
-            return finalValue;
-        }
-        set
-        {
-            if (value < 0)
-                _value = 0;
+            return Math.Max(0, finalValue);
         }
     }
 
@@ -29,7 +22,19 @@ public class Stat(int value)
 
     public void Decrease(int amount)
     {
-        Value -= amount;
+        BaseValue -= amount;
+        if (BaseValue < 0) 
+            BaseValue = 0;
+    }
+    
+    public void Increase(int amount)
+    {
+        BaseValue += amount;
+    }
+    
+    public void SetBaseValue(int newValue)
+    {
+        BaseValue = Math.Max(0, newValue);
     }
     
     public void AddModifier(IStatModifier modifier)

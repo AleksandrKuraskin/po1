@@ -3,6 +3,8 @@ using ConsoleRpg.Core.Map;
 using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems;
+using ConsoleRpg.Systems.Attacking;
+using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Items.Currency;
 
@@ -10,6 +12,8 @@ public abstract class Currency(int value) : IItem
 {
     public abstract string Name { get; }
     public abstract char Symbol { get; }
+    
+    public StatsManager Stats { get; } = new StatsManager();
 
     public int Value { get; protected set; } = value;
 
@@ -21,13 +25,20 @@ public abstract class Currency(int value) : IItem
         return true;
     }
     
-    public IItem? TryEquip(IEquipment equipment, IInventory inventory, bool leftHand, Logger logger)
+    public IItem? TryEquip(Player player, bool leftHand, Logger logger)
     {
         logger.Log($"{Name} cannot be equipped", LogType.Error);
         return null;
     }
 
+    public void OnEquip(Player player) {}
+    public void OnUnequip(Player player) {}
     public void OnDrop(Map map, int x, int y, Logger logger)
+    {
+        throw new NotImplementedException();
+    }
+
+    public CombatStats Accept(IAttackVisitor visitor, Player player)
     {
         throw new NotImplementedException();
     }

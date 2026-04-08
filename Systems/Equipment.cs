@@ -1,6 +1,8 @@
 using ConsoleRpg.Core;
 using ConsoleRpg.Core.Logger;
+using ConsoleRpg.Entities;
 using ConsoleRpg.Items;
+using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Systems;
 
@@ -9,8 +11,9 @@ public class Equipment : IEquipment
     public IItem? LeftHand { get; private set; }
     public IItem? RightHand { get; private set; }
 
-    public IItem? EquipOneHanded(IInventory inventory, IItem? item, bool leftHand, Logger logger)
+    public IItem? EquipOneHanded(Player player, IItem? item, bool leftHand, Logger logger)
     {
+        var inventory = player.Inventory;
         var slotIndex = inventory.SelectedIndex;
 
         if (item != null)
@@ -22,9 +25,17 @@ public class Equipment : IEquipment
 
         if (LeftHand != null && LeftHand == RightHand)
         {
+            oldItem = LeftHand;
+            oldItem.OnUnequip(player);
             LeftHand = null;
             RightHand = null;
         }
+        else
+        {
+            oldItem?.OnUnequip(player);
+        }
+        
+        item?.OnEquip(player);
 
         if (leftHand) LeftHand = item;
         else RightHand = item;
@@ -49,8 +60,9 @@ public class Equipment : IEquipment
         return null;
     }
 
-    public IItem? EquipTwoHanded(IInventory inventory, IItem? item, Logger logger)
+    public IItem? EquipTwoHanded(Player player, IItem? item, Logger logger)
     {
+        var inventory = player.Inventory;
         var slotIndex = inventory.SelectedIndex;
 
         if (item != null)
@@ -61,6 +73,18 @@ public class Equipment : IEquipment
         var oldLeft = LeftHand;
         var oldRight = RightHand;
 
+        if (oldLeft != null && oldLeft == oldRight)
+        {
+            oldLeft.OnUnequip(player);
+        }
+        else
+        {
+            oldLeft?.OnUnequip(player);
+            oldRight?.OnUnequip(player);
+        }
+        
+        item?.OnEquip(player);
+        
         LeftHand = item;
         RightHand = item;
 
@@ -73,6 +97,11 @@ public class Equipment : IEquipment
                     $"Swapped {oldLeft.Name} for {item.Name}."
             );
             return null;
+        }
+        else
+        {
+            oldLeft?.OnUnequip(player);
+            oldRight?.OnUnequip(player);
         }
 
         var slotUsed = false;
@@ -111,10 +140,10 @@ public class Equipment : IEquipment
     public int GetTotalDamage()
     {
         var total = 0;
-        if (LeftHand != null) total += LeftHand.Stats.Damage.Value;
+        if (LeftHand != null) total += LeftHand.Stats.GetStat(StatType.Strength).Value;
 
         if (RightHand != null && RightHand != LeftHand) 
-            total += RightHand.Stats.Damage.Value;
+            total += RightHand.Stats.GetStat(StatType.Strength).Value;
 
         return total;
     }

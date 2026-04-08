@@ -2,6 +2,7 @@ using ConsoleRpg.Core.Map;
 using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems;
+using ConsoleRpg.Systems.Attacking;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Items;
@@ -10,7 +11,8 @@ public class MiscItem(string name, char symbol) : IItem
 {
     public string Name { get; } = name;
     public char Symbol { get; } = symbol;
-    public ObjectStats Stats { get; } = new ObjectStats(0 ,0); 
+    
+    public StatsManager Stats { get; } = new StatsManager();
 
     public bool TryPickUp(Player player, Logger logger)
     {
@@ -26,14 +28,22 @@ public class MiscItem(string name, char symbol) : IItem
         return added;
     }
 
+    public void OnEquip(Player player) {}
+    public void OnUnequip(Player player) {}
+
     public void OnDrop(Map map, int x, int y, Logger logger)
     {
         map.GetTile(x, y).AddItem(this);
         logger.Log($"Dropped {Name}.");
     }
 
-    public IItem? TryEquip(IEquipment equipment, IInventory inventory, bool leftHand, Logger logger)
+    public IItem? TryEquip(Player player, bool leftHand, Logger logger)
     {
-        return equipment.EquipOneHanded(inventory, this, leftHand, logger);
+        return player.Equipment.EquipOneHanded(player, this, leftHand, logger);
+    }
+
+    public CombatStats Accept(IAttackVisitor visitor, Player player)
+    {
+        return visitor.VisitNonWeapon(this, player);
     }
 }

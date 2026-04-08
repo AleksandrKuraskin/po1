@@ -1,26 +1,25 @@
 namespace ConsoleRpg.Core.Map;
 
-public class MapDirector(IMapBuilder builder)
+public class MapDirector(IBuilder mapBuilder)
 {
-    private readonly IMapBuilder _builder = builder;
+    private readonly IBuilder _mapBuilder = mapBuilder;
 
-    public MapContext ConstructRandomMap()
+    public void ConstructRandomMap()
     {
-        return _builder
+        _mapBuilder
             .StartFilledDungeon()
             .AddCentralHall(8, 4)
             .AddRooms()
             .AddCorridors()
             .AddWeapons(3)
             .AddItems(10)
-            .Build();
+            .AddEnemies(5);
     }
 
-    public MapContext ConstructEmptyMap()
+    public void ConstructEmptyMap()
     {
-        return _builder
+        _mapBuilder
             .StartEmptyDungeon()
-            .AddCentralHall(38, 18)
-            .Build();
+            .AddCentralHall(38, 18);
     }
 }
