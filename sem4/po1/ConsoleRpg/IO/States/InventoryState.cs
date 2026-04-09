@@ -18,7 +18,7 @@ public class InventoryState: IInputState
     {
         _globalInputChain = globalChain;
         _globalInstructions = globalInstructions;
-        Instructions = _globalInstructions;
+        Instructions = new List<ActionInfo>(_globalInstructions);
         
         
         var prevItem = new KeyBindHandler(new ActionInfo(ConsoleKey.W, new NavigateInventoryCommand(-1), "Prev item"), Instructions);

@@ -5,7 +5,7 @@ namespace ConsoleRpg.Core.Logger;
 public class Logger
 {
     private readonly Queue<LogMessage> _logQueue = new();
-    public readonly int MaxSize = 5;
+    public readonly int MaxSize = 20;
 
     public void Log(string message, LogType type = LogType.Info)
     {

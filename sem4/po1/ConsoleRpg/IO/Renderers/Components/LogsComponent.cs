@@ -8,6 +8,8 @@ namespace ConsoleRpg.IO.Renderers.Components;
 
 public class LogsComponent : IUIComponent
 {
+    
+    public string Name => "Logs";
     public IRenderable Build(Game game)
     {
         var logBuilder = new StringBuilder();
@@ -29,6 +31,6 @@ public class LogsComponent : IUIComponent
         
         for (var i = logs.Count; i < game.Logger.MaxSize; i++) logBuilder.AppendLine();
         
-        return new Panel(new Markup(logBuilder.ToString())).Header("[bold]Logs[/]").Expand();
+        return new Panel(new Markup(logBuilder.ToString())).Header("[bold]Logs[/]").RoundedBorder().Expand();
     }
 }

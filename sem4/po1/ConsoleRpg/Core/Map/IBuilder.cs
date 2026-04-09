@@ -9,4 +9,5 @@ public interface IBuilder
     IBuilder AddRooms();
     IBuilder AddWeapons(int count);
     IBuilder AddItems(int count);
+    IBuilder AddEnemies(int count);
 }

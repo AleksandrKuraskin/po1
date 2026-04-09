@@ -32,6 +32,7 @@ public class MapBuilder : IBuilder
     public IBuilder AddRooms() { _procedures.Add(new RoomsProcedure()); return this; }
     public IBuilder AddWeapons(int count) { _procedures.Add(new WeaponsProcedure(count)); return this; }
     public IBuilder AddItems(int count) {_procedures.Add(new ItemProcedure(count)); return this;}
+    public IBuilder AddEnemies(int count) {_procedures.Add(new EnemyProcedure(count)); return this;}
 
     public MapContext Build()
     {

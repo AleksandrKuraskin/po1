@@ -6,6 +6,7 @@ namespace ConsoleRpg.IO.Renderers.Components;
 
 public class EquipmentComponent : IUIComponent
 {
+    public string Name => "Equipment";
     public IRenderable Build(Game game)
     {
         var leftHandItem = game.Player.Equipment.LeftHand;
@@ -20,6 +21,6 @@ public class EquipmentComponent : IUIComponent
         }
 
         var innerText = $"[bold]Left Hand (L):[/] {leftHandText}\n[bold]Right Hand (R):[/] {rightHandText}";
-        return new Panel(new Markup(innerText)).Header("[bold blue]Equipment[/]").Expand();
+        return new Panel(new Markup(innerText)).Header("[bold blue]Equipment[/]").RoundedBorder().Expand();
     }
 }

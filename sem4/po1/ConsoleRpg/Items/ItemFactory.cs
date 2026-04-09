@@ -1,6 +1,10 @@
+using System.Reflection.Metadata.Ecma335;
 using ConsoleRpg.Items.Currency;
+using ConsoleRpg.Items.Decorators;
 using ConsoleRpg.Items.Weapons;
+using ConsoleRpg.Systems.Stats;
 using ConsoleRpg.Systems.Stats.Modifiers;
+using Spectre.Console;
 
 namespace ConsoleRpg.Items;
 
@@ -19,21 +23,21 @@ public class ItemFactory
             _blueprints[id] = factoryMethod;
             category.Add(id);
         }
-        Add("rusty_sword", () => new OneHandedWeapon("Rusty Sword", 10, 2), _weaponIds);
+        Add("rusty_sword", () => new LightWeapon("Rusty Sword", 10, 2, new EquipOneHanded()), _weaponIds);
 
-        Add("iron_mace", () => new OneHandedWeapon("Iron Mace", 25, 5), _weaponIds);
+        Add("iron_mace", () => new HeavyWeapon("Iron Mace", 25, 5, new EquipTwoHanded()), _weaponIds);
 
         Add("great_excalibur", () =>
         {
-            var sword = new TwoHandedWeapon("Great Excalibur", 40, 15);
-            sword.Stats.Damage.AddModifier(new PercentModifier(0.5f));
+            var sword = new HeavyWeapon("Great Excalibur", 40, 15, new EquipTwoHanded());
+            sword.Stats.AddModifier(StatType.Strength, new PercentModifier(0.5f));
             return sword;
         }, _weaponIds);
 
         Add("heavy_warhammer", () =>
         {
-            var hammer = new TwoHandedWeapon("Heavy Warhammer", 75, 25);
-            hammer.Stats.Damage.AddModifier(new FlatModifier(5));
+            var hammer = new HeavyWeapon("Heavy Warhammer", 75, 25, new EquipTwoHanded());
+            hammer.Stats.AddModifier(StatType.Strength, new FlatModifier(5));
             return hammer;
         }, _weaponIds);
         
@@ -57,6 +61,27 @@ public class ItemFactory
         throw new ArgumentException($"Item with ID '{itemId}' does not exist in the factory!");
     }
     
+    private static IItem ApplyRandomDecorators(IItem item, Random rng)
+    {
+        if (rng.NextDouble() < 0.1)
+        {
+            return new GodlyDecorator(item);
+        }
+        
+        var count = rng.Next(0, 3);
+        for (var i = 0; i < count; i++)
+        {
+            var choice = rng.Next(100);
+            item = choice switch
+            {
+                0 => new StrongDecorator(item),
+                1 => new UnluckyDecorator(item),
+                _ => item
+            };
+        }
+        return item;
+    }
+    
     public static IItem GetRandomItem(Random rng)
     {
         var keys = new List<string>(_blueprints.Keys);
@@ -69,7 +94,8 @@ public class ItemFactory
         if (_weaponIds.Count == 0)
             throw new InvalidOperationException("No weapons registered!");
 
-        return Create(_weaponIds[rng.Next(_weaponIds.Count)]);
+        var baseItem = Create(_weaponIds[rng.Next(_weaponIds.Count)]);
+        return ApplyRandomDecorators(baseItem, rng);
     }
     
     public static IItem GetRandomMisc(Random rng)

@@ -5,5 +5,6 @@ namespace ConsoleRpg.IO.Renderers.Components;
 
 public interface IUIComponent
 {
-    IRenderable Build(Game game);
+    string Name { get; }
+    IRenderable? Build(Game game);
 }

@@ -17,11 +17,11 @@ public class EquipSelectedCommand(bool isLeftHand) : ICommand
 
         if (item != null)
         {
-            dropItem = item.TryEquip(eq, inv, _isLeftHand, game.Logger);
+            dropItem = item.TryEquip(game.Player, item, _isLeftHand, game.Logger);
         }
         else
         {
-            dropItem = eq.EquipOneHanded(inv, null, _isLeftHand, game.Logger);
+            dropItem = eq.EquipOneHanded(game.Player, null, _isLeftHand, game.Logger);
         }
 
         if (dropItem != null)

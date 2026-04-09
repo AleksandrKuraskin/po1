@@ -9,5 +9,6 @@ public class MapContext
 
     public List<Room> Rooms = new();
     public bool Itemized { get; set; }
+    public bool Dangerous { get; set; }
     public List<IUIComponent> SidebarComponents = new();
 }

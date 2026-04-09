@@ -2,19 +2,23 @@ using ConsoleRpg.Core.Map;
 using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems;
+using ConsoleRpg.Systems.Attacking;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Items.Weapons;
 
-public abstract class Weapon : IItem
+public abstract class Weapon(IEquipBehavior behavior) : IItem
 {
     public abstract string Name { get; }
-    public abstract char Symbol { get; }
+    public virtual char Symbol { get; } = 'w';
     
-    public abstract WeaponStats Stats { get; set; }
-    public bool TryPickUp(Player player, Logger logger)
+    private readonly IEquipBehavior _equipBehavior = behavior;
+    
+    public abstract StatsManager Stats { get; }
+    
+    public bool TryPickUp(Player player, IItem item, Logger logger)
     {
-        var added = player.Inventory.TryAddItem(this);
+        var added = player.Inventory.TryAddItem(item);
         if (!added)
         {
             logger.Log($"Inventory full! Cannot pick up {Name}.", LogType.Warning);
@@ -26,12 +30,20 @@ public abstract class Weapon : IItem
         
         return added;
     }
-    
-    public abstract IItem? TryEquip(IEquipment equipment, IInventory inventory, bool leftHand, Logger logger);
-    
-    public void OnDrop(Map map, int x, int y, Logger logger)
+
+    public IItem? TryEquip(Player player, IItem item, bool leftHand, Logger logger)
     {
-        map.GetTile(x, y).AddItem(this);
+        return _equipBehavior.Equip(player, item, leftHand, logger);
+    }
+
+    public virtual void OnEquip(Player player) {}
+    public virtual void OnUnequip(Player player) {}
+
+    public void OnDrop(Map map, int x, int y, IItem item, Logger logger)
+    {
+        map.GetTile(x, y).AddItem(item);
         logger.Log($"Dropped {Name}.");
     }
+
+    public abstract CombatStats Accept(IAttackVisitor visitor, Player player, Weapon item);
 }

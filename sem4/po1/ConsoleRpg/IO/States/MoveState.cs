@@ -2,6 +2,7 @@ using ConsoleRpg.Core;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.IO.Commands;
 using ConsoleRpg.IO.Handlers;
+using ConsoleRpg.Systems.Attacking;
 
 namespace ConsoleRpg.IO.States;
 
@@ -10,6 +11,7 @@ public class MoveState: IInputState
     private readonly IInputHandler _inputChain;
     private readonly IInputHandler _globalInputChain;
     private readonly List<ActionInfo> _globalInstructions;
+    private IInputHandler _lastHandler;
     
     public string Name { get; } = "Move State";
 
@@ -20,7 +22,7 @@ public class MoveState: IInputState
         _globalInputChain = globalChain;
         _globalInstructions = globalInstructions;
 
-        Instructions = _globalInstructions;
+        Instructions = new List<ActionInfo>(_globalInstructions);
         
         var moveUp = new KeyBindHandler(new ActionInfo(ConsoleKey.W, new MoveCommand(0, -1), "Move up"), Instructions);
         var moveDown = new KeyBindHandler(new ActionInfo(ConsoleKey.S, new MoveCommand(0, 1), "Move down"), Instructions);
@@ -31,21 +33,35 @@ public class MoveState: IInputState
             .SetNext(moveDown)
             .SetNext(moveLeft)
             .SetNext(moveRight);
+
+        _lastHandler = moveRight;
+        
         if (context.Itemized)
         {
             var swapHands = new KeyBindHandler(new ActionInfo(ConsoleKey.F, new SwapHandsCommand(), "Swap hands"), Instructions);
             var pickUp = new KeyBindHandler(new ActionInfo(ConsoleKey.E, new PickUpCommand(), "Pick up"), Instructions);
             var changeState = new KeyBindHandler(new ActionInfo(ConsoleKey.I, new ChangeStateCommand(this), "Inventory management"), Instructions);
-            moveRight
+            _lastHandler
                 .SetNext(swapHands)
                 .SetNext(pickUp)
-                .SetNext(changeState)
-                .SetNext(_globalInputChain);
+                .SetNext(changeState);
+            _lastHandler = changeState;
         }
-        else
+
+        if (context.Dangerous)
         {
-            moveRight.SetNext(_globalInputChain);
+            var normalAttack = new KeyBindHandler(new ActionInfo(ConsoleKey.N, new AttackCommand(new NormalAttackVisitor()), "Normal Attack"), Instructions);
+            var stealthAttack = new KeyBindHandler(new ActionInfo(ConsoleKey.OemComma, new AttackCommand(new StealthAttackVisitor()), "Stealth Attack"), Instructions);
+            var magicAttack = new KeyBindHandler(new ActionInfo(ConsoleKey.M, new AttackCommand(new MagicAttackVisitor()), "Magic Attack"), Instructions);
+            
+            _lastHandler
+                .SetNext(normalAttack)
+                .SetNext(stealthAttack)
+                .SetNext(magicAttack);
+            _lastHandler = magicAttack;
         }
+
+        _lastHandler.SetNext(_globalInputChain);
         
         _inputChain = moveUp;
     }

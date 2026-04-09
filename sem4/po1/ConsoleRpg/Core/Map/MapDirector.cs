@@ -11,8 +11,9 @@ public class MapDirector(IBuilder mapBuilder)
             .AddCentralHall(8, 4)
             .AddRooms()
             .AddCorridors()
-            .AddWeapons(3)
-            .AddItems(10);
+            .AddWeapons(20)
+            .AddItems(10)
+            .AddEnemies(5);
     }
 
     public void ConstructEmptyMap()

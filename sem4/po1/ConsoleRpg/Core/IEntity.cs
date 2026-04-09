@@ -6,8 +6,10 @@ namespace ConsoleRpg.Core;
 
 public interface IEntity : IGameObject
 {
-    public EntityStats Stats { get; }
+    public StatsManager Stats { get; }
     public Inventory Inventory { get; }
     public Equipment Equipment { get; }
     public Wallet Wallet { get; }
+    public bool Alive { get; }
+    public void TakeDamage(int amount);
 }

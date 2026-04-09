@@ -11,7 +11,7 @@ public class PickUpCommand : ICommand
         var item = tile.GetTopItem();
         if (item != null)
         {
-            var picked = item.TryPickUp(game.Player, game.Logger);
+            var picked = item.TryPickUp(game.Player, item, game.Logger);
             if (picked)
             {
                 tile.RemoveTopItem();

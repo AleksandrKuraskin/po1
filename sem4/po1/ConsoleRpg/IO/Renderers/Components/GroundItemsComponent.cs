@@ -7,6 +7,7 @@ namespace ConsoleRpg.IO.Renderers.Components;
 
 public class GroundItemsComponent : IUIComponent
 {
+    public string Name => "Ground";
     public IRenderable Build(Game game)
     {
         var groundBuilder = new StringBuilder();
@@ -41,6 +42,6 @@ public class GroundItemsComponent : IUIComponent
             groundBuilder.AppendLine("[grey]No items here.[/]");
             for (var i = 1; i < maxGroundLines; i++) groundBuilder.AppendLine();
         }
-        return new Panel(new Markup(groundBuilder.ToString())).Header("[bold]Ground[/]").Expand();
+        return new Panel(new Markup(groundBuilder.ToString())).Header("[bold]Ground[/]").RoundedBorder().Expand();
     }
 }
