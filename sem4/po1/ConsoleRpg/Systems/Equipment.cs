@@ -136,15 +136,4 @@ public class Equipment : IEquipment
         if (RightHand != LeftHand)
             (LeftHand, RightHand) = (RightHand, LeftHand);
     }
-
-    public int GetTotalDamage()
-    {
-        var total = 0;
-        if (LeftHand != null) total += LeftHand.Stats.GetStat(StatType.Strength).Value;
-
-        if (RightHand != null && RightHand != LeftHand) 
-            total += RightHand.Stats.GetStat(StatType.Strength).Value;
-
-        return total;
-    }
 }

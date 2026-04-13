@@ -11,7 +11,8 @@ namespace ConsoleRpg.Items;
 
 public interface IItem : IGameObject
 {
-    public StatsManager Stats { get; }
+    public StatsManager ItemStats { get; }
+    public StatsManager GrantedStats { get; }
     bool TryPickUp(Player player, IItem item, Logger logger);
     IItem? TryEquip(Player player, IItem item, bool leftHand, Logger logger);
     
@@ -19,6 +20,5 @@ public interface IItem : IGameObject
     void OnUnequip(Player player);
     void OnDrop(Map map, int x, int y, IItem item, Logger logger);
 
-    CombatStats Accept(IAttackVisitor visitor, Player player, IItem item);
-    CombatStats Accept(IAttackVisitor visitor, Player player, Weapon item);
+    CombatStats Accept(IAttackVisitor visitor, Player player);
 }

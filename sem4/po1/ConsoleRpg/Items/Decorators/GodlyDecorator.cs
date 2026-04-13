@@ -31,7 +31,7 @@ public class GodlyDecorator : ItemDecorator
         
         foreach (var mod in _itemDamageModifiers)
         {
-            Stats.AddModifier(StatType.Strength, mod);
+            GrantedStats.AddModifier(StatType.Strength, mod);
         }
     }
     public override void OnEquip(Player p)

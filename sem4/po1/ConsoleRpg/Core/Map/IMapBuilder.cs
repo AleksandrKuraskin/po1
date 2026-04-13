@@ -9,5 +9,6 @@ public interface IMapBuilder
     IMapBuilder AddRooms();
     IMapBuilder AddWeapons(int count);
     IMapBuilder AddItems(int count);
+    IMapBuilder AddEnemies(int count);
     MapContext Build();
 }

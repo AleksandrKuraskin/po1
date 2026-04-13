@@ -12,7 +12,8 @@ public class MiscItem(string name, char symbol) : IItem
     public string Name { get; } = name;
     public char Symbol { get; } = symbol;
     
-    public StatsManager Stats { get; } = new StatsManager();
+    public StatsManager ItemStats { get; } = new StatsManager();
+    public StatsManager GrantedStats { get; } = new StatsManager();
 
     public bool TryPickUp(Player player, IItem item, Logger logger)
     {
@@ -42,8 +43,8 @@ public class MiscItem(string name, char symbol) : IItem
         return player.Equipment.EquipOneHanded(player, item, leftHand, logger);
     }
 
-    public CombatStats Accept(IAttackVisitor visitor, Player player, IItem item)
+    public CombatStats Accept(IAttackVisitor visitor, Player player)
     {
-        return visitor.VisitNonWeapon(item, player);
+        return visitor.VisitNonWeapon(this, player);
     }
 }

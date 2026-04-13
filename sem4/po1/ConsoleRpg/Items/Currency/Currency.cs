@@ -13,7 +13,8 @@ public abstract class Currency(int value) : IItem
     public abstract string Name { get; }
     public abstract char Symbol { get; }
     
-    public StatsManager Stats { get; } = new StatsManager();
+    public StatsManager ItemStats { get; } = new StatsManager();
+    public StatsManager GrantedStats { get; } = new StatsManager();
 
     public int Value { get; protected set; } = value;
 
@@ -33,7 +34,7 @@ public abstract class Currency(int value) : IItem
 
     public void OnEquip(Player player) {}
     public void OnUnequip(Player player) {}
-    public void OnDrop(Map map, int x, int y, Logger logger)
+    public void OnDrop(Map map, int x, int y, IItem item, Logger logger)
     {
         throw new NotImplementedException();
     }

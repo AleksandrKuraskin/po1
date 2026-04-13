@@ -34,11 +34,6 @@ public class Player : IEntity
             .AddStat(StatType.Agility, 10)
             .AddStat(StatType.Luck, 10);
     }
-    
-    public int GetTotalStat(StatType type)
-    {
-        return Stats.GetStat(type).Value;
-    }
 
     public void TakeDamage(int amount)
     {

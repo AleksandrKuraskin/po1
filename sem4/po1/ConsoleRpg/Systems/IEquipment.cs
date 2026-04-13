@@ -10,5 +10,4 @@ public interface IEquipment
     IItem? EquipOneHanded(Player player, IItem? item, bool leftHand, Logger logger);
     IItem? EquipTwoHanded(Player player, IItem? item, Logger logger);
     void SwapHands();
-    int GetTotalDamage();
 }

@@ -9,37 +9,43 @@ public class MagicAttackVisitor : IAttackVisitor
 {
     public CombatStats VisitHeavyWeapon(HeavyWeapon w, Player p)
     {
+        var luck = p.Stats.GetStat(StatType.Luck).Value;
         return new CombatStats {
             Attack = 1, 
-            Defense = p.GetTotalStat(StatType.Luck)
+            Defense = luck
         };
     }
     
     public CombatStats VisitLightWeapon(LightWeapon w, Player p)
     {
+        var luck = p.Stats.GetStat(StatType.Luck).Value;
+        
         return new CombatStats {
             Attack = 1, 
-            Defense = p.GetTotalStat(StatType.Luck)
+            Defense = luck
         };
     }
 
     public CombatStats VisitMagicWeapon(MagicWeapon w, Player p)
     {
-        var weaponDamage = w.Stats.GetStat(StatType.Strength).Value;
-        var playerDamage = p.GetTotalStat(StatType.Intelligence);
+        var intelligence = p.Stats.GetStat(StatType.Intelligence).Value;
+        
+        var playerDamage = intelligence;
 
         return new CombatStats {
-            Attack = weaponDamage + playerDamage,
-            Defense = p.GetTotalStat(StatType.Intelligence) * 2
+            Attack = playerDamage,
+            Defense = intelligence * 2
         };
     }
 
     public CombatStats VisitNonWeapon(IItem? item, Player p)
     {
+        var luck = p.Stats.GetStat(StatType.Luck).Value;
+        
         return new CombatStats
         {
             Attack = 0,
-            Defense = p.GetTotalStat(StatType.Luck)
+            Defense = luck
         };
     }
 }

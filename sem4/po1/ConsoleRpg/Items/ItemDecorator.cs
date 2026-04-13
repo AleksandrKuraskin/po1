@@ -13,7 +13,9 @@ public abstract class ItemDecorator(IItem item) : IItem
     
     public virtual string Name => _item.Name;
     public virtual char Symbol => _item.Symbol;
-    public virtual StatsManager Stats => _item.Stats;
+    public virtual StatsManager ItemStats => _item.ItemStats;
+    public virtual StatsManager GrantedStats => _item.GrantedStats;
+
     public void OnDrop(Map map, int x, int y, IItem item, Logger logger)
         => _item.OnDrop(map, x, y, item, logger);
     
@@ -29,5 +31,5 @@ public abstract class ItemDecorator(IItem item) : IItem
     public virtual void OnUnequip(Player player)
     => _item.OnUnequip(player);
 
-    public CombatStats Accept(IAttackVisitor visitor, Player player, IItem item) => _item.Accept(visitor, player, item);
+    public CombatStats Accept(IAttackVisitor visitor, Player player) => _item.Accept(visitor, player);
 }

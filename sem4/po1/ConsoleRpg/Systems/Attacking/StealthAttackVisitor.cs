@@ -9,23 +9,27 @@ public class StealthAttackVisitor : IAttackVisitor
 {
     public CombatStats VisitHeavyWeapon(HeavyWeapon w, Player p)
     {
-        var weaponDamage = w.Stats.GetStat(StatType.Strength).Value;
-        var playerDamage = p.GetTotalStat(StatType.Strength) + p.GetTotalStat(StatType.Aggression);
+        var strength = p.Stats.GetStat(StatType.Strength).Value;
+        var aggression = p.Stats.GetStat(StatType.Aggression).Value;
+        
+        var playerDamage = strength + aggression;
 
         return new CombatStats {
-            Attack = (weaponDamage + playerDamage) / 2,
-            Defense = p.GetTotalStat(StatType.Strength)
+            Attack = playerDamage / 2,
+            Defense = strength
         };
     }
     
     public CombatStats VisitLightWeapon(LightWeapon w, Player p)
     {
-        var weaponDamage = w.Stats.GetStat(StatType.Strength).Value;
-        var playerDamage = p.GetTotalStat(StatType.Agility) + p.GetTotalStat(StatType.Luck);
+        var strength = p.Stats.GetStat(StatType.Strength).Value;
+        var agility = p.Stats.GetStat(StatType.Agility).Value;
+
+        var playerDamage = agility + strength;
 
         return new CombatStats {
-            Attack = (weaponDamage + playerDamage) * 2,
-            Defense = p.GetTotalStat(StatType.Agility)
+            Attack = playerDamage * 2,
+            Defense = agility
         };
     }
 

@@ -1,8 +1,8 @@
 namespace ConsoleRpg.Core.Map;
 
-public class MapDirector(IBuilder mapBuilder)
+public class MapDirector(IMapBuilder mapBuilder)
 {
-    private readonly IBuilder _mapBuilder = mapBuilder;
+    private readonly IMapBuilder _mapBuilder = mapBuilder;
 
     public void ConstructRandomMap()
     {
