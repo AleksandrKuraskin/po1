@@ -71,7 +71,7 @@ public class ItemFactory
         var count = rng.Next(0, 3);
         for (var i = 0; i < count; i++)
         {
-            var choice = rng.Next(4);
+            var choice = rng.Next(7);
             item = choice switch
             {
                 0 => new StrongDecorator(item),

@@ -1,4 +1,4 @@
-namespace ConsoleRpg.Core.Logger;
+namespace ConsoleRpg.Systems.Logging;
 
 public enum LogType
 {

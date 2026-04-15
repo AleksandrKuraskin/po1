@@ -4,5 +4,5 @@ using ConsoleRpg.Core;
 using ConsoleRpg.Items;
 using ConsoleRpg.Items.Currency;
 
-var game = new Game();
+var game = new GameInitializer().CreateGame();
 game.Run();

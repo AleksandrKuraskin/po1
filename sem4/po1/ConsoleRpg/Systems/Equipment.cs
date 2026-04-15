@@ -1,8 +1,6 @@
-using ConsoleRpg.Core;
-using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Items;
-using ConsoleRpg.Systems.Stats;
+using ConsoleRpg.Systems.Logging;
 
 namespace ConsoleRpg.Systems;
 
@@ -11,7 +9,7 @@ public class Equipment : IEquipment
     public IItem? LeftHand { get; private set; }
     public IItem? RightHand { get; private set; }
 
-    public IItem? EquipOneHanded(Player player, IItem? item, bool leftHand, Logger logger)
+    public IItem? EquipOneHanded(Player player, IItem? item, bool leftHand)
     {
         var inventory = player.Inventory;
         var slotIndex = inventory.SelectedIndex;
@@ -43,7 +41,7 @@ public class Equipment : IEquipment
         if (oldItem != null)
         {
             inventory.TryAddItem(oldItem, slotIndex);
-            logger.Log(
+            LogManager.Instance.Log(
                 item == null ? 
                     $"Unequipped {oldItem.Name}" : 
                     $"Swapped {oldItem.Name} for {item.Name}."
@@ -51,7 +49,7 @@ public class Equipment : IEquipment
         }
         else
         {
-            logger.Log(
+            LogManager.Instance.Log(
                 item == null ? 
                     "Can't equip nothing..." : 
                     $"Equipped {item.Name}."
@@ -60,7 +58,7 @@ public class Equipment : IEquipment
         return null;
     }
 
-    public IItem? EquipTwoHanded(Player player, IItem? item, Logger logger)
+    public IItem? EquipTwoHanded(Player player, IItem? item)
     {
         var inventory = player.Inventory;
         var slotIndex = inventory.SelectedIndex;
@@ -91,7 +89,7 @@ public class Equipment : IEquipment
         if (oldLeft != null && oldLeft == oldRight)
         {
             inventory.TryAddItem(oldLeft, slotIndex);
-            logger.Log(
+            LogManager.Instance.Log(
                 item == null ? 
                     $"Unequipped {oldLeft.Name}" : 
                     $"Swapped {oldLeft.Name} for {item.Name}."
@@ -122,12 +120,12 @@ public class Equipment : IEquipment
                 var added = inventory.TryAddItem(oldRight);
                 if (!added)
                 {
-                    logger.Log($"No space in inventory to add {oldRight.Name}. Dropping this item...", LogType.Warning);
+                    LogManager.Instance.Log($"No space in inventory to add {oldRight.Name}. Dropping this item...", LogType.Warning);
                     return oldRight;
                 }
             }
         }
-        if(item != null) logger.Log($"Equipped {item.Name}.");
+        if(item != null) LogManager.Instance.Log($"Equipped {item.Name}.");
         return null;
     }
 

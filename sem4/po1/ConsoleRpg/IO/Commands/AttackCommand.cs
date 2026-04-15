@@ -1,5 +1,5 @@
 using ConsoleRpg.Core;
-using ConsoleRpg.Core.Logger;
+using ConsoleRpg.Systems.Logging;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Entities.Enemies;
 using ConsoleRpg.IO.States;
@@ -47,7 +47,7 @@ public class AttackCommand(IAttackVisitor attackVisitor) : ICommand
 
         if (enemy == null)
         {
-            game.Logger.Log("No enemies in sight to attack.");
+            LogManager.Instance.Log("No enemies in sight to attack.");
             return;
         }
         
@@ -57,11 +57,11 @@ public class AttackCommand(IAttackVisitor attackVisitor) : ICommand
         var damageDealt = Math.Max(0, stats.Attack - enemyArmor);
         
         enemy.TakeDamage(damageDealt);
-        game.Logger.Log($"Attacking ({enemy.Name}) for {damageDealt} dmg. ({stats.Attack} reduced by {enemyArmor} armor)");
+        LogManager.Instance.Log($"Attacking ({enemy.Name}) for {damageDealt} dmg. ({stats.Attack} reduced by {enemyArmor} armor)");
         
         if (!enemy.Alive)
         {
-            game.Logger.Log($"You have slayed {enemy.Name}!", LogType.Success);
+           LogManager.Instance.Log($"You have slayed {enemy.Name}!", LogType.Success);
             tile.RemoveEnemy();
             return;
         }
@@ -70,11 +70,11 @@ public class AttackCommand(IAttackVisitor attackVisitor) : ICommand
         var damageReceived = Math.Max(0, enemyAttack - stats.Defense);
         
         p.TakeDamage(damageReceived);
-        game.Logger.Log($"{enemy.Name} fights back dealing {damageReceived} dmg. ({enemyAttack} reduced by your {stats.Defense} defense)");
+        LogManager.Instance.Log($"{enemy.Name} fights back dealing {damageReceived} dmg. ({enemyAttack} reduced by your {stats.Defense} defense)");
 
         if (!p.Alive)
         {
-            game.Logger.Log("You died! Game over.", LogType.Error);
+            LogManager.Instance.Log("You died! Game over.", LogType.Error);
             game.ChangeInputState(new GameOverState());
             
         }

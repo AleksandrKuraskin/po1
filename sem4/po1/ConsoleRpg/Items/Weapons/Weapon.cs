@@ -1,8 +1,7 @@
 using ConsoleRpg.Core.Map;
-using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Entities;
-using ConsoleRpg.Systems;
 using ConsoleRpg.Systems.Attacking;
+using ConsoleRpg.Systems.Logging;
 using ConsoleRpg.Systems.Stats;
 using ConsoleRpg.Systems.Stats.Modifiers;
 
@@ -19,24 +18,24 @@ public abstract class Weapon(IEquipBehavior behavior) : IItem
     public abstract StatsManager ItemStats { get; }
     public abstract StatsManager GrantedStats { get; }
 
-    public bool TryPickUp(Player player, IItem item, Logger logger)
+    public bool TryPickUp(Player player, IItem item)
     {
         var added = player.Inventory.TryAddItem(item);
         if (!added)
         {
-            logger.Log($"Inventory full! Cannot pick up {Name}.", LogType.Warning);
+            LogManager.Instance.Log($"Inventory full! Cannot pick up {Name}.", LogType.Warning);
         }
         else
         {
-            logger.Log($"Added {Name} to inventory.");
+            LogManager.Instance.Log($"Added {Name} to inventory.");
         }
         
         return added;
     }
 
-    public IItem? TryEquip(Player player, IItem item, bool leftHand, Logger logger)
+    public IItem? TryEquip(Player player, IItem item, bool leftHand)
     {
-        return _equipBehavior.Equip(player, item, leftHand, logger);
+        return _equipBehavior.Equip(player, item, leftHand);
     }
 
     public virtual void OnEquip(Player player)
@@ -61,10 +60,10 @@ public abstract class Weapon(IEquipBehavior behavior) : IItem
         _appliedModifiers.Clear();
     }
 
-    public void OnDrop(Map map, int x, int y, IItem item, Logger logger)
+    public void OnDrop(Map map, int x, int y, IItem item)
     {
         map.GetTile(x, y).AddItem(item);
-        logger.Log($"Dropped {Name}.");
+        LogManager.Instance.Log($"Dropped {Name}.");
     }
 
     public abstract CombatStats Accept(IAttackVisitor visitor, Player player);

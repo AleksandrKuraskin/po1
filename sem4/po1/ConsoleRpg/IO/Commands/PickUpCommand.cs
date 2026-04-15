@@ -1,5 +1,5 @@
 using ConsoleRpg.Core;
-using ConsoleRpg.Core.Logger;
+using ConsoleRpg.Systems.Logging;
 
 namespace ConsoleRpg.IO.Commands;
 
@@ -11,12 +11,12 @@ public class PickUpCommand : ICommand
         var item = tile.GetTopItem();
         if (item != null)
         {
-            var picked = item.TryPickUp(game.Player, item, game.Logger);
+            var picked = item.TryPickUp(game.Player, item);
             if (picked)
             {
                 tile.RemoveTopItem();
             }
         }
-        else game.Logger.Log("No items to pick up.", LogType.Warning);
+        else LogManager.Instance.Log("No items to pick up.", LogType.Warning);
     }
 }

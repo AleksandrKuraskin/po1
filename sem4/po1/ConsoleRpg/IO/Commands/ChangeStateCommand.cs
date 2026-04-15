@@ -1,6 +1,7 @@
 using ConsoleRpg.Core;
 using ConsoleRpg.IO.Handlers;
 using ConsoleRpg.IO.States;
+using ConsoleRpg.Systems.Logging;
 
 namespace ConsoleRpg.IO.Commands;
 
@@ -10,6 +11,6 @@ public class ChangeStateCommand(IInputState currentState) : ICommand
     {
         var newState = currentState.GetNewState(game);
         game.ChangeInputState(newState);;
-        game.Logger.Log($"{newState.Name}");
+        LogManager.Instance.Log($"{newState.Name}");
     }
 }

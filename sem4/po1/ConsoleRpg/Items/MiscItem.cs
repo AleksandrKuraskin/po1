@@ -1,8 +1,7 @@
 using ConsoleRpg.Core.Map;
-using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Entities;
-using ConsoleRpg.Systems;
 using ConsoleRpg.Systems.Attacking;
+using ConsoleRpg.Systems.Logging;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Items;
@@ -15,16 +14,16 @@ public class MiscItem(string name, char symbol) : IItem
     public StatsManager ItemStats { get; } = new StatsManager();
     public StatsManager GrantedStats { get; } = new StatsManager();
 
-    public bool TryPickUp(Player player, IItem item, Logger logger)
+    public bool TryPickUp(Player player, IItem item)
     {
         var added = player.Inventory.TryAddItem(item);
         if (!added)
         {
-            logger.Log($"Inventory full! Cannot pick up {Name}.", LogType.Warning);
+            LogManager.Instance.Log($"Inventory full! Cannot pick up {Name}.", LogType.Warning);
         }
         else
         {
-            logger.Log($"Added {Name} to inventory.");
+            LogManager.Instance.Log($"Added {Name} to inventory.");
         }
         return added;
     }
@@ -32,15 +31,15 @@ public class MiscItem(string name, char symbol) : IItem
     public void OnEquip(Player player) {}
     public void OnUnequip(Player player) {}
 
-    public void OnDrop(Map map, int x, int y, IItem item, Logger logger)
+    public void OnDrop(Map map, int x, int y, IItem item)
     {
         map.GetTile(x, y).AddItem(item);
-        logger.Log($"Dropped {Name}.");
+        LogManager.Instance.Log($"Dropped {Name}.");
     }
 
-    public IItem? TryEquip(Player player, IItem item, bool leftHand, Logger logger)
+    public IItem? TryEquip(Player player, IItem item, bool leftHand)
     {
-        return player.Equipment.EquipOneHanded(player, item, leftHand, logger);
+        return player.Equipment.EquipOneHanded(player, item, leftHand);
     }
 
     public CombatStats Accept(IAttackVisitor visitor, Player player)

@@ -1,11 +1,6 @@
-using System;
-using System.Text;
 using Spectre.Console;
 using ConsoleRpg.Core;
-using ConsoleRpg.Core.Logger;
-using ConsoleRpg.Entities;
 using ConsoleRpg.IO.Renderers.Components;
-using ConsoleRpg.Systems;
 
 
 namespace ConsoleRpg.IO.Renderers;
