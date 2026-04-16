@@ -1,8 +1,6 @@
 using ConsoleRpg.Core;
-using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
-using ConsoleRpg.Systems;
 using ConsoleRpg.Systems.Attacking;
 using ConsoleRpg.Systems.Stats;
 
@@ -10,13 +8,14 @@ namespace ConsoleRpg.Items;
 
 public interface IItem : IGameObject
 {
-    public StatsManager Stats { get; }
-    bool TryPickUp(Player player, Logger logger);
-    IItem? TryEquip(Player player, bool leftHand, Logger logger);
+    public StatsManager ItemStats { get; }
+    public StatsManager GrantedStats { get; }
+    bool TryPickUp(Player player, IItem item);
+    IItem? TryEquip(Player player, IItem item, bool leftHand);
     
     void OnEquip(Player player);
     void OnUnequip(Player player);
-    void OnDrop(Map map, int x, int y, Logger logger);
+    void OnDrop(Map map, int x, int y, IItem item);
 
     CombatStats Accept(IAttackVisitor visitor, Player player);
 }

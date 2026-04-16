@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems.Stats;
 using ConsoleRpg.Systems.Stats.Modifiers;

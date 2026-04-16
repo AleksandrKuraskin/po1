@@ -1,6 +1,5 @@
-using ConsoleRpg.Core;
-using ConsoleRpg.Core.Logger;
 using ConsoleRpg.IO.Commands;
+using ConsoleRpg.Systems.Logging;
 
 namespace ConsoleRpg.IO.Handlers;
 

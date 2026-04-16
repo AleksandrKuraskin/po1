@@ -1,8 +1,8 @@
 namespace ConsoleRpg.Core.Map;
 
-public class MapDirector(IBuilder mapBuilder)
+public class MapDirector(IMapBuilder mapBuilder)
 {
-    private readonly IBuilder _mapBuilder = mapBuilder;
+    private readonly IMapBuilder _mapBuilder = mapBuilder;
 
     public void ConstructRandomMap()
     {
@@ -11,7 +11,7 @@ public class MapDirector(IBuilder mapBuilder)
             .AddCentralHall(8, 4)
             .AddRooms()
             .AddCorridors()
-            .AddWeapons(3)
+            .AddWeapons(20)
             .AddItems(10)
             .AddEnemies(5);
     }

@@ -31,7 +31,7 @@ public class GodlyDecorator : ItemDecorator
         
         foreach (var mod in _itemDamageModifiers)
         {
-            Stats.AddModifier(StatType.Strength, mod);
+            GrantedStats.AddModifier(StatType.Strength, mod);
         }
     }
     public override void OnEquip(Player p)
@@ -43,6 +43,7 @@ public class GodlyDecorator : ItemDecorator
         }
         
         p.Stats.GetStat(StatType.Health).Increase(500);
+        Console.WriteLine("Modifying player stats!");
     }
 
     public override void OnUnequip(Player p)

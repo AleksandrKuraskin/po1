@@ -1,27 +1,27 @@
-using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
-using ConsoleRpg.Systems;
 using ConsoleRpg.Systems.Attacking;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Items;
 
-public abstract class ItemDecorator(IItem item) : IItem
+public abstract class ItemDecorator(IItem wrappee) : IItem
 {
-    protected readonly IItem _item = item;
+    protected readonly IItem _item = wrappee;
     
     public virtual string Name => _item.Name;
     public virtual char Symbol => _item.Symbol;
-    public virtual StatsManager Stats => _item.Stats;
-    public void OnDrop(Map map, int x, int y, Logger logger)
-        => _item.OnDrop(map, x, y, logger);
+    public virtual StatsManager ItemStats => _item.ItemStats;
+    public virtual StatsManager GrantedStats => _item.GrantedStats;
+
+    public void OnDrop(Map map, int x, int y, IItem itemr)
+        => _item.OnDrop(map, x, y, _item);
     
-    public bool TryPickUp(Player player, Logger logger)
-    => _item.TryPickUp(player, logger);
+    public bool TryPickUp(Player player, IItem item)
+    => _item.TryPickUp(player, item);
     
-    public IItem? TryEquip(Player player, bool leftHand, Logger logger)
-    => _item.TryEquip(player, leftHand, logger);
+    public IItem? TryEquip(Player player, IItem item, bool leftHand)
+    => _item.TryEquip(player, item, leftHand);
 
     public virtual void OnEquip(Player player)
     => _item.OnEquip(player);

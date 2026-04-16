@@ -7,44 +7,31 @@ using ConsoleRpg.Items;
 using ConsoleRpg.IO.Commands;
 using ConsoleRpg.IO.Renderers.Components;
 using ConsoleRpg.IO.States;
+using ConsoleRpg.Systems.Logging.Loggers;
 using Spectre.Console;
 
 namespace ConsoleRpg.Core;
 
-public class Game
+public class Game(
+    MapContext mapContext, 
+    Player player, 
+    IInputState initialState, 
+    IInputHandler globalInputHandler, 
+    List<ActionInfo> globalInstructions,
+    ConsoleRenderer renderer,
+    ConsoleLogger logger
+    )
 {
-    private readonly ConsoleRenderer _renderer;
-    private bool _running;
-    public MapContext MapContext { get; }
-    public Logger.Logger Logger { get; }
-    public Player Player { get; }
-    public IInputState CurrentInputState {get; private set;}
+    private readonly ConsoleRenderer _renderer = renderer;
+    private bool _running = true;
+    public MapContext MapContext { get; } = mapContext;
+    public Player Player { get; } = player;
+    public IInputState CurrentInputState {get; private set;} = initialState;
 
-    public IInputHandler GlobalInputHandler { get; }
-    public List<ActionInfo> GlobalInstructions { get; } = new();
+    public IInputHandler GlobalInputHandler { get; } = globalInputHandler;
+    public List<ActionInfo> GlobalInstructions { get; } = globalInstructions;
 
-    private IInputHandler InitializeInputHandler()
-    {
-        var escapeGame = new KeyBindHandler(new ActionInfo(ConsoleKey.Escape, new ExitGameCommand(), "Exit game"), GlobalInstructions);
-        return escapeGame;
-    }
-    public Game()
-    {
-        ItemFactory.Initialize();
-        var builder = new MapBuilder();
-        var director = new MapDirector(builder);
-        GlobalInputHandler = InitializeInputHandler();
-        _renderer = new ConsoleRenderer();
-        director.ConstructRandomMap();
-        MapContext = builder.Build();
-        CurrentInputState = new MoveState(MapContext, GlobalInputHandler, GlobalInstructions);
-        _running = true;
-        Logger = new Logger.Logger();
-
-        var spawn = MapContext.SpawnPoint;
-        Player = new Player(spawn.x, spawn.y);
-        MapContext.Map.SpawnPlayer(Player);
-    }
+    public ConsoleLogger Logger { get; } = logger;
 
     public void ChangeInputState(IInputState newState)
     {

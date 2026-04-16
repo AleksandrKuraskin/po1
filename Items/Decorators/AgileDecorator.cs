@@ -6,7 +6,7 @@ namespace ConsoleRpg.Items.Decorators;
 
 public class AgileDecorator(IItem item) : ItemDecorator(item)
 {
-    private readonly IStatModifier _agilityBoost = new FlatModifier(-5);
+    private readonly IStatModifier _agilityBoost = new FlatModifier(5);
 
     public override string Name => _item.Name + " (Agile)";
 

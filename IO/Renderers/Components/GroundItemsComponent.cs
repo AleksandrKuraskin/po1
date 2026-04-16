@@ -8,7 +8,7 @@ namespace ConsoleRpg.IO.Renderers.Components;
 public class GroundItemsComponent : IUIComponent
 {
     public string Name => "Ground";
-    public IRenderable Build(Game game)
+    public IRenderable? Build(Game game)
     {
         var groundBuilder = new StringBuilder();
         var tileItems = game.MapContext.Map.GetTile(game.Player.X, game.Player.Y).GetItems();
@@ -39,8 +39,7 @@ public class GroundItemsComponent : IUIComponent
         }
         else
         {
-            groundBuilder.AppendLine("[grey]No items here.[/]");
-            for (var i = 1; i < maxGroundLines; i++) groundBuilder.AppendLine();
+            return null;
         }
         return new Panel(new Markup(groundBuilder.ToString())).Header("[bold]Ground[/]").RoundedBorder().Expand();
     }

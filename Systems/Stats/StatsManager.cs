@@ -37,5 +37,10 @@ public class StatsManager
 
         return this;
     }
+
+    public IEnumerable<StatType> GetActiveStatTypes()
+    {
+        return _stats.Keys;
+    }
     
 }

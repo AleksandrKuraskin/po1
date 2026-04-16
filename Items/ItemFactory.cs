@@ -30,14 +30,14 @@ public class ItemFactory
         Add("great_excalibur", () =>
         {
             var sword = new HeavyWeapon("Great Excalibur", 40, 15, new EquipTwoHanded());
-            sword.Stats.AddModifier(StatType.Strength, new PercentModifier(0.5f));
+            sword.GrantedStats.AddModifier(StatType.Strength, new PercentModifier(0.5f));
             return sword;
         }, _weaponIds);
 
         Add("heavy_warhammer", () =>
         {
             var hammer = new HeavyWeapon("Heavy Warhammer", 75, 25, new EquipTwoHanded());
-            hammer.Stats.AddModifier(StatType.Strength, new FlatModifier(5));
+            hammer.GrantedStats.AddModifier(StatType.Strength, new FlatModifier(5));
             return hammer;
         }, _weaponIds);
         
@@ -63,7 +63,7 @@ public class ItemFactory
     
     private static IItem ApplyRandomDecorators(IItem item, Random rng)
     {
-        if (rng.NextDouble() < 0.5)
+        if (rng.NextDouble() < 0.1)
         {
             return new GodlyDecorator(item);
         }
@@ -71,11 +71,13 @@ public class ItemFactory
         var count = rng.Next(0, 3);
         for (var i = 0; i < count; i++)
         {
-            var choice = rng.Next(2);
+            var choice = rng.Next(7);
             item = choice switch
             {
                 0 => new StrongDecorator(item),
-                _ => new UnluckyDecorator(item),
+                1 => new UnluckyDecorator(item),
+                2 => new AgileDecorator(item),
+                _ => item
             };
         }
         return item;

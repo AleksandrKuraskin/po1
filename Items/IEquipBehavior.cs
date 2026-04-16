@@ -1,27 +1,24 @@
-using ConsoleRpg.Core.Logger;
 using ConsoleRpg.Entities;
-using ConsoleRpg.Items.Weapons;
-using ConsoleRpg.Systems;
 
 namespace ConsoleRpg.Items;
 
 public interface IEquipBehavior
 {
-    public IItem? Equip(Player player, Weapon weapon, bool leftHand, Logger logger);
+    public IItem? Equip(Player player, IItem item, bool leftHand);
 }
 
 public class EquipOneHanded : IEquipBehavior
 {
-    public IItem? Equip(Player player, Weapon weapon, bool leftHand, Logger logger)
+    public IItem? Equip(Player player, IItem item, bool leftHand)
     {
-        return player.Equipment.EquipOneHanded(player, weapon, leftHand, logger);
+        return player.Equipment.EquipOneHanded(player, item, leftHand);
     }
 }
 
 public class EquipTwoHanded : IEquipBehavior
 {
-    public IItem? Equip(Player player, Weapon weapon, bool leftHand, Logger logger)
+    public IItem? Equip(Player player, IItem item, bool leftHand)
     {
-        return player.Equipment.EquipTwoHanded(player, weapon, logger);
+        return player.Equipment.EquipTwoHanded(player, item);
     }
 }

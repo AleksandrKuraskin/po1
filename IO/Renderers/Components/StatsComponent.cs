@@ -12,28 +12,33 @@ public class StatsComponent : IUIComponent
     public IRenderable Build(Game game)
     {
         var stats = game.Player.Stats;
-        var baseDamage = stats.GetStat(StatType.Strength).Value;
-        var eqDamage = game.Player.Equipment.GetTotalDamage();
-        var totalDamage = baseDamage + eqDamage;
         
-        var baseHealth = stats.GetStat(StatType.MaxHealth).Value;
-        var currentHealth = stats.GetStat(StatType.Health).Value;
-        
-        var armor = stats.GetStat(StatType.Armor).Value;
-        
-        var aggression = stats.GetStat(StatType.Aggression).Value;
-        var agility = stats.GetStat(StatType.Agility).Value;
-        var intelligence = stats.GetStat(StatType.Intelligence).Value;
-        var luck = stats.GetStat(StatType.Luck).Value;
+        string FormatStat(StatType type)
+        {
+            var stat = stats.GetStat(type);
+            var total = stat.Value;
+            var baseValue = stat.BaseValue;
+            var bonus = total - baseValue;
+
+            return bonus switch
+            {
+                > 0 => $"[yellow]{total,-4}[/] ([grey]{baseValue}[/] + [green]{bonus}[/])",
+                < 0 => $"[grey]{total,-4}[/] ([grey]{baseValue}[/] - [red]{Math.Abs(bonus)}[/])",
+                _ => $"{total,-4}"
+            };
+        }
+       
+        var maxHealth = stats.GetStat(StatType.MaxHealth);
+        var currentHealth = stats.GetStat(StatType.Health);
         
         var innerText = $@"
-        [bold]Health:[/]    [green]{currentHealth,-4}[/]/[green] {baseHealth}[/]
-        [bold]Armor:[/]    [grey]{armor,-4}[/]
-        [bold]Damage:[/]    [red]{totalDamage,-4}[/]([green]+{eqDamage}[/])
-        [bold]Aggression:[/]    [red]{aggression,-4}[/]
-        [bold]Intelligence:[/]  [blue]{intelligence,-4}[/]
-        [bold]Agility:[/] [gold1]{agility,-4}[/]
-        [bold]Luck:[/] [yellow]{luck,-4}[/]
+        [bold]Health:[/]        [green]{currentHealth.Value,-4}[/]/[green] {maxHealth.Value}[/]
+        [bold]Armor:[/]         {FormatStat(StatType.Armor)}
+        [bold]Strength:[/]      {FormatStat(StatType.Strength)}
+        [bold]Aggression:[/]    {FormatStat(StatType.Aggression)}
+        [bold]Intelligence:[/]  {FormatStat(StatType.Intelligence)}
+        [bold]Agility:[/]       {FormatStat(StatType.Agility)}
+        [bold]Luck:[/]          {FormatStat(StatType.Luck)}
 
         [bold gold1]Gold:[/] {game.Player.Wallet.GoldValue,-5} | [bold silver]Coins:[/] {game.Player.Wallet.CoinValue,-5}";
         
