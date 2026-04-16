@@ -14,8 +14,8 @@ public abstract class ItemDecorator(IItem wrappee) : IItem
     public virtual StatsManager ItemStats => _item.ItemStats;
     public virtual StatsManager GrantedStats => _item.GrantedStats;
 
-    public void OnDrop(Map map, int x, int y, IItem itemr)
-        => _item.OnDrop(map, x, y, _item);
+    public void OnDrop(Map map, int x, int y, IItem item)
+        => _item.OnDrop(map, x, y, item);
     
     public bool TryPickUp(Player player, IItem item)
     => _item.TryPickUp(player, item);
