@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Items;
+using ConsoleRpg.Systems.Logging;
 
 namespace ConsoleRpg.Core.Map;
 
@@ -87,10 +88,18 @@ public class Map
         var newX = player.X + dx;
         var newY = player.Y + dy;
 
-        if (newX < 0 || newX >= Width || newY < 0 || newY >= Height) return false;
+        if (newX < 0 || newX >= Width || newY < 0 || newY >= Height)
+        {
+            LogManager.Instance.Log("You cannot move outside the map.");
+            return false;
+        }
         
         var targetTile = _tiles[newY, newX];
-        if (targetTile.IsWall || targetTile.Player != null) return false;
+        if (targetTile.IsWall || targetTile.Player != null)
+        {
+            LogManager.Instance.Log("You just bumped into a wall...");
+            return false;
+        }
 
         _tiles[player.Y, player.X].Player = null;
         targetTile.Player = player;

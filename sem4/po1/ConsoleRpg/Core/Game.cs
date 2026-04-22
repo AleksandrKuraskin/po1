@@ -22,7 +22,7 @@ public class Game(
     ConsoleLogger logger
     )
 {
-    private readonly ConsoleRenderer _renderer = renderer;
+    public IRenderer Renderer { get; private set; } = renderer;
     private bool _running = true;
     public MapContext MapContext { get; } = mapContext;
     public Player Player { get; } = player;
@@ -33,6 +33,11 @@ public class Game(
 
     public ConsoleLogger Logger { get; } = logger;
 
+    public void ChangeRenderer(IRenderer newRenderer)
+    {
+        Renderer = newRenderer;
+    }
+    
     public void ChangeInputState(IInputState newState)
     {
         CurrentInputState = newState;
@@ -45,11 +50,11 @@ public class Game(
         {
             while (_running)
             {
-                _renderer.Render(this);
+                Renderer.Render(this);
                 var key = Console.ReadKey(true).Key;
                 var command = CurrentInputState.HandleInput(key);
                 command.Execute(this);
-                _renderer.Render(this);
+                Renderer.Render(this);
             }
         });
     }

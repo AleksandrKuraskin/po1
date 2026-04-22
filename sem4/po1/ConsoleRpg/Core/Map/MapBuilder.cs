@@ -1,6 +1,8 @@
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Core.Map.Procedures;
+using ConsoleRpg.Entities.Enemies;
 using ConsoleRpg.IO.Renderers.Components;
+using ConsoleRpg.Items;
 
 namespace ConsoleRpg.Core.Map;
 
@@ -30,9 +32,30 @@ public class MapBuilder : IMapBuilder
     public IMapBuilder AddCentralHall(int w, int h) { _procedures.Add(new CentralHallProcedure(w, h)); return this; }
     public IMapBuilder AddCorridors() { _procedures.Add(new CorridorsProcedure()); return this; }
     public IMapBuilder AddRooms() { _procedures.Add(new RoomsProcedure()); return this; }
-    public IMapBuilder AddWeapons(int count) { _procedures.Add(new WeaponsProcedure(count)); return this; }
-    public IMapBuilder AddItems(int count) {_procedures.Add(new ItemProcedure(count)); return this;}
-    public IMapBuilder AddEnemies(int count) {_procedures.Add(new EnemyProcedure(count)); return this;}
+
+    public IMapBuilder AddWeapons(int count, Func<Random, IItem> weaponMethod)
+    {
+        _procedures.Add(new WeaponsProcedure(count, weaponMethod));
+        return this;
+    }
+
+    public IMapBuilder AddItems(int count, Func<Random, IItem> itemMethod)
+    {
+        _procedures.Add(new ItemProcedure(count, itemMethod));
+        return this;
+    }
+
+    public IMapBuilder AddSpecificItem(IItem item)
+    {
+        _procedures.Add(new SpecificItemProcedure(item));
+        return this;
+    }
+
+    public IMapBuilder AddEnemies(int count, Func<Random, Enemy> enemyMethod)
+    {
+        _procedures.Add(new EnemyProcedure(count, enemyMethod));
+        return this;
+    }
 
     public MapContext Build()
     {

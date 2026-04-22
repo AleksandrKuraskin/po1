@@ -5,6 +5,7 @@ public class ConsoleLogger : ILogger, ILogListener
     private readonly List<LogEntry> _logs = new ();
     
     public readonly int MaxLogCount = 20;
+    public int ScrollOffset { get; set; } = 0;
     
     public void Log(LogEntry entry)
     {

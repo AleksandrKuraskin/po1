@@ -28,13 +28,20 @@ public class MoveState: IInputState
         var moveDown = new KeyBindHandler(new ActionInfo(ConsoleKey.S, new MoveCommand(0, 1), "Move down"), Instructions);
         var moveLeft = new KeyBindHandler(new ActionInfo(ConsoleKey.A, new MoveCommand(-1, 0), "Move left"), Instructions);
         var moveRight = new KeyBindHandler(new ActionInfo(ConsoleKey.D, new MoveCommand(1, 0), "Move right"), Instructions);
+        var openJournal = new KeyBindHandler(
+            new ActionInfo(
+                ConsoleKey.J,
+                new OpenJournalCommand(this),
+                "Open Journal"),
+            Instructions);
         
         moveUp
             .SetNext(moveDown)
             .SetNext(moveLeft)
-            .SetNext(moveRight);
+            .SetNext(moveRight)
+            .SetNext(openJournal);
 
-        _lastHandler = moveRight;
+        _lastHandler = openJournal;
         
         if (context.Itemized)
         {

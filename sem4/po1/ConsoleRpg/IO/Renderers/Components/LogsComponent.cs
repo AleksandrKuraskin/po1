@@ -6,17 +6,28 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRpg.IO.Renderers.Components;
 
-public class LogsComponent : IUIComponent
+public class LogsComponent(int state = 0) : IUIComponent
 {
     
     public string Name => "Logs";
     public IRenderable Build(Game game)
     {
         var logBuilder = new StringBuilder();
-        var logsLimit = game.Logger.MaxLogCount;
-        var logs = game.Logger.GetRecentLogs(logsLimit).ToList();
+        IEnumerable<LogEntry> visibleLogs;
 
-        foreach (var log in logs)
+        if (state == 1)
+        {
+            var maxLogs = Math.Max(1, Console.WindowHeight - 2);
+            var allLogs = game.Logger.GetLogs();
+            visibleLogs = allLogs.Skip(game.Logger.ScrollOffset).Take(maxLogs);
+        }
+        else
+        {
+            var maxLogs = Math.Max(1, (Console.WindowHeight / 2));
+            visibleLogs = game.Logger.GetRecentLogs(maxLogs);
+        }
+
+        foreach (var log in visibleLogs)
         {
             var color = log.Type switch
             {
@@ -27,11 +38,9 @@ public class LogsComponent : IUIComponent
                 LogType.Loot => "gold1",
                 _ => "white"
             };
-            logBuilder.AppendLine($"[{color}]> {Markup.Escape(log.Text)}[/]");
+            
+            logBuilder.AppendLine($"[grey][[{log.Timestamp:HH:mm:ss}]][/] [{color}]{Markup.Escape(log.Text)}[/]");
         }
-        
-        for (var i = logs.Count; i < game.Logger.MaxLogCount; i++) logBuilder.AppendLine();
-        
         return new Panel(new Markup(logBuilder.ToString())).Header("[bold]Logs[/]").RoundedBorder().Expand();
     }
 }
