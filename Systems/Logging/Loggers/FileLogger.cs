@@ -25,8 +25,8 @@ public class FileLogger : ILogger, ILogListener
     public void Log(LogEntry entry)
     {
         _logs.Add(entry);
-        var logString = $"[{entry.Timestamp}][{entry.Type.ToString().ToUpper()}] {entry.Text}\n";
-        File.WriteAllText(_filePath, logString);
+        var logString = entry + "\n";
+        File.AppendAllText(_filePath, logString);
     }
 
     public void OnNotify(LogEntry entry)

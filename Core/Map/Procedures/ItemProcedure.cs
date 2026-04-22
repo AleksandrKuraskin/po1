@@ -3,7 +3,7 @@ using ConsoleRpg.Items;
 
 namespace ConsoleRpg.Core.Map.Procedures;
 
-public class ItemProcedure(int count) : IMapProcedure
+public class ItemProcedure(int count, Func<Random, IItem> itemMethod) : IMapProcedure
 {
     private readonly int _count = count;
     private readonly Random _rng = new Random();
@@ -19,7 +19,7 @@ public class ItemProcedure(int count) : IMapProcedure
         for (var i = 0; i < _count && freeTiles.Count > 0; i++)
         {
             var tile = freeTiles[_rng.Next(freeTiles.Count)];
-            tile.AddItem(ItemFactory.GetRandomMisc(_rng));
+            tile.AddItem(itemMethod.Invoke(_rng));
             freeTiles.Remove(tile);
         }
 

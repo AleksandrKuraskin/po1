@@ -1,0 +1,24 @@
+using System.Collections;
+
+namespace ConsoleRpg.Core.Map.Themes;
+
+public class LootTable<T>: IEnumerable<Func<T>>
+{
+    private readonly List<Func<T>> _pool = new();
+    
+    public void Add(Func<T> factoryMethod)
+    {
+        _pool.Add(factoryMethod);
+    }
+
+    public T GetRandom(Random rng)
+    {
+        if (_pool.Count == 0)
+            throw new InvalidOperationException("Empty loot table");
+
+        return _pool[rng.Next(_pool.Count)]();
+    }
+
+    public IEnumerator<Func<T>> GetEnumerator() => _pool.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+}

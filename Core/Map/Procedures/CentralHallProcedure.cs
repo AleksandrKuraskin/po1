@@ -10,6 +10,11 @@ public class CentralHallProcedure(int width, int height) : IMapProcedure
         var startX = (context.Map.Width / 2) - (_w / 2);
         var startY = (context.Map.Height / 2) - (_h / 2);
 
+        var spawnX = context.Map.Width / 2;
+        var spawnY = context.Map.Height / 2;
+        
+        context.SpawnPoint = (spawnX, spawnY);
+
         for (var y = startY; y < startY + _h; y++)
         {
             for (var x = startX; x < startX + _w; x++)

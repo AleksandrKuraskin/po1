@@ -11,7 +11,7 @@ public class MagicWeapon(string name, int maxHealth, int damage, IEquipBehavior 
     public override StatsManager ItemStats { get; } = new StatsManager()
         .AddStat(StatType.Health, maxHealth);
     public override StatsManager GrantedStats { get; } = new StatsManager()
-        .AddStat(StatType.Strength, damage);
+        .AddStat(StatType.Intelligence, damage);
 
     public override CombatStats Accept(IAttackVisitor visitor, Player player)
     {

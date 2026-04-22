@@ -29,6 +29,12 @@ public class InventoryState: IInputState
         var equipLeft = new KeyBindHandler(new ActionInfo(ConsoleKey.L, new EquipSelectedCommand(true), "Equip left"), Instructions);
         var equipRight = new KeyBindHandler(new ActionInfo(ConsoleKey.P, new EquipSelectedCommand(false), "Equip right"), Instructions);
         var changeState = new KeyBindHandler(new ActionInfo(ConsoleKey.I, new ChangeStateCommand(this), "Movement state"), Instructions);
+        var openJournal = new KeyBindHandler(
+            new ActionInfo(
+                ConsoleKey.J,
+                new OpenJournalCommand(this),
+                "Open Journal"),
+            Instructions);
 
         prevItem
             .SetNext(nextItem)
@@ -38,6 +44,7 @@ public class InventoryState: IInputState
             .SetNext(equipLeft)
             .SetNext(equipRight)
             .SetNext(changeState)
+            .SetNext(openJournal)
             .SetNext(_globalInputChain);
         
         _inputChain = prevItem;
