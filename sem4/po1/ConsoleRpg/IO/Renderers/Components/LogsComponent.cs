@@ -23,7 +23,7 @@ public class LogsComponent(int state = 0) : IUIComponent
         }
         else
         {
-            var maxLogs = Math.Max(1, (Console.WindowHeight / 2));
+            var maxLogs = Math.Max(1, (Console.WindowHeight / 2) - 2);
             visibleLogs = game.Logger.GetRecentLogs(maxLogs);
         }
 
