@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "Zvae/A62sVI=",
+  "success": true,
+  "projectFilePath": "/home/samba/kuraskina/Documents/mini_learning/sem4/po1/ConsoleRpg/ConsoleRpg.csproj",
+  "expectedPackageFiles": [
+    "/home/samba/kuraskina/.nuget/packages/spectre.console/0.54.0/spectre.console.0.54.0.nupkg.sha512"
+  ],
+  "logs": []
+}

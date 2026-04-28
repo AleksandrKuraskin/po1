@@ -1,0 +1,82 @@
+using ConsoleRpg.Core;
+using ConsoleRpg.Systems.Logging;
+using ConsoleRpg.Entities;
+using ConsoleRpg.Entities.Enemies;
+using ConsoleRpg.IO.States;
+using ConsoleRpg.Systems.Attacking;
+using ConsoleRpg.Systems.Stats;
+
+namespace ConsoleRpg.IO.Commands;
+
+public class AttackCommand(IAttackVisitor attackVisitor) : ICommand
+{
+    private readonly IAttackVisitor _attackVisitor = attackVisitor;
+
+    private CombatStats GetTotalStats(Player p)
+    {
+        var weaponLeft = p.Equipment.LeftHand;
+        var weaponRight = p.Equipment.RightHand;
+        
+        var statsLeft = weaponLeft != null
+            ? weaponLeft.Accept(_attackVisitor, p) 
+            : _attackVisitor.VisitNonWeapon(null, p);
+
+        if (weaponRight != null && weaponLeft == weaponRight)
+        {
+            return statsLeft;
+        }
+
+        var statsRight = weaponRight != null
+            ? weaponRight.Accept(_attackVisitor, p)
+            : _attackVisitor.VisitNonWeapon(null, p);
+
+        return new CombatStats
+        {
+            Attack = statsLeft.Attack + statsRight.Attack,
+            Defense = statsLeft.Defense + statsRight.Defense
+        };
+    }
+    
+    public void Execute(Game game)
+    {
+        var p = game.Player;
+        var map = game.MapContext.Map;
+        
+        var tile = map.GetTile(p.X, p.Y);
+        var enemy = tile.GetEnemy();
+
+        if (enemy == null)
+        {
+            LogManager.Instance.Log("No enemies in sight to attack.");
+            return;
+        }
+        
+        var stats = GetTotalStats(p);
+        
+        var enemyArmor = enemy.Stats.GetStat(StatType.Armor).Value;
+        var damageDealt = Math.Max(0, stats.Attack - enemyArmor);
+        
+        enemy.TakeDamage(damageDealt);
+        LogManager.Instance.Log($"Attacking ({enemy.Name}) for {damageDealt} dmg. ({stats.Attack} reduced by {enemyArmor} armor)");
+        
+        if (!enemy.Alive)
+        {
+           LogManager.Instance.Log($"You have slayed {enemy.Name}!", LogType.Success);
+            tile.RemoveEnemy();
+            return;
+        }
+        
+        var enemyAttack = enemy.Stats.GetStat(StatType.Strength).Value;
+        var damageReceived = Math.Max(0, enemyAttack - stats.Defense);
+        
+        p.TakeDamage(damageReceived);
+        LogManager.Instance.Log($"{enemy.Name} fights back dealing {damageReceived} dmg. ({enemyAttack} reduced by your {stats.Defense} defense)");
+
+        if (!p.Alive)
+        {
+            LogManager.Instance.Log("You died! Game over.", LogType.Error);
+            game.ChangeInputState(new GameOverState());
+            
+        }
+    }
+}
