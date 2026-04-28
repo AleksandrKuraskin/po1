@@ -33,16 +33,9 @@ public class BasementTheme : IThemeFactory
         () => new Enemy("Cave Bat", 'B', 8, 4, 0),
     ];
     
-    public void ApplyGenerationStrategy(IMapBuilder builder)
+    public void ApplyGenerationStrategy(IMapDirector director)
     {
-        builder
-            .StartFilledDungeon()
-            .AddRooms()
-            .AddCorridors()
-            .AddSpecificItem(CreateArtifact())
-            .AddItems(10, CreateRandomItem)
-            .AddWeapons(3, CreateRandomWeapon)
-            .AddEnemies(8, CreateEnemy);
+        director.ConstructRandom(this);
     }
 
     public IItem CreateArtifact()

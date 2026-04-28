@@ -34,7 +34,9 @@ public class GameInitializer
         
         var theme = ThemeProvider.GetRandomTheme();
         var builder = new MapBuilder();
-        theme.ApplyGenerationStrategy(builder);
+        var director = new MapDirector(builder);
+        
+        theme.ApplyGenerationStrategy(director);
         
         var mapContext = builder.Build();
 

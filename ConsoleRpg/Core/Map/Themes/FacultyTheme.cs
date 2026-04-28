@@ -30,16 +30,9 @@ public class FacultyTheme : IThemeFactory
         () => new Enemy("sgit.mini.pw.edu.pl", 'S', 15, 5, 2),
     ];
     
-    public void ApplyGenerationStrategy(IMapBuilder builder)
+    public void ApplyGenerationStrategy(IMapDirector director)
     {
-        builder
-            .StartFilledDungeon()
-            .AddRooms()
-            .AddCorridors()
-            .AddSpecificItem(CreateArtifact())
-            .AddItems(8, CreateRandomItem)
-            .AddWeapons(4, CreateRandomWeapon)
-            .AddEnemies(5, CreateEnemy);
+        director.ConstructRandom(this);
     }
 
     public IItem CreateArtifact()

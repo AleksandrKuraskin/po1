@@ -31,16 +31,9 @@ public class DarkForestTheme : IThemeFactory
         () => new Enemy("Shadow Weaver", 'S', 20, 10, 0),
     ];
     
-    public void ApplyGenerationStrategy(IMapBuilder builder)
+    public void ApplyGenerationStrategy(IMapDirector director)
     {
-        builder
-            .StartFilledDungeon()
-            .AddRooms()
-            .AddCorridors()
-            .AddSpecificItem(CreateArtifact())
-            .AddItems(8, CreateRandomItem)
-            .AddWeapons(4, CreateRandomWeapon)
-            .AddEnemies(6, CreateEnemy);
+        director.ConstructRandom(this);
     }
 
     public IItem CreateArtifact()
@@ -53,7 +46,7 @@ public class DarkForestTheme : IThemeFactory
 
     public IItem CreateRandomWeapon(Random rng)
     {
-        IItem baseWeapon = _weapons.GetRandom(rng);
+        var baseWeapon = _weapons.GetRandom(rng);
         return DecoratorRegistry.ApplyRandomDecorators(baseWeapon, rng, chanceToEnchant: 0.4);
     }
 

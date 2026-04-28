@@ -31,14 +31,9 @@ public class VoidTheme : IThemeFactory
         () => new Enemy("Phantom Star", 'S', 20, 15, 0),
     ];
     
-    public void ApplyGenerationStrategy(IMapBuilder builder)
+    public void ApplyGenerationStrategy(IMapDirector director)
     {
-        builder
-            .StartEmptyDungeon()
-            .AddSpecificItem(CreateArtifact())
-            .AddItems(10, CreateRandomItem)
-            .AddWeapons(2, CreateRandomWeapon)
-            .AddEnemies(6, CreateEnemy);
+        director.ConstructEmpty(this);
     }
 
     public IItem CreateArtifact()
@@ -51,7 +46,7 @@ public class VoidTheme : IThemeFactory
 
     public IItem CreateRandomWeapon(Random rng)
     {
-        IItem baseWeapon = _weapons.GetRandom(rng);
+        var baseWeapon = _weapons.GetRandom(rng);
         return DecoratorRegistry.ApplyRandomDecorators(baseWeapon, rng, chanceToEnchant: 0.8);
     }
 

@@ -8,7 +8,7 @@ public interface IThemeFactory
     public string ThemeId { get; }
     public string IntroMessage { get; }
     
-    void ApplyGenerationStrategy(IMapBuilder builder);
+    void ApplyGenerationStrategy(IMapDirector director);
     
     IItem CreateRandomItem(Random rng);
     IItem CreateRandomWeapon(Random rng);

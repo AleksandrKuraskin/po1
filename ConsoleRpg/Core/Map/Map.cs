@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ConsoleRpg.Entities;
+using ConsoleRpg.Entities.Enemies;
 using ConsoleRpg.Items;
 using ConsoleRpg.Systems.Logging;
 
@@ -83,7 +84,7 @@ public class Map
         _tiles[player.Y, player.X].Player = player;
     }
     
-    public bool TryMove(Player player, int dx, int dy)
+    public bool TryMovePlayer(Player player, int dx, int dy)
     {
         var newX = player.X + dx;
         var newY = player.Y + dy;
@@ -104,6 +105,28 @@ public class Map
         _tiles[player.Y, player.X].Player = null;
         targetTile.Player = player;
         player.SetPosition(newX, newY);
+        return true;
+    }
+
+    public bool TryMoveEnemy(Enemy enemy, int dx, int dy)
+    {
+        var newX = enemy.X + dx;
+        var newY = enemy.Y + dy;
+
+        if (newX < 0 || newX >= Width || newY < 0 || newY >= Height)
+        {
+            return false;
+        }
+        
+        var targetTile = _tiles[newY, newX];
+        if (targetTile.IsWall || targetTile.Enemy != null)
+        {
+            return false;
+        }
+
+        _tiles[enemy.Y, enemy.X].Enemy = null;
+        targetTile.Enemy = enemy;
+        enemy.SetPosition(newX, newY);
         return true;
     }
 }

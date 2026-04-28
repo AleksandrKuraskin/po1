@@ -34,15 +34,9 @@ public class ChessboardTheme : IThemeFactory
         () => new Enemy("Black Pawn", 'P', 20, 5, 2),
     ];
 
-    public void ApplyGenerationStrategy(IMapBuilder builder)
+    public void ApplyGenerationStrategy(IMapDirector director)
     {
-        builder
-            .StartFilledDungeon()
-            .AddCentralHall(30, 16)
-            .AddSpecificItem(CreateArtifact())
-            .AddItems(5, CreateRandomItem)
-            .AddWeapons(5, CreateRandomWeapon)
-            .AddEnemies(10, CreateEnemy);
+        director.ConstructRoom(this);
     }
 
     public IItem CreateArtifact()
@@ -55,7 +49,7 @@ public class ChessboardTheme : IThemeFactory
 
     public IItem CreateRandomWeapon(Random rng)
     {
-        IItem baseWeapon = _weapons.GetRandom(rng);
+        var baseWeapon = _weapons.GetRandom(rng);
         return DecoratorRegistry.ApplyRandomDecorators(baseWeapon, rng, chanceToEnchant: 0.6);
     }
 
