@@ -15,7 +15,7 @@ public class MapDirector(IMapBuilder builder) : IMapDirector
             .AddSpecificItem(theme.CreateArtifact())
             .AddItems(8, theme.CreateRandomItem)
             .AddWeapons(4, theme.CreateRandomWeapon)
-            .AddEnemies(5, theme.CreateEnemy);
+            .AddEnemyPack(3, theme.CreateEnemyPack);
     }
 
     public void ConstructRoom(IThemeFactory theme)
@@ -26,7 +26,7 @@ public class MapDirector(IMapBuilder builder) : IMapDirector
             .AddSpecificItem(theme.CreateArtifact())
             .AddItems(5, theme.CreateRandomItem)
             .AddWeapons(5, theme.CreateRandomWeapon)
-            .AddEnemies(10, theme.CreateEnemy);
+            .AddEnemyPack(2, theme.CreateEnemyPack);
     }
 
     public void ConstructEmpty(IThemeFactory theme)
@@ -36,6 +36,6 @@ public class MapDirector(IMapBuilder builder) : IMapDirector
             .AddSpecificItem(theme.CreateArtifact())
             .AddItems(10, theme.CreateRandomItem)
             .AddWeapons(2, theme.CreateRandomWeapon)
-            .AddEnemies(6, theme.CreateEnemy);
+            .AddEnemyPack(1, theme.CreateEnemyPack);
     }
 }

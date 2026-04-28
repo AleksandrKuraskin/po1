@@ -1,5 +1,6 @@
 using ConsoleRpg.Core;
 using ConsoleRpg.Systems.Logging;
+using ConsoleRpg.Systems.Sound.SoundEvents;
 
 namespace ConsoleRpg.IO.Commands;
 
@@ -15,6 +16,11 @@ public class PickUpCommand : ICommand
             if (picked)
             {
                 tile.RemoveTopItem();
+                if (item.Loudness > 0)
+                {
+                    var sound = new PickUpSound(game.Player, item);
+                    game.Player.MakeNoise(sound);
+                }
             }
         }
         else LogManager.Instance.Log("No items to pick up.", LogType.Warning);

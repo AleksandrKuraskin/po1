@@ -1,7 +1,9 @@
 using ConsoleRpg.Entities.Enemies;
+using ConsoleRpg.Entities.Enemies.Behaviors;
 using ConsoleRpg.Items;
 using ConsoleRpg.Items.Decorators;
 using ConsoleRpg.Items.Weapons;
+using ConsoleRpg.Systems.Sound;
 
 namespace ConsoleRpg.Core.Map.Themes;
 
@@ -9,6 +11,8 @@ public class ChessboardTheme : IThemeFactory
 {
     public string ThemeId => "Chessboard";
     public string IntroMessage => "Black and white squares stretch into the horizon. Make your move.";
+
+    private static readonly SpeciesGroup _figuresGroup = new SpeciesGroup(20, new AgressiveBehavior());
 
     private readonly LootTable<IItem> _items =
     [
@@ -26,12 +30,12 @@ public class ChessboardTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Black King", 'K', 100, 2, 5),
-        () => new Enemy("Black Queen", 'Q', 200, 50, 20),
-        () => new Enemy("Black Bishop", 'B', 60, 20, 8),
-        () => new Enemy("Black Knight", 'N', 40, 15, 5),
-        () => new Enemy("Black Rook", 'R', 60, 25, 10),
-        () => new Enemy("Black Pawn", 'P', 20, 5, 2),
+        () => new Enemy("Black King", 'K', 100, 2, 5, _figuresGroup),
+        () => new Enemy("Black Queen", 'Q', 200, 50, 20, _figuresGroup),
+        () => new Enemy("Black Bishop", 'B', 60, 20, 8, _figuresGroup),
+        () => new Enemy("Black Knight", 'N', 40, 15, 5, _figuresGroup),
+        () => new Enemy("Black Rook", 'R', 60, 25, 10, _figuresGroup),
+        () => new Enemy("Black Pawn", 'P', 20, 5, 2, _figuresGroup),
     ];
 
     public void ApplyGenerationStrategy(IMapDirector director)
@@ -53,5 +57,25 @@ public class ChessboardTheme : IThemeFactory
         return DecoratorRegistry.ApplyRandomDecorators(baseWeapon, rng, chanceToEnchant: 0.6);
     }
 
-    public Enemy CreateEnemy(Random rng) => _enemies.GetRandom(rng);
+    public Enemy CreateEnemy(Random rng, ISoundMediator mediator)
+    {
+        var enemy = _enemies.GetRandom(rng);
+        enemy.SetMediator(mediator);
+        return enemy;
+    }
+    
+    public IEnumerable<Enemy> CreateEnemyPack(Random rng, ISoundMediator mediator)
+    {
+        var recipe = _enemies.GetRandomMethod(rng);
+        var packSize = rng.Next(2, 5);
+        var pack = new List<Enemy>();
+
+        for (var i = 0; i < packSize; i++)
+        {
+            var enemy = recipe.Invoke();
+            enemy.SetMediator(mediator);
+            pack.Add(enemy);
+        }
+        return pack;
+    }
 }

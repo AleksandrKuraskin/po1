@@ -1,6 +1,7 @@
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems.Attacking;
+using ConsoleRpg.Systems.Sound;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Items;
@@ -11,6 +12,7 @@ public abstract class ItemDecorator(IItem wrappee) : IItem
     
     public virtual string Name => _item.Name;
     public virtual char Symbol => _item.Symbol;
+    public virtual Loudness Loudness => _item.Loudness;
     public virtual StatsManager ItemStats => _item.ItemStats;
     public virtual StatsManager GrantedStats => _item.GrantedStats;
 

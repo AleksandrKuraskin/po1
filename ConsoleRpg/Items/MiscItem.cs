@@ -2,6 +2,7 @@ using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems.Attacking;
 using ConsoleRpg.Systems.Logging;
+using ConsoleRpg.Systems.Sound;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Items;
@@ -10,7 +11,8 @@ public class MiscItem(string name, char symbol) : IItem
 {
     public string Name { get; } = name;
     public char Symbol { get; } = symbol;
-    
+    public Loudness Loudness { get; } = Loudness.Soft;
+
     public StatsManager ItemStats { get; } = new StatsManager();
     public StatsManager GrantedStats { get; } = new StatsManager();
 

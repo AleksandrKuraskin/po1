@@ -23,9 +23,12 @@ public class GameInitializer
     public Game CreateGame()
     {
         var consoleLogger = new ConsoleLogger();
+        
+        var logFileName = $"{_config.PlayerName}_{DateTime.Now:yyyyMMdd_HHmmss}.log";
+        var logFilePath = Path.Combine(_config.LogDirectory, logFileName);
 
         LogManager.Instance.Attach(consoleLogger);
-        LogManager.Instance.Attach(new FileLogger(_config.PlayerName, _config.LogDirectory));
+        LogManager.Instance.Attach(new FileLogger(_config.PlayerName, _config.LogDirectory, logFileName));
         
         var globalInstructions = new List<ActionInfo>();
         var globalInputHandler = new KeyBindHandler(
@@ -41,13 +44,15 @@ public class GameInitializer
         var mapContext = builder.Build();
 
         var spawn = mapContext.SpawnPoint;
-        var player = new Player(spawn.x, spawn.y);
+        var player = new Player(spawn.x, spawn.y, _config.PlayerName);
+        if(mapContext.SoundMediator != null)
+            player.SetMediator(mapContext.SoundMediator);
+        
         mapContext.Map.SpawnPlayer(player);
         
         LogManager.Instance.Log(theme.IntroMessage);
 
         var initialState = new MoveState(mapContext, globalInputHandler, globalInstructions);
-
         var renderer = new ConsoleRenderer();
         
         return new Game(
@@ -57,9 +62,9 @@ public class GameInitializer
             globalInputHandler, 
             globalInstructions, 
             renderer,
-            consoleLogger
+            consoleLogger,
+            logFilePath
             );
-
     }
     
 }

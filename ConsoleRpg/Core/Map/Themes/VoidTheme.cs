@@ -1,7 +1,9 @@
 using ConsoleRpg.Entities.Enemies;
+using ConsoleRpg.Entities.Enemies.Behaviors;
 using ConsoleRpg.Items;
 using ConsoleRpg.Items.Decorators;
 using ConsoleRpg.Items.Weapons;
+using ConsoleRpg.Systems.Sound;
 
 namespace ConsoleRpg.Core.Map.Themes;
 
@@ -9,6 +11,8 @@ public class VoidTheme : IThemeFactory
 {
     public string ThemeId => "Void";
     public string IntroMessage => "There is nothing here. Only silence and the distant glimmer of dying stars.";
+
+    private static readonly SpeciesGroup _darkstars = new SpeciesGroup(20, new AgressiveBehavior());
     
     private readonly LootTable<IItem> _items =
     [
@@ -26,9 +30,9 @@ public class VoidTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Sagittarius A*", 'O', 100, 20, 5),
-        () => new Enemy("Void Aberration", 'V', 30, 12, 0),
-        () => new Enemy("Phantom Star", 'S', 20, 15, 0),
+        () => new Enemy("Sagittarius A*", 'O', 100, 20, 5, _darkstars),
+        () => new Enemy("Void Aberration", 'V', 30, 12, 0, _darkstars),
+        () => new Enemy("Phantom Star", 'S', 20, 15, 0, _darkstars),
     ];
     
     public void ApplyGenerationStrategy(IMapDirector director)
@@ -50,5 +54,25 @@ public class VoidTheme : IThemeFactory
         return DecoratorRegistry.ApplyRandomDecorators(baseWeapon, rng, chanceToEnchant: 0.8);
     }
 
-    public Enemy CreateEnemy(Random rng) => _enemies.GetRandom(rng);
+    public Enemy CreateEnemy(Random rng, ISoundMediator mediator)
+    {
+        var enemy = _enemies.GetRandom(rng);
+        enemy.SetMediator(mediator);
+        return enemy;
+    }
+    
+    public IEnumerable<Enemy> CreateEnemyPack(Random rng, ISoundMediator mediator)
+    {
+        var recipe = _enemies.GetRandomMethod(rng);
+        var packSize = rng.Next(2, 5);
+        var pack = new List<Enemy>();
+
+        for (var i = 0; i < packSize; i++)
+        {
+            var enemy = recipe.Invoke();
+            enemy.SetMediator(mediator);
+            pack.Add(enemy);
+        }
+        return pack;
+    }
 }

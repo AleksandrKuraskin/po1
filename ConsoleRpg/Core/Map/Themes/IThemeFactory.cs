@@ -1,5 +1,6 @@
 using ConsoleRpg.Entities.Enemies;
 using ConsoleRpg.Items;
+using ConsoleRpg.Systems.Sound;
 
 namespace ConsoleRpg.Core.Map.Themes;
 
@@ -13,6 +14,7 @@ public interface IThemeFactory
     IItem CreateRandomItem(Random rng);
     IItem CreateRandomWeapon(Random rng);
     IItem CreateArtifact();
-    Enemy CreateEnemy(Random rng);
+    Enemy CreateEnemy(Random rng, ISoundMediator mediator);
+    IEnumerable<Enemy> CreateEnemyPack(Random rng, ISoundMediator mediator);
     
 }

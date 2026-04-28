@@ -1,9 +1,13 @@
+using ConsoleRpg.Entities.Enemies.Behaviors;
+
 namespace ConsoleRpg.Entities.Enemies;
 
-public class SpeciesGroup(int maxRadius) : ISpeciesPublisher
+public class SpeciesGroup(int maxRadius, IEnemyBehavior behavior) : ISpeciesPublisher
 {
     private readonly List<Enemy> _members = new();
     public readonly int MaxRadius = maxRadius;
+    
+    public IEnemyBehavior Behavior { get; set; } = behavior;
 
     public void Attach(Enemy member)
     {

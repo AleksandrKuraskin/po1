@@ -2,6 +2,7 @@ using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems.Attacking;
 using ConsoleRpg.Systems.Logging;
+using ConsoleRpg.Systems.Sound;
 using ConsoleRpg.Systems.Stats;
 using ConsoleRpg.Systems.Stats.Modifiers;
 
@@ -11,7 +12,9 @@ public abstract class Weapon(IEquipBehavior behavior) : IItem
 {
     public abstract string Name { get; }
     public virtual char Symbol { get; } = 'w';
-    
+
+    public abstract Loudness Loudness { get; }
+
     private readonly IEquipBehavior _equipBehavior = behavior;
     private readonly List<(StatType, IStatModifier)> _appliedModifiers = new();
     
@@ -31,6 +34,11 @@ public abstract class Weapon(IEquipBehavior behavior) : IItem
         }
         
         return added;
+    }
+
+    public virtual void MakeNoise()
+    {
+        throw new NotImplementedException();
     }
 
     public IItem? TryEquip(Player player, IItem item, bool leftHand)

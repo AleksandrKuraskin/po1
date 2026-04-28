@@ -1,4 +1,5 @@
 using ConsoleRpg.IO.Renderers.Components;
+using ConsoleRpg.Systems.Sound;
 
 namespace ConsoleRpg.Core.Map;
 
@@ -11,4 +12,5 @@ public class MapContext
     public bool Itemized { get; set; }
     public bool Dangerous { get; set; }
     public List<IUIComponent> SidebarComponents = new();
+    public ISoundMediator? SoundMediator { get; set; }
 }

@@ -2,11 +2,12 @@ using ConsoleRpg.Core;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems.Attacking;
+using ConsoleRpg.Systems.Sound;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Items;
 
-public interface IItem : IGameObject
+public interface IItem : IGameObject, ISoundSource
 {
     public StatsManager ItemStats { get; }
     public StatsManager GrantedStats { get; }

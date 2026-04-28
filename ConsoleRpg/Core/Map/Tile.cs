@@ -13,6 +13,9 @@ public class Tile(bool isWall)
     public Player? Player { get; set; }
     public Enemy? Enemy { get; set; } = null;
     
+    public int X { get; }
+    public int Y { get; }
+    
     public char GetSymbol()
     {
         if (Player != null) return '¶';
