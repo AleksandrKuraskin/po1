@@ -31,10 +31,11 @@ public class GameInitializer
         var globalInputHandler = new KeyBindHandler(
             new ActionInfo(ConsoleKey.Escape, new ExitGameCommand(), "Exit game"), 
             globalInstructions);
-        
-        var theme = ThemeProvider.GetRandomTheme();
+
         var builder = new MapBuilder();
-        theme.ApplyGenerationStrategy(builder);
+        var director = new MapDirector(builder);
+        var theme = ThemeProvider.GetRandomTheme();
+        theme.ApplyGenerationStrategy(director);
         
         var mapContext = builder.Build();
 
