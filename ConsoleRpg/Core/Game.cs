@@ -1,6 +1,7 @@
 using System;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
+using ConsoleRpg.Entities.Enemies;
 using ConsoleRpg.IO.Renderers;
 using ConsoleRpg.IO.Handlers;
 using ConsoleRpg.Items;
@@ -59,26 +60,22 @@ public class Game(
                 var command = CurrentInputState.HandleInput(key);
                 command.Execute(this);
                 
-                ProcessEnemiesTurn();
-                
                 Renderer.Render(this);
             }
         });
     }
     
-    private void ProcessEnemiesTurn()
+    public void ProcessEnemiesTurn()
     {
-        LogManager.Instance.Log(
-            $"Enemies moving... {MapContext.Map.GetAllEnemies().Count}."
-        );
         var enemies = MapContext.Map.GetAllEnemies();
         
         foreach (var enemy in enemies)
         {
-            if (!enemy.Alive) continue;
-
             if (enemy.ActedThisTurn)
             {
+                LogManager.Instance.Log(
+                    $"{enemy.Name} already moved this turn."
+                );
                 enemy.ActedThisTurn = false;
                 continue;
             }

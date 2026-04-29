@@ -11,7 +11,7 @@ public class Tile(bool isWall)
     
     public bool IsWall { get; set; } = isWall;
     public Player? Player { get; set; }
-    public Enemy? Enemy { get; set; } = null;
+    public Enemy? Enemy { get; set; }
     
     public int X { get; }
     public int Y { get; }

@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "/1c/2UJ4CgQ=",
+  "dgSpecHash": "Zvae/A62sVI=",
   "success": true,
-  "projectFilePath": "/media/projects/Studia/mini_learning/sem4/po1/ConsoleRpg/ConsoleRpg.csproj",
+  "projectFilePath": "/home/samba/kuraskina/Documents/mini_learning/sem4/po1/ConsoleRpg/ConsoleRpg.csproj",
   "expectedPackageFiles": [
-    "/home/alkura/.nuget/packages/spectre.console/0.54.0/spectre.console.0.54.0.nupkg.sha512"
+    "/home/samba/kuraskina/.nuget/packages/spectre.console/0.54.0/spectre.console.0.54.0.nupkg.sha512"
   ],
   "logs": []
 }

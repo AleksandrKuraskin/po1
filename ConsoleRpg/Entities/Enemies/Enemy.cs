@@ -30,7 +30,7 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
     public Wallet Wallet { get; } =  new Wallet();
     public Inventory Inventory { get; } = new Inventory();
     public Equipment Equipment { get; } = new Equipment();
-    
+
     public bool ActedThisTurn { get; set; }
     
     public void OnMemberDied(Enemy member)
@@ -38,6 +38,9 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
         if (member != this)
         {
             _group.Behavior.ApplyDeathReaction(this);
+            LogManager.Instance.Log(
+                $"({Name}) alters its stats since group member died."
+            );
         }
     }
 
@@ -45,6 +48,9 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
     {
         var distance = Math.Abs(X - newCenter.X) + Math.Abs(Y - newCenter.Y);
         _insideGroup = distance <= _group.MaxRadius;
+        LogManager.Instance.Log(
+            $"({Name}) noticed his group member move."
+        );
     }
     
     public void TakeTurn(Map map)
@@ -56,12 +62,15 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
 
         if (!_insideGroup)
         {
+            LogManager.Instance.Log(
+                $"{Name} moving towards group..."
+            );
             var target = _group.GetGroupCenter();
-            dx = target.X - X;
-            dy = target.Y - Y;
+            var diffX = Math.Abs(target.X - X);
+            var diffY = Math.Abs(target.Y - Y);
 
-            if (Math.Abs(X - target.X) < Math.Abs(Y - target.Y)) dx = 0;
-            else dy = 0;
+            if (diffX < diffY) dy = 1;
+            else dx = 1;
         }
         else
         {
@@ -70,11 +79,22 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
             var move = dirs[rng.Next(dirs.Length)];
             dx = move.Item1;
             dy = move.Item2;
+            LogManager.Instance.Log(
+                $"{Name} moving somewhere..."
+            );
         }
 
         if (dx != 0 || dy != 0)
         {
-            map.TryMoveEnemy(this, dx, dy);
+            LogManager.Instance.Log(
+                $"{Name} moving..."
+            );
+            if (!map.TryMoveEnemy(this, dx, dy))
+            {
+                LogManager.Instance.Log(
+                    $"{Name} can't move..."
+                );
+            }
         }
     }
 

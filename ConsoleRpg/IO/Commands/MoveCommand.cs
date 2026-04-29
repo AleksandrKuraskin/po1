@@ -16,5 +16,7 @@ public class MoveCommand(int dx, int dy) : ICommand
             var sound = new MoveSound(player);
             player.MakeNoise(sound);
         }
+        
+        game.ProcessEnemiesTurn();
     }
 }

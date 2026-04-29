@@ -101,5 +101,7 @@ public class AttackCommand(IAttackVisitor attackVisitor) : ICommand
             game.ChangeInputState(new GameOverState(game.LogFilePath));
             
         }
+        
+        game.ProcessEnemiesTurn();
     }
 }
