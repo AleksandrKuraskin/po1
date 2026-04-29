@@ -6,5 +6,5 @@ public class PickUpSound(ISoundEmitter emitter, IItem target) : ISoundEvent
 {
     public ISoundEmitter Emitter { get; } = emitter;
     
-    public string GetFullDescription() => $"{Emitter.Name} Picking up {target.Name}";
+    public string GetFullDescription() => $"{Emitter.Name} picking up {target.Name}";
 }

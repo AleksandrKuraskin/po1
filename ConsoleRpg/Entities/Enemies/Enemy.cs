@@ -49,52 +49,46 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
     {
         var distance = Math.Abs(X - newCenter.X) + Math.Abs(Y - newCenter.Y);
         _insideGroup = distance <= _group.MaxRadius;
-        LogManager.Instance.Log(
-            $"({Name}) noticed his group member move."
-        );
     }
     
     public void TakeTurn(Map map)
     {
         if (!Alive || ActedThisTurn) return;
+        var rng = new Random();
+        if (rng.Next(100) < 50) return;
 
         var dx = 0;
         var dy = 0;
 
         if (!_insideGroup)
         {
-            LogManager.Instance.Log(
-                $"{Name} moving towards group..."
-            );
             var target = _group.GetGroupCenter();
-            var diffX = Math.Abs(target.X - X);
-            var diffY = Math.Abs(target.Y - Y);
-
-            if (diffX < diffY) dy = 1;
-            else dx = 1;
+            
+            dx = Math.Sign(target.X - X);
+            dy = Math.Sign(target.Y - Y);
+            
+            if (Math.Abs(target.X - X) < Math.Abs(target.Y - Y)) dx = 0;
+            else dy = 0;
         }
         else
         {
-            var rng = new Random();
-            var dirs = new[] { (0, 1), (0, -1), (1, 0), (-1, 0), (0, 0) };
+            var dirs = new[] { (0, 1), (0, -1), (1, 0), (-1, 0) };
             var move = dirs[rng.Next(dirs.Length)];
             dx = move.Item1;
             dy = move.Item2;
-            LogManager.Instance.Log(
-                $"{Name} moving somewhere..."
-            );
         }
 
-        if (dx != 0 || dy != 0)
+        if (!map.TryMoveEnemy(this, dx, dy))
         {
-            LogManager.Instance.Log(
-                $"{Name} moving..."
-            );
-            if (!map.TryMoveEnemy(this, dx, dy))
+            if (dx != 0)
             {
-                LogManager.Instance.Log(
-                    $"{Name} can't move..."
-                );
+                var ddy = rng.Next(2) == 0 ? 1 : -1;
+                map.TryMoveEnemy(this, 0, ddy);
+            }
+            else
+            {
+                var ddx = rng.Next(2) == 0 ? 1 : -1;
+                map.TryMoveEnemy(this, ddx, 0);
             }
         }
     }

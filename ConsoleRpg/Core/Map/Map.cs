@@ -34,7 +34,7 @@ public class Map
         {
             for (var x = 0; x < Width; x++)
             {
-                _tiles[y, x] = new Tile(true);
+                _tiles[y, x] = new Tile(true, x, y);
             }
         }
     }

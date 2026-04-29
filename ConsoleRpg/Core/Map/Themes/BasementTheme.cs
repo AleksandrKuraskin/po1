@@ -14,6 +14,10 @@ public class BasementTheme : IThemeFactory
 {
     public string ThemeId => "Basement";
     public string IntroMessage => "The smell of damp earth and mold fills the air. Watch your step.";
+    
+    private static readonly SpeciesGroup _rats = new SpeciesGroup(2, new CowardlyBehavior());
+    private static readonly SpeciesGroup _cats = new SpeciesGroup(4, new AgressiveBehavior());
+    private static readonly SpeciesGroup _bats = new SpeciesGroup(1, new CowardlyBehavior());
 
     private readonly LootTable<IItem> _items =
     [
@@ -32,9 +36,9 @@ public class BasementTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Rabid Rat", 'R', 10, 5, 0, new SpeciesGroup(3, new CowardlyBehavior())),
-        () => new Enemy("Feral Cat", 'C', 15, 8, 1, new SpeciesGroup(6, new AgressiveBehavior())),
-        () => new Enemy("Cave Bat", 'B', 8, 4, 0, new SpeciesGroup(1, new CowardlyBehavior())),
+        () => new Enemy("Rabid Rat", 'R', 10, 5, 0, _rats),
+        () => new Enemy("Feral Cat", 'C', 15, 8, 1, _cats),
+        () => new Enemy("Cave Bat", 'B', 8, 4, 0, _bats),
     ];
 
     public void ApplyGenerationStrategy(IMapDirector director)

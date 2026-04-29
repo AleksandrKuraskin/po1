@@ -5,16 +5,16 @@ using ConsoleRpg.Items;
 
 namespace ConsoleRpg.Core.Map;
 
-public class Tile(bool isWall)
+public class Tile(bool isWall, int x, int y)
 {
     private readonly List<IItem> _items = [];
     
     public bool IsWall { get; set; } = isWall;
     public Player? Player { get; set; }
     public Enemy? Enemy { get; set; }
-    
-    public int X { get; }
-    public int Y { get; }
+
+    public int X { get; } = x;
+    public int Y { get; } = y;
     
     public char GetSymbol()
     {
