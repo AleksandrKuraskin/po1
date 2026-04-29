@@ -1,3 +1,5 @@
+using System;
+
 namespace ConsoleRpg.Systems.Logging;
 
 public class LogEntry(string text, LogType type)

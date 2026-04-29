@@ -1,3 +1,4 @@
+using System;
 using ConsoleRpg.IO.Commands;
 using ConsoleRpg.Systems.Logging;
 

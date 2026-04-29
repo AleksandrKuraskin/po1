@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ConsoleRpg.Systems.Stats.Modifiers;
 
 namespace ConsoleRpg.Systems.Stats;

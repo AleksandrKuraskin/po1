@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Systems.Logging;
 using ConsoleRpg.Systems.Sound.SoundEvents;

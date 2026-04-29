@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using ConsoleRpg.Core;
 using ConsoleRpg.IO.Renderers;
 using ConsoleRpg.IO.States;

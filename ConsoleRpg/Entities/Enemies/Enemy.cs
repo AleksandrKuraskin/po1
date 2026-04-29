@@ -1,3 +1,4 @@
+using System;
 using ConsoleRpg.Core;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities.Enemies.Behaviors;

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Reflection.Metadata.Ecma335;
 using ConsoleRpg.Items.Currency;
 using ConsoleRpg.Items.Decorators;

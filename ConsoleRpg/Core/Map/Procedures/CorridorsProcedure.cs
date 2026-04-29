@@ -1,3 +1,5 @@
+using System;
+
 namespace ConsoleRpg.Core.Map.Procedures;
 
 public class CorridorsProcedure : IMapProcedure

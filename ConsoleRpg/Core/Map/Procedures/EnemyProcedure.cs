@@ -1,6 +1,7 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Entities.Enemies;
 using ConsoleRpg.IO.Renderers.Components;
-using ConsoleRpg.Items;
 using ConsoleRpg.Systems.Sound;
 
 namespace ConsoleRpg.Core.Map.Procedures;

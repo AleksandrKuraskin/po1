@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using ConsoleRpg.Core;
 
 namespace ConsoleRpg.IO.Commands;

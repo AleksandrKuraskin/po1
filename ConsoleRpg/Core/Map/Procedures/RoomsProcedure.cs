@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace ConsoleRpg.Core.Map.Procedures;
 
 public class RoomsProcedure : IMapProcedure

@@ -1,3 +1,4 @@
+using System;
 using ConsoleRpg.Core;
 using ConsoleRpg.Systems.Stats;
 using Spectre.Console;

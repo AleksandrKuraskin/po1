@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Core;
 using ConsoleRpg.Systems.Logging;
 using ConsoleRpg.Entities;

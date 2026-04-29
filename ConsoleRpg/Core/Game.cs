@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Entities.Enemies;

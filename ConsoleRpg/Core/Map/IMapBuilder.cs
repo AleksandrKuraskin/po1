@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Entities.Enemies;
 using ConsoleRpg.Items;
 using ConsoleRpg.Systems.Sound;

@@ -1,3 +1,4 @@
+using System;
 using ConsoleRpg.IO.Commands;
 
 namespace ConsoleRpg.Core;

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ConsoleRpg.Systems.Logging;
 
 public class LogManager : ILogNotifier

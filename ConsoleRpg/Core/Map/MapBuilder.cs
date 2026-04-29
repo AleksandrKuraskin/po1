@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Core.Map.Procedures;
 using ConsoleRpg.Entities.Enemies;

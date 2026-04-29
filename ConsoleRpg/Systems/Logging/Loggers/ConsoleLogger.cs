@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace ConsoleRpg.Systems.Logging.Loggers;
 
 public class ConsoleLogger : ILogger, ILogListener

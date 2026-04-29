@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Core.Map.Themes;
 using ConsoleRpg.Entities;
