@@ -6,6 +6,9 @@ namespace ConsoleRpg.Core;
 
 public interface IEntity : IGameObject
 {
+    int X { get; }
+    int Y { get; }
+    
     public StatsManager Stats { get; }
     public Inventory Inventory { get; }
     public Equipment Equipment { get; }

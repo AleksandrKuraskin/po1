@@ -34,15 +34,13 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
 
     public bool ActedThisTurn { get; set; }
     
-    public void OnMemberDied(Enemy member)
+    public void OnMemberDied(ISpeciesObserver member)
     {
-        if (member != this)
-        {
-            _group.Behavior.ApplyDeathReaction(this);
-            LogManager.Instance.Log(
-                $"({Name}) alters its stats since group member died."
-            );
-        }
+        if (member == this) return;
+        _group.Behavior.ApplyDeathReaction(this);
+        LogManager.Instance.Log(
+            $"({Name}) alters its stats since group member died."
+        );
     }
 
     public void OnMemberMoved((int X, int Y)newCenter)

@@ -85,7 +85,6 @@ public class AttackCommand(IAttackVisitor attackVisitor) : ICommand
         if (!enemy.Alive)
         {
             LogManager.Instance.Log($"You have slayed {enemy.Name}!", LogType.Success);
-            enemy.Die();
             tile.Enemy = null;
             return;
         }

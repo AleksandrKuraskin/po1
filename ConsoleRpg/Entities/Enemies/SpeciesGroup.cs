@@ -1,28 +1,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using ConsoleRpg.Entities.Enemies.Behaviors;
+using ConsoleRpg.Systems.Sound;
 
 namespace ConsoleRpg.Entities.Enemies;
 
 public class SpeciesGroup(int maxRadius, IEnemyBehavior behavior) : ISpeciesPublisher
 {
-    private readonly List<Enemy> _members = new();
+    private readonly List<ISpeciesObserver> _members = new();
     public readonly int MaxRadius = maxRadius;
     
     public IEnemyBehavior Behavior { get; set; } = behavior;
 
-    public void Attach(Enemy member)
+    public void Attach(ISpeciesObserver member)
     {
         _members.Add(member);
         NotifyMemberMove(member);
     }
-    public void Detach(Enemy member)
+    public void Detach(ISpeciesObserver member)
     {
         _members.Remove(member);
         NotifyMemberDeath(member);
     }
     
-    public void NotifyMemberDeath(Enemy member)
+    public void NotifyMemberDeath(ISpeciesObserver member)
     {
         foreach (var livingMembers in _members)
         {
@@ -30,7 +31,7 @@ public class SpeciesGroup(int maxRadius, IEnemyBehavior behavior) : ISpeciesPubl
         }
     }
 
-    public void NotifyMemberMove(Enemy member)
+    public void NotifyMemberMove(ISpeciesObserver member)
     {
         foreach (var m in _members)
         {

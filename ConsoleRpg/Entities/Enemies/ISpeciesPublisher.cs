@@ -2,8 +2,8 @@ namespace ConsoleRpg.Entities.Enemies;
 
 public interface ISpeciesPublisher
 {
-    void Attach(Enemy member);
-    void Detach(Enemy member);
-    void NotifyMemberDeath(Enemy member);
-    void NotifyMemberMove(Enemy member);
+    void Attach(ISpeciesObserver member);
+    void Detach(ISpeciesObserver member);
+    void NotifyMemberDeath(ISpeciesObserver member);
+    void NotifyMemberMove(ISpeciesObserver member);
 }

@@ -6,5 +6,5 @@ public class PercentModifier(float percent) : IStatModifier
     
     public int OrderId { get; } = 200;
     
-    public int Apply(int current, int baseValue) => (int) (current * (1 + _percent));
+    public int Apply(int current, int baseValue) => (int) (current * (1f + _percent));
 }
