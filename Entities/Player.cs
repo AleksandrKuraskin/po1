@@ -1,14 +1,19 @@
 using ConsoleRpg.Core;
 using ConsoleRpg.Systems;
+using ConsoleRpg.Systems.Sound;
+using ConsoleRpg.Systems.Sound.SoundEvents;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Entities;
 
-public class Player : IEntity
+public class Player : IEntity, ISoundEmitter
 {
 
-    public string Name { get; protected set; } = "Player";
+    private ISoundMediator? _mediator;
+    public string Name { get; set; }
     public char Symbol { get; } = '¶';
+    
+    public Loudness Loudness => Loudness.Soft;
 
     public StatsManager Stats { get; } = new StatsManager();
 
@@ -19,9 +24,9 @@ public class Player : IEntity
     public Inventory Inventory { get; } = new Inventory();
     public Equipment Equipment { get; } = new Equipment();
 
-    public Player(int startX = 0, int startY = 0)
+    public Player(int startX = 0, int startY = 0, string name = "Player")
     {
-        
+        Name = name;
         SetPosition(startX, startY);
         
         Stats
@@ -33,6 +38,16 @@ public class Player : IEntity
             .AddStat(StatType.Intelligence, 10)
             .AddStat(StatType.Agility, 10)
             .AddStat(StatType.Luck, 10);
+    }
+
+    public void MakeNoise(ISoundEvent sound)
+    {
+        _mediator?.EmitSound(this, (X, Y), sound);
+    }
+
+    public void SetMediator(ISoundMediator mediator)
+    {
+        _mediator = mediator;
     }
 
     public void TakeDamage(int amount)

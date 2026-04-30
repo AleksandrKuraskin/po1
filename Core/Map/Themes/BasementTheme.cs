@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Entities.Enemies;
+using ConsoleRpg.Entities.Enemies.Behaviors;
 using ConsoleRpg.Items;
 using ConsoleRpg.Items.Currency;
 using ConsoleRpg.Items.Decorators;
 using ConsoleRpg.Items.Weapons;
+using ConsoleRpg.Systems.Sound;
 
 namespace ConsoleRpg.Core.Map.Themes;
 
@@ -11,6 +15,10 @@ public class BasementTheme : IThemeFactory
     public string ThemeId => "Basement";
     public string IntroMessage => "The smell of damp earth and mold fills the air. Watch your step.";
     
+    private static readonly SpeciesGroup _rats = new SpeciesGroup(2, new CowardlyBehavior());
+    private static readonly SpeciesGroup _cats = new SpeciesGroup(4, new AgressiveBehavior());
+    private static readonly SpeciesGroup _bats = new SpeciesGroup(1, new CowardlyBehavior());
+
     private readonly LootTable<IItem> _items =
     [
         () => new MiscItem("Dirty sock", 's'),
@@ -28,21 +36,14 @@ public class BasementTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Rabid Rat", 'R', 10, 5, 0),
-        () => new Enemy("Feral Cat", 'C', 15, 8, 1),
-        () => new Enemy("Cave Bat", 'B', 8, 4, 0),
+        () => new Enemy("Rabid Rat", 'R', 10, 5, 0, _rats),
+        () => new Enemy("Feral Cat", 'C', 15, 8, 1, _cats),
+        () => new Enemy("Cave Bat", 'B', 8, 4, 0, _bats),
     ];
-    
-    public void ApplyGenerationStrategy(IMapBuilder builder)
+
+    public void ApplyGenerationStrategy(IMapDirector director)
     {
-        builder
-            .StartFilledDungeon()
-            .AddRooms()
-            .AddCorridors()
-            .AddSpecificItem(CreateArtifact())
-            .AddItems(10, CreateRandomItem)
-            .AddWeapons(3, CreateRandomWeapon)
-            .AddEnemies(8, CreateEnemy);
+        director.ConstructRandom(this);
     }
 
     public IItem CreateArtifact()
@@ -59,5 +60,25 @@ public class BasementTheme : IThemeFactory
         return DecoratorRegistry.ApplyRandomDecorators(baseWeapon, rng, chanceToEnchant: 0.3);
     }
 
-    public Enemy CreateEnemy(Random rng) => _enemies.GetRandom(rng);
+    public Enemy CreateEnemy(Random rng, ISoundMediator mediator)
+    {
+        var enemy = _enemies.GetRandom(rng);
+        enemy.SetMediator(mediator);
+        return enemy;
+    }
+    
+    public IEnumerable<Enemy> CreateEnemyPack(Random rng, ISoundMediator mediator)
+    {
+        var recipe = _enemies.GetRandomMethod(rng);
+        var packSize = rng.Next(2, 5);
+        var pack = new List<Enemy>();
+
+        for (var i = 0; i < packSize; i++)
+        {
+            var enemy = recipe.Invoke();
+            enemy.SetMediator(mediator);
+            pack.Add(enemy);
+        }
+        return pack;
+    }
 }

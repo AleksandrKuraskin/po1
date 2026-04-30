@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Entities.Enemies;
+using ConsoleRpg.Entities.Enemies.Behaviors;
 using ConsoleRpg.Items;
 using ConsoleRpg.Items.Decorators;
 using ConsoleRpg.Items.Weapons;
+using ConsoleRpg.Systems.Sound;
 
 namespace ConsoleRpg.Core.Map.Themes;
 
@@ -9,6 +13,9 @@ public class DarkForestTheme : IThemeFactory
 {
     public string ThemeId => "DarkForest";
     public string IntroMessage => "Twisted branches block out the moonlight. You feel watched.";
+
+    private static readonly SpeciesGroup _beasts = new SpeciesGroup(3, new AgressiveBehavior());
+    private static readonly SpeciesGroup _plants = new SpeciesGroup(5, new CowardlyBehavior());
     
     private readonly LootTable<IItem> _items =
     [
@@ -26,21 +33,14 @@ public class DarkForestTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Dire Wolf", 'W', 25, 12, 1),
-        () => new Enemy("Corrupted Treant", 'T', 60, 15, 8),
-        () => new Enemy("Shadow Weaver", 'S', 20, 10, 0),
+        () => new Enemy("Dire Wolf", 'W', 25, 12, 1, _beasts),
+        () => new Enemy("Corrupted Treant", 'T', 60, 15, 8, _plants),
+        () => new Enemy("Shadow Weaver", 'S', 20, 10, 0, _plants),
     ];
     
-    public void ApplyGenerationStrategy(IMapBuilder builder)
+    public void ApplyGenerationStrategy(IMapDirector director)
     {
-        builder
-            .StartFilledDungeon()
-            .AddRooms()
-            .AddCorridors()
-            .AddSpecificItem(CreateArtifact())
-            .AddItems(8, CreateRandomItem)
-            .AddWeapons(4, CreateRandomWeapon)
-            .AddEnemies(6, CreateEnemy);
+        director.ConstructRandom(this);
     }
 
     public IItem CreateArtifact()
@@ -53,9 +53,29 @@ public class DarkForestTheme : IThemeFactory
 
     public IItem CreateRandomWeapon(Random rng)
     {
-        IItem baseWeapon = _weapons.GetRandom(rng);
+        var baseWeapon = _weapons.GetRandom(rng);
         return DecoratorRegistry.ApplyRandomDecorators(baseWeapon, rng, chanceToEnchant: 0.4);
     }
 
-    public Enemy CreateEnemy(Random rng) => _enemies.GetRandom(rng);
+    public Enemy CreateEnemy(Random rng, ISoundMediator mediator)
+    {
+        var enemy = _enemies.GetRandom(rng);
+        enemy.SetMediator(mediator);
+        return enemy;
+    }
+    
+    public IEnumerable<Enemy> CreateEnemyPack(Random rng, ISoundMediator mediator)
+    {
+        var recipe = _enemies.GetRandomMethod(rng);
+        var packSize = rng.Next(2, 5);
+        var pack = new List<Enemy>();
+
+        for (var i = 0; i < packSize; i++)
+        {
+            var enemy = recipe.Invoke();
+            enemy.SetMediator(mediator);
+            pack.Add(enemy);
+        }
+        return pack;
+    }
 }

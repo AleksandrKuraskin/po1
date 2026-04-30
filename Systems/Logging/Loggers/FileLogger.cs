@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
 namespace ConsoleRpg.Systems.Logging.Loggers;
 
 public class FileLogger : ILogger, ILogListener
@@ -5,16 +10,14 @@ public class FileLogger : ILogger, ILogListener
     private readonly List<LogEntry> _logs = new ();
     private readonly string _filePath;
 
-    public FileLogger(string playerName, string logDirectory)
+    public FileLogger(string playerName, string logDirectory, string logFileName)
     {
-        var fileName = $"{playerName}_{DateTime.Now:yyyyMMdd_HHmmss}.log";
-
         if (!Directory.Exists(logDirectory))
         {
             Directory.CreateDirectory(logDirectory);
         }
         
-        _filePath = Path.Combine(logDirectory, fileName);
+        _filePath = Path.Combine(logDirectory, logFileName);
         File.WriteAllText(_filePath, $"--- {playerName}'s journal | start: {DateTime.Now} ---\n");
         
     }

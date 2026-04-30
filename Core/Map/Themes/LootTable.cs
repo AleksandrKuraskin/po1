@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace ConsoleRpg.Core.Map.Themes;
 
@@ -19,6 +21,11 @@ public class LootTable<T>: IEnumerable<Func<T>>
         return _pool[rng.Next(_pool.Count)]();
     }
 
+    public Func<T> GetRandomMethod(Random rng)
+    {
+        return _pool.Count > 0 ? _pool[rng.Next(_pool.Count)] : throw new InvalidOperationException("Empty loot table");
+    }
+    
     public IEnumerator<Func<T>> GetEnumerator() => _pool.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

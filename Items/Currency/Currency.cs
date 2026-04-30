@@ -1,8 +1,10 @@
+using System;
 using ConsoleRpg.Core.Map;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Systems;
 using ConsoleRpg.Systems.Attacking;
 using ConsoleRpg.Systems.Logging;
+using ConsoleRpg.Systems.Sound;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.Items.Currency;
@@ -11,7 +13,8 @@ public abstract class Currency(int value) : IItem
 {
     public abstract string Name { get; }
     public abstract char Symbol { get; }
-    
+    public virtual Loudness Loudness { get; } = Loudness.None;
+
     public StatsManager ItemStats { get; } = new StatsManager();
     public StatsManager GrantedStats { get; } = new StatsManager();
 

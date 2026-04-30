@@ -12,7 +12,7 @@ public class EnemyComponent : IUIComponent
     public IRenderable? Build(Game game)
     {
         var p = game.Player;
-        var enemy = game.MapContext.Map.GetTile(p.X, p.Y).GetEnemy();
+        var enemy = game.MapContext.Map.GetTile(p.X, p.Y).Enemy;
 
         if (enemy == null)
         {

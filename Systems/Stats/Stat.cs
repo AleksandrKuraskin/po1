@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Systems.Stats;
 using ConsoleRpg.Systems.Stats.Modifiers;
 

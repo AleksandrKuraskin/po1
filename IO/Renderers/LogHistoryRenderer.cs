@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using ConsoleRpg.Core;
 using ConsoleRpg.IO.Renderers.Components;

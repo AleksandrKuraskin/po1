@@ -5,12 +5,17 @@ using ConsoleRpg.Items;
 
 namespace ConsoleRpg.Core.Map;
 
-public class Tile(bool isWall)
+public class Tile(bool isWall, int x, int y)
 {
+    private readonly List<IItem> _items = [];
+    
     public bool IsWall { get; set; } = isWall;
     public Player? Player { get; set; }
-    private readonly List<IItem> _items = [];
-    private readonly List<Enemy> _enemies = [];
+    public Enemy? Enemy { get; set; }
+
+    public int X { get; } = x;
+    public int Y { get; } = y;
+    
     public char GetSymbol()
     {
         if (Player != null) return '¶';
@@ -18,7 +23,7 @@ public class Tile(bool isWall)
         {
             return _items.Count == 1 ? _items[0].Symbol : _items.Count.ToString()[0];
         }
-        if (_enemies.Count > 0) return _enemies[0].Symbol;
+        if (Enemy != null) return Enemy.Symbol;
         return IsWall ? '█' : ' ';
     }
     
@@ -32,15 +37,6 @@ public class Tile(bool isWall)
         var item = _items[0];
         _items.RemoveAt(0);
         return item;
-    }
-
-    public void AddEnemy(Enemy enemy) => _enemies.Add(enemy);
-    public Enemy? GetEnemy() => _enemies.Count == 0 ? null : _enemies[0];
-
-    public void RemoveEnemy()
-    {
-        if (_enemies.Count == 0) return;
-        _enemies.RemoveAt(0);
     }
 
 }

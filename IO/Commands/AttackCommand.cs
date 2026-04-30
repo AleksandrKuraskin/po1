@@ -1,9 +1,13 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Core;
 using ConsoleRpg.Systems.Logging;
 using ConsoleRpg.Entities;
 using ConsoleRpg.Entities.Enemies;
 using ConsoleRpg.IO.States;
+using ConsoleRpg.Items;
 using ConsoleRpg.Systems.Attacking;
+using ConsoleRpg.Systems.Sound.SoundEvents;
 using ConsoleRpg.Systems.Stats;
 
 namespace ConsoleRpg.IO.Commands;
@@ -43,13 +47,32 @@ public class AttackCommand(IAttackVisitor attackVisitor) : ICommand
         var map = game.MapContext.Map;
         
         var tile = map.GetTile(p.X, p.Y);
-        var enemy = tile.GetEnemy();
+        var enemy = tile.Enemy;
 
         if (enemy == null)
         {
             LogManager.Instance.Log("No enemies in sight to attack.");
             return;
         }
+
+        var weapons = new HashSet<IItem>();
+        if (p.Equipment.RightHand != null) weapons.Add(p.Equipment.RightHand);
+        if (p.Equipment.LeftHand != null) weapons.Add(p.Equipment.LeftHand);
+
+        if (weapons.Count > 0)
+        {
+            foreach (var w in weapons)
+            {
+                var sound = new AttackSound(p, w);
+                p.MakeNoise(sound);
+            }
+        }
+        else
+        {
+            var sound = new MoveSound(p);
+            p.MakeNoise(sound);
+        }
+        
         
         var stats = GetTotalStats(p);
         
@@ -61,8 +84,8 @@ public class AttackCommand(IAttackVisitor attackVisitor) : ICommand
         
         if (!enemy.Alive)
         {
-           LogManager.Instance.Log($"You have slayed {enemy.Name}!", LogType.Success);
-            tile.RemoveEnemy();
+            LogManager.Instance.Log($"You have slayed {enemy.Name}!", LogType.Success);
+            tile.Enemy = null;
             return;
         }
         
@@ -71,12 +94,15 @@ public class AttackCommand(IAttackVisitor attackVisitor) : ICommand
         
         p.TakeDamage(damageReceived);
         LogManager.Instance.Log($"{enemy.Name} fights back dealing {damageReceived} dmg. ({enemyAttack} reduced by your {stats.Defense} defense)");
+        enemy.ActedThisTurn = true;
 
         if (!p.Alive)
         {
             LogManager.Instance.Log("You died! Game over.", LogType.Error);
-            game.ChangeInputState(new GameOverState());
+            game.ChangeInputState(new GameOverState(game.LogFilePath));
             
         }
+        
+        game.ProcessEnemiesTurn();
     }
 }

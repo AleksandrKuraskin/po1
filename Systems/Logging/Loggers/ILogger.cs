@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ConsoleRpg.Systems.Logging.Loggers;
 
 public interface ILogger

@@ -1,5 +1,6 @@
 using ConsoleRpg.Core;
 using ConsoleRpg.Systems.Logging;
+using ConsoleRpg.Systems.Sound.SoundEvents;
 
 namespace ConsoleRpg.IO.Commands;
 
@@ -9,8 +10,16 @@ public class DropSelectedCommand: ICommand
     {
         var inv = game.Player.Inventory;
         var item = inv.RemoveItemAt(inv.SelectedIndex);
-        
-        if (item != null) item.OnDrop(game.MapContext.Map, game.Player.X, game.Player.Y, item);
+
+        if (item != null)
+        {
+            item.OnDrop(game.MapContext.Map, game.Player.X, game.Player.Y, item);
+            if (item.Loudness > 0)
+            {
+                var sound = new DropSound(game.Player, item);
+                game.Player.MakeNoise(sound);
+            }
+        }
         else LogManager.Instance.Log("This slot is empty. Nothing to drop.");
     }
 }

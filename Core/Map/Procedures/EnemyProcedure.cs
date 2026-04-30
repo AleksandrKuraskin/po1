@@ -1,10 +1,12 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Entities.Enemies;
 using ConsoleRpg.IO.Renderers.Components;
-using ConsoleRpg.Items;
+using ConsoleRpg.Systems.Sound;
 
 namespace ConsoleRpg.Core.Map.Procedures;
 
-public class EnemyProcedure(int count, Func<Random, Enemy> enemyMethod) : IMapProcedure
+public class EnemyProcedure(int count, Func<Random, ISoundMediator, Enemy> enemyMethod, ISoundMediator mediator) : IMapProcedure
 {
     private readonly int _count = count;
     private readonly Random _rng = new Random();
@@ -27,7 +29,7 @@ public class EnemyProcedure(int count, Func<Random, Enemy> enemyMethod) : IMapPr
         for (var i = 0; i < _count && freeTiles.Count > 0; i++)
         {
             var tile = freeTiles[_rng.Next(freeTiles.Count)];
-            tile.AddEnemy(enemyMethod.Invoke(_rng));
+            tile.Enemy = enemyMethod.Invoke(_rng, mediator);
             freeTiles.Remove(tile);
         }
 

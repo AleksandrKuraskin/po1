@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using ConsoleRpg.Items;
 
 namespace ConsoleRpg.Core.Map.Procedures;
