@@ -34,6 +34,13 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
 
     public bool ActedThisTurn { get; set; }
     
+    private void Die()
+    {
+        _group.NotifyMemberDeath(this);
+        _group.Detach(this);
+        _mediator?.RemoveReceiver(this);
+    }
+    
     public void OnMemberDied(ISpeciesObserver member)
     {
         if (member == this) return;
@@ -124,13 +131,5 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
         Y = y;
         _group.Attach(this);
         _mediator?.AddReceiver(this);
-        
-    }
-
-    public void Die()
-    {
-        _group.NotifyMemberDeath(this);
-        _group.Detach(this);
-        if (_mediator != null) _mediator.RemoveReceiver(this);
     }
 }

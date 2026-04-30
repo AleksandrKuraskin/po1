@@ -20,7 +20,6 @@ public class SpeciesGroup(int maxRadius, IEnemyBehavior behavior) : ISpeciesPubl
     public void Detach(ISpeciesObserver member)
     {
         _members.Remove(member);
-        NotifyMemberDeath(member);
     }
     
     public void NotifyMemberDeath(ISpeciesObserver member)
