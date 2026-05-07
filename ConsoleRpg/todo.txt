@@ -1,3 +1,3 @@
-1. SpeciesGroup is observer - change Enemies to ISoundReceiver
-2. Make abstract class between ISoundEvent and concrete Sounds.
-3 (bonus). Make GraphManipulations class for managing dungeon coordination.
+1. Add proper serialization fields in every class
+2. Group patterns to their groups (Controller, Model, View)
+3. Decouple class dirs into separate repositories

@@ -19,11 +19,11 @@ public class Tile(bool isWall, int x, int y)
     public char GetSymbol()
     {
         if (Player != null) return '¶';
+        if (Enemy != null) return Enemy.Symbol;
         if (_items.Count > 0)
         {
             return _items.Count == 1 ? _items[0].Symbol : _items.Count.ToString()[0];
         }
-        if (Enemy != null) return Enemy.Symbol;
         return IsWall ? '█' : ' ';
     }
     
