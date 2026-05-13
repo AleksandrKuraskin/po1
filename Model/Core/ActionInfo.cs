@@ -1,0 +1,12 @@
+using System;
+using ConsoleRpg.Controller.Commands;
+
+namespace ConsoleRpg.Model.Core;
+
+public readonly struct ActionInfo(ConsoleKey key, ICommand command, string description)
+{
+    public ConsoleKey Key { get; init; } = key;
+    public ICommand Command { get; init; } = command;
+    public string Description { get; init; } = description;
+
+}
