@@ -4,7 +4,7 @@ using ConsoleRpg.Model.Systems.Stats;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 
-namespace ConsoleRpg.View.Renderers.Components;
+namespace ConsoleRpg.View.Components;
 
 public class StatsComponent : IUIComponent
 {

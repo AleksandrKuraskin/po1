@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using ConsoleRpg.Model.Core;
-using ConsoleRpg.View.Renderers;
+using ConsoleRpg.View;
 using ConsoleRpg.Controller.States;
 
 namespace ConsoleRpg.Controller.Commands;

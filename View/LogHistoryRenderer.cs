@@ -1,10 +1,10 @@
 using System;
 using System.Text;
 using ConsoleRpg.Model.Core;
-using ConsoleRpg.View.Renderers.Components;
+using ConsoleRpg.View.Components;
 using Spectre.Console;
 
-namespace ConsoleRpg.View.Renderers;
+namespace ConsoleRpg.View;
 
 public class LogHistoryRenderer : IRenderer
 {

@@ -2,7 +2,7 @@ using ConsoleRpg.Model.Core;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 
-namespace ConsoleRpg.View.Renderers.Components;
+namespace ConsoleRpg.View.Components;
 
 public class ControlsComponent : IUIComponent
 {

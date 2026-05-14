@@ -6,7 +6,7 @@ using ConsoleRpg.Model.Core.Map.Themes;
 using ConsoleRpg.Model.Entities;
 using ConsoleRpg.Controller.Commands;
 using ConsoleRpg.Controller.Handlers;
-using ConsoleRpg.View.Renderers;
+using ConsoleRpg.View;
 using ConsoleRpg.Controller.States;
 using ConsoleRpg.Model.Items;
 using ConsoleRpg.Model.Systems.Logging;

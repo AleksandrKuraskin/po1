@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ConsoleRpg.Model.Core;
 using ConsoleRpg.Controller.Commands;
 using ConsoleRpg.Controller.Handlers;
-using ConsoleRpg.View.Renderers;
+using ConsoleRpg.View;
 
 namespace ConsoleRpg.Controller.States;
 

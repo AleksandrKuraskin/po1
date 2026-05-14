@@ -1,10 +1,10 @@
 using System;
 using Spectre.Console;
 using ConsoleRpg.Model.Core;
-using ConsoleRpg.View.Renderers.Components;
+using ConsoleRpg.View.Components;
 
 
-namespace ConsoleRpg.View.Renderers;
+namespace ConsoleRpg.View;
 
 public class ConsoleRenderer : IRenderer
 {

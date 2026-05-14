@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using ConsoleRpg.View.Renderers.Components;
+using ConsoleRpg.View.Components;
 using ConsoleRpg.Model.Items;
 
 namespace ConsoleRpg.Model.Core.Map.Procedures;

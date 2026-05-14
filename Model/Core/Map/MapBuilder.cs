@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ConsoleRpg.Model.Core.Map;
 using ConsoleRpg.Model.Core.Map.Procedures;
 using ConsoleRpg.Model.Entities.Enemies;
-using ConsoleRpg.View.Renderers.Components;
+using ConsoleRpg.View.Components;
 using ConsoleRpg.Model.Items;
 using ConsoleRpg.Model.Systems.Sound;
 
