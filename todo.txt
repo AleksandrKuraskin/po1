@@ -1,3 +1,2 @@
 1. Add proper serialization fields in every class
-2. Group patterns to their groups (Controller, Model, View)
-3. Decouple class dirs into separate repositories
+2. Create a class for data packaging (JSON sent via TCP)

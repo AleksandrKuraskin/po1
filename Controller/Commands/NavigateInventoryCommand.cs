@@ -17,6 +17,5 @@ public class NavigateInventoryCommand(int index) : ICommand
         {
             inv.SelectedIndex = index;
         }
-        
     }
 }
