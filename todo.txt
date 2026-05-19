@@ -1,2 +1,2 @@
-1. Add proper serialization fields in every class
-2. Create a class for data packaging (JSON sent via TCP)
+1. Logging should be fixed;
+2. Let's fight other players :)
