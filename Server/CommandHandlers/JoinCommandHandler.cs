@@ -1,5 +1,3 @@
-using System.Text.Json;
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Entities;
 
 namespace ConsoleRpg.Server.CommandHandlers;
@@ -10,9 +8,13 @@ public class JoinCommandHandler : IServerCommandHandler
 
     public void Handle(string payload, IServerModel server, Player player)
     {
-        // Special case: player is created during connection, 
-        // but this could handle setting the name or other join logic.
-        player.Name = payload;
+        var name = payload;
+        var suffix = 1;
+        while (server.GetAllPlayers().Any(p => p != player && p.Name == name))
+        {
+            name = $"{payload}{suffix++}";
+        }
+        player.Name = name;
         
         if (server.MapContext.SoundMediator != null)
         {

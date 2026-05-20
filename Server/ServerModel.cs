@@ -3,13 +3,12 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using ConsoleRpg.Shared.Core;
-using ConsoleRpg.Shared.Maps;
+using ConsoleRpg.Shared.Map;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Logging;
 using ConsoleRpg.Shared.Systems.Logging.Loggers;
 using ConsoleRpg.Shared.Systems.Network;
 using ConsoleRpg.Shared.Systems.Stats;
-using ConsoleRpg.Server.CommandHandlers;
 
 namespace ConsoleRpg.Server;
 
@@ -71,7 +70,15 @@ public class ServerModel(
         {
             while (_running && client.Connected)
             {
-                await stream.ReadExactlyAsync(lengthBuffer, 0, 4);
+                try
+                {
+                    await stream.ReadExactlyAsync(lengthBuffer, 0, 4);
+                }
+                catch (EndOfStreamException)
+                {
+                    break;
+                }
+                
                 var messageLength = BitConverter.ToInt32(lengthBuffer, 0);
 
                 var payloadBuffer = new byte[messageLength];
@@ -99,16 +106,17 @@ public class ServerModel(
         {
             if (_running && client.Connected)
             {
-                Console.WriteLine($"Client error: {ex.Message}");
+                Console.WriteLine($"Client error ({player.Name}): {ex.Message}");
             }
         }
         finally
         {
-            lock (_clients)
+            lock (_mapContext)
             {
                 _mapContext.Map.GetTile(player.X, player.Y).Players.Remove(player);
                 _clients.Remove(client);
                 _playerLastLogId.Remove(player);
+                player.RemoveMediator();
             }
             client.Close();
             BroadcastState();
@@ -128,6 +136,8 @@ public class ServerModel(
             enemy.TakeTurn(_mapContext.Map);
         }
     }
+
+    public IEnumerable<Player> GetAllPlayers() => _clients.Values;
 
     private void BroadcastState()
     {
@@ -174,7 +184,7 @@ public class ServerModel(
         }
 
         var lastLogId = _playerLastLogId.GetValueOrDefault(player, 0);
-        var newLogs = LogManager.Instance.GetLogsForPlayer(lastLogId, player.Name).ToList();
+        var newLogs = LogManager.Instance.GetLogsForPlayer(lastLogId, player.Id).ToList();
         if (newLogs.Count != 0)
         {
             _playerLastLogId[player] = newLogs.Max(l => l.Id);
@@ -196,6 +206,7 @@ public class ServerModel(
     {
         return new PlayerDto
         {
+            Id = p.Id,
             Name = p.Name,
             X = p.X,
             Y = p.Y,

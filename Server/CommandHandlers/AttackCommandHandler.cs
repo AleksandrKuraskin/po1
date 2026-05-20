@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Items;
 using ConsoleRpg.Shared.Systems.Attacking;
@@ -59,7 +56,7 @@ public class AttackCommandHandler : IServerCommandHandler
 
         if (enemy == null)
         {
-            LogManager.Instance.Log("No enemies in sight to attack.", LogType.Info, LogScope.Private, player.Name);
+            LogManager.Instance.Log("No enemies in sight to attack.", recipientId: player.Id);
             return;
         }
 
@@ -87,11 +84,11 @@ public class AttackCommandHandler : IServerCommandHandler
         var damageDealt = Math.Max(0, stats.Attack - enemyArmor);
         
         enemy.TakeDamage(damageDealt);
-        LogManager.Instance.Log($"Attacking ({enemy.Name}) for {damageDealt} dmg. ({stats.Attack} reduced by {enemyArmor} armor)", LogType.Info, LogScope.Global, null, player.Name);
+        LogManager.Instance.Log($"Attacking ({enemy.Name}) for {damageDealt} dmg. ({stats.Attack} reduced by {enemyArmor} armor)", recipientId: player.Id, type: LogType.Combat);
         
         if (!enemy.Alive)
         {
-            LogManager.Instance.Log($"You have slayed {enemy.Name}!", LogType.Success, LogScope.Global, null, player.Name);
+            LogManager.Instance.Log($"Slayed {enemy.Name}!", entity: player.Name, type: LogType.Success);
             tile.Enemy = null;
             server.ProcessEnemiesTurn();
             return;
@@ -101,12 +98,12 @@ public class AttackCommandHandler : IServerCommandHandler
         var damageReceived = Math.Max(0, enemyAttack - stats.Defense);
         
         player.TakeDamage(damageReceived);
-        LogManager.Instance.Log($"{enemy.Name} fights back dealing {damageReceived} dmg. ({enemyAttack} reduced by your {stats.Defense} defense)", LogType.Info, LogScope.Global, null, player.Name);
+        LogManager.Instance.Log($"{enemy.Name} fights back dealing {damageReceived} dmg. ({enemyAttack} reduced by your {stats.Defense} defense)", entity: player.Name, type: LogType.Combat);
         enemy.ActedThisTurn = true;
 
         if (!player.Alive)
         {
-            LogManager.Instance.Log("You died! Game over.", LogType.Error, LogScope.Private, player.Name, player.Name);
+            LogManager.Instance.Log("You died! Game over.", entity: player.Name, recipientId: player.Id, type: LogType.Error);
         }
         
         server.ProcessEnemiesTurn();

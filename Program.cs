@@ -1,8 +1,8 @@
 using System;
 using ConsoleRpg.Server;
 using ConsoleRpg.Client;
-using ConsoleRpg.Shared.Maps;
-using ConsoleRpg.Shared.Maps.Themes;
+using ConsoleRpg.Shared.Map;
+using ConsoleRpg.Shared.Map.Themes;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Client.Controller;
 using ConsoleRpg.Client.Controller.Handlers;

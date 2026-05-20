@@ -11,6 +11,5 @@ public class Gold(int value) : Currency(value)
     protected override void AddToWallet(Wallet wallet)
     {
         wallet.AddGold(Value);
-        LogManager.Instance.Log($"Picked x{Value} gold.", LogType.Loot);
     }
 }

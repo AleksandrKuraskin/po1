@@ -45,7 +45,8 @@ public class Equipment : IEquipment
                 item == null ? 
                     $"Unequipped {oldItem.Name}" : 
                     $"Swapped {oldItem.Name} for {item.Name}.",
-                LogType.Info, LogScope.Global, null, player.Name
+                entity: player.Name,
+                type: LogType.Action
                 );
         }
         else
@@ -54,10 +55,9 @@ public class Equipment : IEquipment
                 item == null ? 
                     "Can't equip nothing..." : 
                     $"Equipped {item.Name}.",
-                item == null ? LogType.Warning : LogType.Info,
-                item == null ? LogScope.Private : LogScope.Global,
-                item == null ? player.Name : null,
-                player.Name
+                entity: player.Name,
+                recipientId: item == null ? (Guid?)player.Id : null,
+                type: item == null ? LogType.Warning : LogType.Action
                 );
         }
         return null;
@@ -98,7 +98,8 @@ public class Equipment : IEquipment
                 item == null ? 
                     $"Unequipped {oldLeft.Name}" : 
                     $"Swapped {oldLeft.Name} for {item.Name}.",
-                LogType.Info, LogScope.Global, null, player.Name
+                entity: player.Name,
+                type: LogType.Action
             );
             return null;
         }
@@ -126,12 +127,12 @@ public class Equipment : IEquipment
                 var added = inventory.TryAddItem(oldRight);
                 if (!added)
                 {
-                    LogManager.Instance.Log($"No space in inventory to add {oldRight.Name}. Dropping this item...", LogType.Warning, LogScope.Private, player.Name, player.Name);
+                    LogManager.Instance.Log($"No space in inventory to add {oldRight.Name}. Dropping this item...", entity: player.Name, recipientId: player.Id, type: LogType.Warning);
                     return oldRight;
                 }
             }
         }
-        if(item != null) LogManager.Instance.Log($"Equipped {item.Name}.", LogType.Info, LogScope.Global, null, player.Name);
+        if(item != null) LogManager.Instance.Log($"Equipped {item.Name}.", entity: player.Name, type: LogType.Action);
         return null;
     }
 

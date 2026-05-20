@@ -1,6 +1,3 @@
-using System;
-using System.Text;
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Client.View.Components;
 using Spectre.Console;
 
@@ -26,7 +23,7 @@ public class LogHistoryRenderer : IRenderer
         AnsiConsole.Write(layout);
     }
 
-    public void AddSidebarComponent(IUIComponent component) { /* Not supported in log history */ }
+    public void AddSidebarComponent(IUIComponent component) {}
 
-    public void ClearSidebarComponents() { /* Not supported in log history */ }
+    public void ClearSidebarComponents() {}
 }

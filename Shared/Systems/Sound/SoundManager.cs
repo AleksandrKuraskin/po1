@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using ConsoleRpg.Shared.Maps;
+using ConsoleRpg.Shared.Map;
 using ConsoleRpg.Shared.Systems.Logging;
 using ConsoleRpg.Shared.Systems.Sound.SoundEvents;
 
 namespace ConsoleRpg.Shared.Systems.Sound;
 
-public class SoundManager(Map map) : ISoundMediator
+public class SoundManager(Map.Map map) : ISoundMediator
 {
-    private readonly Map _map = map;
+    private readonly Map.Map _map = map;
     private List<ISoundReceiver> _receivers = new();
     
     public void AddReceiver(ISoundReceiver receiver)

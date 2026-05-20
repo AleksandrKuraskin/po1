@@ -1,5 +1,3 @@
-using ConsoleRpg.Shared.Core;
-using ConsoleRpg.Client.Controller.Handlers;
 using ConsoleRpg.Client.Controller.States;
 using ConsoleRpg.Shared.Systems.Logging;
 
@@ -13,6 +11,6 @@ public class ChangeStateCommand(IInputState currentState) : ILocalCommand
     {
         var newState = _currentState.GetNewState(model);
         model.ChangeInputState(newState);
-        LogManager.Instance.Log($"{newState.Name}");
+        LogManager.Instance.Log($"{newState.Name}", type: LogType.System);
     }
 }

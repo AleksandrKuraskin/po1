@@ -4,7 +4,7 @@ using ConsoleRpg.Shared.Entities.Enemies;
 using ConsoleRpg.Shared.Items;
 using ConsoleRpg.Shared.Systems.Sound;
 
-namespace ConsoleRpg.Shared.Maps;
+namespace ConsoleRpg.Shared.Map;
 
 public interface IMapBuilder
 {

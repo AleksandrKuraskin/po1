@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Stats;
 using ConsoleRpg.Shared.Systems.Stats.Modifiers;

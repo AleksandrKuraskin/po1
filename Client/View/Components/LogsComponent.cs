@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Systems.Logging;
 using Spectre.Console;
 using Spectre.Console.Rendering;
@@ -35,15 +31,21 @@ public class LogsComponent(int state = 0) : IUIComponent
             var color = log.Type switch
             {
                 LogType.Info => "white",
-                LogType.Success => "green",
+                LogType.Success => "green1",
                 LogType.Warning => "orange1",
                 LogType.Error => "red",
                 LogType.Loot => "gold1",
+                LogType.Combat => "maroon",
+                LogType.Movement => "grey",
+                LogType.Sound => "lightsteelblue1",
+                LogType.Action => "aquamarine1",
+                LogType.System => "slateblue1",
                 _ => "white"
             };
 
-            var originPart = string.IsNullOrEmpty(log.Origin) ? "" : $"[[[bold cyan]{Markup.Escape(log.Origin)}[/]]] ";
-            logBuilder.AppendLine($"[grey][[{log.Timestamp:HH:mm:ss}]][/] {originPart}[{color}]{Markup.Escape(log.Text)}[/]");
+            var timestamp = $"[grey][[{log.Timestamp:HH:mm:ss}]][/]";
+            var entityPart = string.IsNullOrEmpty(log.Entity) ? "" : $" [bold cyan][[{Markup.Escape(log.Entity)}]][/]";
+            logBuilder.AppendLine($"{timestamp}{entityPart} [{color}]{Markup.Escape(log.Text)}[/]");
         }
         return new Panel(new Markup(logBuilder.ToString())).Header("[bold]Logs[/]").RoundedBorder().Expand();
     }

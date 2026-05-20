@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using ConsoleRpg.Client.Controller;
 using ConsoleRpg.Shared.Core;
-using ConsoleRpg.Shared.Maps;
+using ConsoleRpg.Shared.Map;
 using ConsoleRpg.Client.Controller.Commands;
 using ConsoleRpg.Client.Controller.Handlers;
 using ConsoleRpg.Shared.Systems.Attacking;

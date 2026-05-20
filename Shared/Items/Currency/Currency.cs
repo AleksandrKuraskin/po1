@@ -1,5 +1,3 @@
-using System;
-using ConsoleRpg.Shared.Maps;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems;
 using ConsoleRpg.Shared.Systems.Attacking;
@@ -25,19 +23,19 @@ public abstract class Currency(int value) : IItem
     public bool TryPickUp(Player player, IItem item)
     {
         AddToWallet(player.Wallet);
-        LogManager.Instance.Log($"Picked up {Name} ({Value}).", LogType.Info, LogScope.Global, null, player.Name);
+        LogManager.Instance.Log($"Picked up {Name}.", recipientId: player.Id, type: LogType.Loot);
         return true;
     }
     
     public IItem? TryEquip(Player player, IItem item, bool leftHand)
     {
-        LogManager.Instance.Log($"{Name} cannot be equipped", LogType.Error, LogScope.Private, player.Name, player.Name);
+        LogManager.Instance.Log($"{Name} cannot be equipped", entity: player.Name, recipientId: player.Id, type: LogType.Error);
         return null;
     }
 
     public void OnEquip(Player player) {}
     public void OnUnequip(Player player) {}
-    public void OnDrop(Player player, Map map, IItem item)
+    public void OnDrop(Player player, Map.Map map, IItem item)
     {
         throw new NotImplementedException();
     }

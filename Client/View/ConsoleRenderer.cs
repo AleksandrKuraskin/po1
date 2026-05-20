@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Spectre.Console;
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Client.View.Components;
-
 
 namespace ConsoleRpg.Client.View;
 

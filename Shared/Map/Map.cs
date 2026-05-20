@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Entities.Enemies;
-using ConsoleRpg.Shared.Items;
 using ConsoleRpg.Shared.Systems.Logging;
 
-namespace ConsoleRpg.Shared.Maps;
+namespace ConsoleRpg.Shared.Map;
 
 public class Map
 {
@@ -74,14 +71,14 @@ public class Map
 
         if (newX < 0 || newX >= Width || newY < 0 || newY >= Height)
         {
-            LogManager.Instance.Log("You cannot move outside the map.");
+            LogManager.Instance.Log("You cannot move outside the map.", recipientId: player.Id, type: LogType.Movement);
             return false;
         }
         
         var targetTile = _tiles[newY, newX];
         if (targetTile.IsWall)
         {
-            LogManager.Instance.Log("You just bumped into a wall...");
+            LogManager.Instance.Log("You just bumped into a wall...", recipientId: player.Id, type: LogType.Movement);
             return false;
         }
 

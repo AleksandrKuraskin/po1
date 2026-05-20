@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Client.View.Components;
 using Spectre.Console;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Network;
-using ConsoleRpg.Shared.Systems.Stats;
 
 namespace ConsoleRpg.Client.View;
 
@@ -24,7 +19,7 @@ public class PlayersMenuRenderer : IRenderer
         }
 
         var tileGrid = new Grid().AddColumns(3);
-        for (int i = 0; i < playersOnTile.Count; i += 3)
+        for (var i = 0; i < playersOnTile.Count; i += 3)
         {
             var cards = playersOnTile.Skip(i).Take(3).Select(CreatePlayerCard).ToArray();
             tileGrid.AddRow(cards);
@@ -32,7 +27,7 @@ public class PlayersMenuRenderer : IRenderer
 
         var allOtherPlayers = model.LastState.OtherPlayers;
         var allGrid = new Grid().AddColumns(3);
-        for (int i = 0; i < allOtherPlayers.Count; i += 3)
+        for (var i = 0; i < allOtherPlayers.Count; i += 3)
         {
             var cards = allOtherPlayers.Skip(i).Take(3).Select(CreatePlayerCardDto).ToArray();
             allGrid.AddRow(cards);
@@ -68,21 +63,27 @@ public class PlayersMenuRenderer : IRenderer
             new Markup(statsContent),
             new Rule("[italic]Equipment[/]"),
             new Markup(equipContent)
-        )).RoundedBorder().Expand();
+        ))
+        {
+            Width = 400,
+        }.RoundedBorder();
     }
 
     private Panel CreatePlayerCardDto(PlayerDto p)
     {
         var statsContent = string.Join("\n", p.Stats.Select(s => $"[grey]{s.Key}:[/] {s.Value.Value}"));
         var equipContent = string.Join("\n", p.Equipment.Select(e => $"[yellow]{e.Key}:[/] {e.Value}"));
-        
+
         return new Panel(new Rows(
             new Markup($"[bold cyan]{Markup.Escape(p.Name)}[/]"),
             new Rule(),
             new Markup(statsContent),
             new Rule("[italic]Equipment[/]"),
             new Markup(equipContent)
-        )).RoundedBorder().Expand();
+        ))
+        {
+            Width = 400,
+        }.RoundedBorder();
     }
 
     public void AddSidebarComponent(IUIComponent component) { }

@@ -1,4 +1,3 @@
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Systems.Network;
 
 namespace ConsoleRpg.Client.Controller.Commands;

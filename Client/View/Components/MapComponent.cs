@@ -1,5 +1,4 @@
 using System.Text;
-using ConsoleRpg.Shared.Core;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 
@@ -18,9 +17,7 @@ public class MapComponent : IUIComponent
             var tiles = model.LastState.ActiveTiles.ToDictionary(t => (t.X, t.Y));
             var width = model.LastState.ActiveTiles.Max(t => t.X) + 1;
             var height = model.LastState.ActiveTiles.Max(t => t.Y) + 1;
-
-            // Use the dimensions from the local map if they are larger, 
-            // to ensure consistent view, or just use what we have.
+            
             width = Math.Max(width, model.MapContext.Map.Width);
             height = Math.Max(height, model.MapContext.Map.Height);
 
@@ -48,7 +45,6 @@ public class MapComponent : IUIComponent
                     }
                     else
                     {
-                        // Unknown tile or non-active wall
                         mapBuilder.Append("[grey]█[/]");
                     }
                 }

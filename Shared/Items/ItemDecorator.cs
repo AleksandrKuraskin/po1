@@ -1,4 +1,3 @@
-using ConsoleRpg.Shared.Maps;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Attacking;
 using ConsoleRpg.Shared.Systems.Sound;
@@ -16,7 +15,7 @@ public abstract class ItemDecorator(IItem wrappee) : IItem
     public virtual StatsManager ItemStats => _item.ItemStats;
     public virtual StatsManager GrantedStats => _item.GrantedStats;
 
-    public void OnDrop(Player player, Map map, IItem item)
+    public void OnDrop(Player player, Map.Map map, IItem item)
         => _item.OnDrop(player, map, item);
     
     public bool TryPickUp(Player player, IItem item)

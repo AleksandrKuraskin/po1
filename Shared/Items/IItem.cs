@@ -1,5 +1,4 @@
 using ConsoleRpg.Shared.Core;
-using ConsoleRpg.Shared.Maps;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Attacking;
 using ConsoleRpg.Shared.Systems.Sound;
@@ -16,7 +15,7 @@ public interface IItem : IGameObject, ISoundSource
     
     void OnEquip(Player player);
     void OnUnequip(Player player);
-    void OnDrop(Player player, Map map, IItem item);
+    void OnDrop(Player player, Map.Map map, IItem item);
 
     CombatStats Accept(IAttackVisitor visitor, Player player);
 }

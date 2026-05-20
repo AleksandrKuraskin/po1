@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using ConsoleRpg.Shared.Items.Currency;
 using ConsoleRpg.Shared.Items.Decorators;
 using ConsoleRpg.Shared.Items.Weapons;
 using ConsoleRpg.Shared.Systems.Stats;
 using ConsoleRpg.Shared.Systems.Stats.Modifiers;
-using Spectre.Console;
 
 namespace ConsoleRpg.Shared.Items;
 

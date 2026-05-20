@@ -1,5 +1,3 @@
-using ConsoleRpg.Shared.Core;
-using ConsoleRpg.Shared.Items;
 using ConsoleRpg.Shared.Systems.Network;
 using System.Text.Json;
 

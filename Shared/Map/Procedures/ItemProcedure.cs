@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 using ConsoleRpg.Shared.Items;
 
-using ConsoleRpg.Shared.Maps;
-namespace ConsoleRpg.Shared.Maps.Procedures;
+using ConsoleRpg.Shared.Map;
+namespace ConsoleRpg.Shared.Map.Procedures;
 
 public class ItemProcedure(int count, Func<Random, IItem> itemMethod) : IMapProcedure
 {

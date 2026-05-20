@@ -1,5 +1,4 @@
 using System.Text.Json;
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Entities;
 
 namespace ConsoleRpg.Server.CommandHandlers;

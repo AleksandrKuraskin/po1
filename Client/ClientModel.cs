@@ -2,7 +2,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using ConsoleRpg.Shared.Core;
-using ConsoleRpg.Shared.Maps;
+using ConsoleRpg.Shared.Map;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Logging;
 using ConsoleRpg.Shared.Systems.Logging.Loggers;
@@ -32,7 +32,7 @@ public class ClientModel : IClientModel, INetworkObserver
     public IInputHandler GlobalInputHandler { get; }
     public List<ActionInfo> GlobalInstructions { get; }
     public GameState? LastState { get; private set; }
-    private readonly Dictionary<string, Player> _remotePlayers = new();
+    private readonly Dictionary<Guid, Player> _remotePlayers = new();
     private bool _uiInitialized = false;
 
     public ClientModel(string ip, int port, string playerName, IInputHandler globalInputHandler, List<ActionInfo> globalInstructions)
@@ -63,7 +63,7 @@ public class ClientModel : IClientModel, INetworkObserver
         }
         catch (Exception ex)
         {
-            LogManager.Instance.Log($"Failed to connect: {ex.Message}", LogType.Error);
+            LogManager.Instance.Log($"Failed to connect: {ex.Message}", entity: "Client", type: LogType.Error);
         }
     }
 
@@ -91,7 +91,7 @@ public class ClientModel : IClientModel, INetworkObserver
             {
                 if (_client?.Connected == true)
                 {
-                    LogManager.Instance.Log($"Error receiving update: {ex.Message}", LogType.Error);
+                    LogManager.Instance.Log($"Error receiving update: {ex.Message}", entity: "Client", type: LogType.Error);
                 }
                 break;
             }
@@ -188,18 +188,19 @@ public class ClientModel : IClientModel, INetworkObserver
 
         MapContext.Map.GetTile(Player.X, Player.Y).Players.Add(Player);
 
-        var currentRemoteNames = state.OtherPlayers.Select(p => p.Name).ToHashSet();
-        var namesToRemove = _remotePlayers.Keys.Where(n => !currentRemoteNames.Contains(n)).ToList();
-        foreach (var name in namesToRemove) _remotePlayers.Remove(name);
+        var currentRemoteIds = state.OtherPlayers.Select(p => p.Id).ToHashSet();
+        var idsToRemove = _remotePlayers.Keys.Where(id => !currentRemoteIds.Contains(id)).ToList();
+        foreach (var id in idsToRemove) _remotePlayers.Remove(id);
 
         foreach (var dto in state.OtherPlayers)
         {
-            if (!_remotePlayers.TryGetValue(dto.Name, out var remotePlayer))
+            if (!_remotePlayers.TryGetValue(dto.Id, out var remotePlayer))
             {
                 remotePlayer = new Player(dto.X, dto.Y, dto.Name);
-                _remotePlayers[dto.Name] = remotePlayer;
+                _remotePlayers[dto.Id] = remotePlayer;
             }
 
+            remotePlayer.Name = dto.Name;
             remotePlayer.X = dto.X;
             remotePlayer.Y = dto.Y;
             
@@ -228,7 +229,7 @@ public class ClientModel : IClientModel, INetworkObserver
         }
         catch (Exception ex)
         {
-            LogManager.Instance.Log($"Send error: {ex.Message}", LogType.Error);
+            LogManager.Instance.Log($"Send error: {ex.Message}", entity: "Client", type: LogType.Error);
         }
     }
 

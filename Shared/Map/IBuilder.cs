@@ -1,4 +1,4 @@
-namespace ConsoleRpg.Shared.Maps;
+namespace ConsoleRpg.Shared.Map;
 
 public interface IBuilder
 {

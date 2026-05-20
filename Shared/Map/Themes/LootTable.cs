@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
-namespace ConsoleRpg.Shared.Maps.Themes;
+namespace ConsoleRpg.Shared.Map.Themes;
 
 public class LootTable<T>: IEnumerable<Func<T>>
 {

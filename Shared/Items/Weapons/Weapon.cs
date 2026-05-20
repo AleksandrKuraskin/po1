@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using ConsoleRpg.Shared.Maps;
+using ConsoleRpg.Shared.Map;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Attacking;
 using ConsoleRpg.Shared.Systems.Logging;
@@ -28,11 +26,11 @@ public abstract class Weapon(IEquipBehavior behavior) : IItem
         var added = player.Inventory.TryAddItem(item);
         if (!added)
         {
-            LogManager.Instance.Log($"Inventory full! Cannot pick up {Name}.", LogType.Warning, LogScope.Private, player.Name, player.Name);
+            LogManager.Instance.Log($"Inventory full! Cannot pick up {Name}.", entity: player.Name, recipientId: player.Id, type: LogType.Warning);
         }
         else
         {
-            LogManager.Instance.Log($"Picked up {Name}.", LogType.Info, LogScope.Global, null, player.Name);
+            LogManager.Instance.Log($"Picked up {Name}.", entity: player.Name, type: LogType.Action);
         }
         
         return added;
@@ -70,10 +68,10 @@ public abstract class Weapon(IEquipBehavior behavior) : IItem
         _appliedModifiers.Clear();
     }
 
-    public void OnDrop(Player player, Map map, IItem item)
+    public void OnDrop(Player player, Map.Map map, IItem item)
     {
         map.GetTile(player.X, player.Y).AddItem(item);
-        LogManager.Instance.Log($"Dropped {Name}.", LogType.Info, LogScope.Global, null, player.Name);
+        LogManager.Instance.Log($"Dropped {Name}.", entity: player.Name, type: LogType.Action);
     }
 
     public abstract CombatStats Accept(IAttackVisitor visitor, Player player);

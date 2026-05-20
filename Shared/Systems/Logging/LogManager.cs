@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace ConsoleRpg.Shared.Systems.Logging;
 
-public class LogManager : ILogNotifier
+public class LogManager
 {
     private static LogManager? _instance;
     private readonly List<ILogListener> _listeners = new();
@@ -40,9 +40,9 @@ public class LogManager : ILogNotifier
             listener.OnNotify(entry);
     }
 
-    public void Log(string message, LogType type = LogType.Info, LogScope scope = LogScope.Global, string? targetPlayer = null, string? origin = null)
+    public void Log(string text, string? entity = null, Guid? recipientId = null, LogType type = LogType.Info)
     {
-        var entry = new LogEntry(message, type, scope, targetPlayer, origin, _nextId++);
+        var entry = new LogEntry(text, entity, recipientId, type, _nextId++);
         _logs.Add(entry);
         Notify(entry);
     }
@@ -50,10 +50,9 @@ public class LogManager : ILogNotifier
     public IEnumerable<LogEntry> GetRecentLogs(int count) => _logs.TakeLast(count);
     public IEnumerable<LogEntry> GetLogsSince(long id) => _logs.Where(l => l.Id > id);
     
-    public IEnumerable<LogEntry> GetLogsForPlayer(long lastId, string playerName)
+    public IEnumerable<LogEntry> GetLogsForPlayer(long lastId, Guid playerId)
     {
         return _logs.Where(l => l.Id > lastId && 
-                                (l.Scope == LogScope.Global || 
-                                 (l.Scope == LogScope.Private && l.TargetPlayer == playerName)));
+                                (l.RecipientId == null || l.RecipientId == playerId));
     }
 }

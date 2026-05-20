@@ -3,7 +3,7 @@ using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Entities.Enemies;
 using ConsoleRpg.Shared.Items;
 
-namespace ConsoleRpg.Shared.Maps;
+namespace ConsoleRpg.Shared.Map;
 
 public class Tile(bool isWall, int x, int y)
 {

@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using ConsoleRpg.Shared.Systems.Sound;
 
-namespace ConsoleRpg.Shared.Maps;
+namespace ConsoleRpg.Shared.Map;
 
 public class MapContext
 {

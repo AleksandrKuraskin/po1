@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using ConsoleRpg.Shared.Entities.Enemies;
 using ConsoleRpg.Shared.Entities.Enemies.Behaviors;
 using ConsoleRpg.Shared.Items;
@@ -8,7 +6,7 @@ using ConsoleRpg.Shared.Items.Decorators;
 using ConsoleRpg.Shared.Items.Weapons;
 using ConsoleRpg.Shared.Systems.Sound;
 
-namespace ConsoleRpg.Shared.Maps.Themes;
+namespace ConsoleRpg.Shared.Map.Themes;
 
 public class BasementTheme : IThemeFactory
 {

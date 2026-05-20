@@ -1,6 +1,6 @@
-using ConsoleRpg.Shared.Maps.Themes;
+using ConsoleRpg.Shared.Map.Themes;
 
-namespace ConsoleRpg.Shared.Maps;
+namespace ConsoleRpg.Shared.Map;
 
 public interface IMapDirector
 {

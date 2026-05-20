@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
 using ConsoleRpg.Shared.Entities.Enemies;
 using ConsoleRpg.Shared.Systems.Sound;
 
-using ConsoleRpg.Shared.Maps;
-namespace ConsoleRpg.Shared.Maps.Procedures;
+using ConsoleRpg.Shared.Map;
+namespace ConsoleRpg.Shared.Map.Procedures;
 
 public class EnemyProcedure(int count, Func<Random, ISoundMediator, Enemy> enemyMethod, ISoundMediator mediator) : IMapProcedure
 {

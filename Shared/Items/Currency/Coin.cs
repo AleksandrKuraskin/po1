@@ -1,5 +1,4 @@
 using ConsoleRpg.Shared.Systems;
-using ConsoleRpg.Shared.Systems.Logging;
 
 namespace ConsoleRpg.Shared.Items.Currency;
 
@@ -12,6 +11,5 @@ public class Coin(int value) : Currency(value)
     protected override void AddToWallet(Wallet wallet)
     {
         wallet.AddCoins(Value);
-        LogManager.Instance.Log($"Picked x{Value} coins.", LogType.Loot);
     }
 }

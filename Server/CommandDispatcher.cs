@@ -1,4 +1,3 @@
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Logging;
 using ConsoleRpg.Shared.Systems.Network;
@@ -22,7 +21,7 @@ public class CommandDispatcher
         }
         else
         {
-            LogManager.Instance.Log($"Server received unknown command: {message.CommandName}", LogType.Warning);
+            LogManager.Instance.Log($"Server received unknown command: {message.CommandName}", entity: "Server", type: LogType.Warning);
         }
     }
 }

@@ -7,4 +7,9 @@ public enum LogType
     Warning,
     Error,
     Loot,
+    Combat,
+    Movement,
+    Sound,
+    Action,
+    System
 }

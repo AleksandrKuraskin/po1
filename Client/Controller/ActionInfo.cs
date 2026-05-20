@@ -1,4 +1,3 @@
-using System;
 using ConsoleRpg.Client.Controller.Commands;
 
 namespace ConsoleRpg.Client.Controller;

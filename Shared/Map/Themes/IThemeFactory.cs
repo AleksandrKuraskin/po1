@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
 using ConsoleRpg.Shared.Entities.Enemies;
 using ConsoleRpg.Shared.Items;
 using ConsoleRpg.Shared.Systems.Sound;
 
-namespace ConsoleRpg.Shared.Maps.Themes;
+namespace ConsoleRpg.Shared.Map.Themes;
 
 public interface IThemeFactory
 {

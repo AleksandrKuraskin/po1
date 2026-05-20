@@ -1,5 +1,3 @@
-using System;
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Systems.Stats;
 using Spectre.Console;
 using Spectre.Console.Rendering;

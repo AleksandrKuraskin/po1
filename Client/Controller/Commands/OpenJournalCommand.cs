@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Client.View;
 using ConsoleRpg.Client.Controller.States;
 

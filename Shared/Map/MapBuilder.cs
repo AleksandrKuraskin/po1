@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using ConsoleRpg.Shared.Maps.Procedures;
+using ConsoleRpg.Shared.Map.Procedures;
 using ConsoleRpg.Shared.Entities.Enemies;
 using ConsoleRpg.Shared.Items;
 using ConsoleRpg.Shared.Systems.Sound;
 
-namespace ConsoleRpg.Shared.Maps;
+namespace ConsoleRpg.Shared.Map;
 
 public class MapBuilder : IMapBuilder
 {

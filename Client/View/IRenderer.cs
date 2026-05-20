@@ -1,4 +1,3 @@
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Client.View.Components;
 
 namespace ConsoleRpg.Client.View;

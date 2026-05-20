@@ -1,5 +1,3 @@
-using System.Linq;
-using ConsoleRpg.Shared.Core;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 

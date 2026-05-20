@@ -1,5 +1,4 @@
 using System.Text;
-using ConsoleRpg.Shared.Core;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 
@@ -15,7 +14,7 @@ public class InventoryComponent : IUIComponent
         if (model.LastState != null)
         {
             var items = model.LastState.LocalPlayer.Inventory;
-            var invCap = 10; // Default capacity or get from state if added
+            var invCap = 10;
             var selectedIndex = model.Player.Inventory.SelectedIndex;
 
             for (var i = 0; i < invCap; i++)

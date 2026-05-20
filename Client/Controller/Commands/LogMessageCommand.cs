@@ -1,4 +1,3 @@
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Systems.Logging;
 
 namespace ConsoleRpg.Client.Controller.Commands;
@@ -10,6 +9,6 @@ public class LogMessageCommand(string message, LogType type = LogType.Info) : IL
 
     public void ExecuteLocal(IClientModel model)
     {
-        LogManager.Instance.Log(_message, _type);
+        LogManager.Instance.Log(_message, type: _type);
     }
 }

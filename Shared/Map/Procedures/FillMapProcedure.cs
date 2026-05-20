@@ -1,5 +1,4 @@
-using ConsoleRpg.Shared.Maps;
-namespace ConsoleRpg.Shared.Maps.Procedures;
+namespace ConsoleRpg.Shared.Map.Procedures;
 
 public class FillMapProcedure : IMapProcedure
 {

@@ -1,4 +1,4 @@
-namespace ConsoleRpg.Shared.Maps;
+namespace ConsoleRpg.Shared.Map;
 
 public struct Room(int x, int y, int width, int height)
 {

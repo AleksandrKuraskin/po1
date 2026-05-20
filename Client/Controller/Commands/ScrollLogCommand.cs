@@ -1,6 +1,3 @@
-using System;
-using ConsoleRpg.Shared.Core;
-
 namespace ConsoleRpg.Client.Controller.Commands;
 
 public class ScrollLogCommand(int delta) : ILocalCommand

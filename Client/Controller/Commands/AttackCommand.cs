@@ -1,4 +1,3 @@
-using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Systems.Network;
 using System.Text.Json;
 using ConsoleRpg.Shared.Systems.Attacking;

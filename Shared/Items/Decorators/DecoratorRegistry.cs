@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace ConsoleRpg.Shared.Items.Decorators;
 
 public class DecoratorRegistry

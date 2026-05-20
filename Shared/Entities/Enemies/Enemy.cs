@@ -1,7 +1,4 @@
-using System;
 using ConsoleRpg.Shared.Core;
-using ConsoleRpg.Shared.Maps;
-using ConsoleRpg.Shared.Entities.Enemies.Behaviors;
 using ConsoleRpg.Shared.Systems;
 using ConsoleRpg.Shared.Systems.Logging;
 using ConsoleRpg.Shared.Systems.Sound;
@@ -45,9 +42,7 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
     {
         if (member == this) return;
         _group.Behavior.ApplyDeathReaction(this);
-        LogManager.Instance.Log(
-            $"({Name}) alters its stats since group member died."
-        );
+        LogManager.Instance.Log($"({Name}) alters its stats since group member died.", type: LogType.Action);
     }
 
     public void OnMemberMoved((int X, int Y)newCenter)
@@ -56,7 +51,7 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
         _insideGroup = distance <= _group.MaxRadius;
     }
     
-    public void TakeTurn(Map map)
+    public void TakeTurn(Map.Map map)
     {
         if (!Alive || ActedThisTurn) return;
         var rng = new Random();
@@ -104,13 +99,7 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
     }
     public void OnHeardSound(ISoundEmitter emitter, (int X, int Y) origin, int distance, ISoundEvent sound)
     {
-        LogManager.Instance.Log(
-            $"{Name} heard {sound.GetFullDescription()} from {origin.X}, {origin.Y} (dist: {distance})",
-            LogType.Info,
-            LogScope.Global,
-            null,
-            Name
-        );
+        LogManager.Instance.Log($"{Name} heard {sound.GetFullDescription()} from {origin.X}, {origin.Y} (dist: {distance})", type: LogType.Sound);
     }
 
     public void SetPosition(int newX, int newY)
