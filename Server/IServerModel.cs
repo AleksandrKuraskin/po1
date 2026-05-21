@@ -7,6 +7,6 @@ namespace ConsoleRpg.Server;
 public interface IServerModel : IGameModel
 {
     void ProcessEnemiesTurn();
-    void Broadcast(GameState state);
+    void Broadcast(GameStateDto state);
     IEnumerable<Player> GetAllPlayers();
 }

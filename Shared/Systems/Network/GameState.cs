@@ -3,7 +3,7 @@ using ConsoleRpg.Shared.Systems.Logging;
 
 namespace ConsoleRpg.Shared.Systems.Network;
 
-public class GameState
+public class GameStateDto
 {
     public PlayerDto LocalPlayer { get; set; } = new();
     public List<PlayerDto> OtherPlayers { get; set; } = [];
@@ -23,8 +23,8 @@ public class PlayerDto
     public Dictionary<string, StatDto> Stats { get; set; } = [];
     public int Gold { get; set; }
     public int Coins { get; set; }
-    public List<string> Inventory { get; set; } = [];
-    public Dictionary<string, string> Equipment { get; set; } = [];
+    public List<string> Inventory { get; set; } = []; // TODO: items dto
+    public Dictionary<string, string> Equipment { get; set; } = []; // TODO: items dto
 }
 
 public class StatDto

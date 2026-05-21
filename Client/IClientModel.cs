@@ -13,7 +13,7 @@ public interface IClientModel : IGameModel
     IInputState CurrentInputState { get; }
     IInputHandler GlobalInputHandler { get; }
     List<ActionInfo> GlobalInstructions { get; }
-    GameState? LastState { get; }
+    GameStateDto? LastState { get; }
 
     void ChangeRenderer(IRenderer newRenderer);
     void ChangeInputState(IInputState newState);

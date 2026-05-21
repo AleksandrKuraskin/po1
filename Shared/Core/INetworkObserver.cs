@@ -4,5 +4,5 @@ namespace ConsoleRpg.Shared.Core;
 
 public interface INetworkObserver
 {
-    void OnStateReceived(GameState state);
+    void OnStateReceived(GameStateDto state);
 }

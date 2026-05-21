@@ -31,7 +31,7 @@ public class ClientModel : IClientModel, INetworkObserver
     public IInputState CurrentInputState { get; private set; }
     public IInputHandler GlobalInputHandler { get; }
     public List<ActionInfo> GlobalInstructions { get; }
-    public GameState? LastState { get; private set; }
+    public GameStateDto? LastState { get; private set; }
     private readonly Dictionary<Guid, Player> _remotePlayers = new();
     private bool _uiInitialized = false;
 
@@ -81,7 +81,7 @@ public class ClientModel : IClientModel, INetworkObserver
                 await _stream.ReadExactlyAsync(payloadBuffer, 0, messageLength);
 
                 var json = Encoding.UTF8.GetString(payloadBuffer);
-                var state = JsonSerializer.Deserialize<GameState>(json);
+                var state = JsonSerializer.Deserialize<GameStateDto>(json);
                 if (state != null)
                 {
                     OnStateReceived(state);
@@ -98,7 +98,7 @@ public class ClientModel : IClientModel, INetworkObserver
         }
     }
 
-    public void OnStateReceived(GameState state)
+    public void OnStateReceived(GameStateDto state)
     {
         UpdateFromState(state);
     }
@@ -129,7 +129,7 @@ public class ClientModel : IClientModel, INetworkObserver
         _uiInitialized = true;
     }
 
-    private void UpdateFromState(GameState state)
+    private void UpdateFromState(GameStateDto state)
     {
         var flagsChanged = MapContext.Itemized != state.Itemized || MapContext.Dangerous != state.Dangerous;
         
@@ -176,7 +176,7 @@ public class ClientModel : IClientModel, INetworkObserver
         Notify();
     }
 
-    private void SyncPlayers(GameState state)
+    private void SyncPlayers(GameStateDto state)
     {
         for (int y = 0; y < MapContext.Map.Height; y++)
         {

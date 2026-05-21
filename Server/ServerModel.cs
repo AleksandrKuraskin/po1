@@ -158,7 +158,7 @@ public class ServerModel(
         }
     }
 
-    private GameState GetStateForPlayer(Player player)
+    private GameStateDto GetStateForPlayer(Player player)
     {
         var activeTiles = new List<TileDto>();
         for (var y = 0; y < _mapContext.Map.Height; y++)
@@ -190,7 +190,7 @@ public class ServerModel(
             _playerLastLogId[player] = newLogs.Max(l => l.Id);
         }
 
-        return new GameState
+        return new GameStateDto
         {
             LocalPlayer = MapPlayerToDto(player),
             OtherPlayers = _clients.Values.Where(p => p != player).Select(MapPlayerToDto).ToList(),
@@ -218,12 +218,12 @@ public class ServerModel(
                     BaseValue = p.Stats.GetStat(s).BaseValue, 
                     Value = p.Stats.GetStat(s).Value 
                 }),
-            Inventory = p.Inventory.GetItems().Where(i => i != null).Select(i => i!.Name).ToList(),
+            Inventory = p.Inventory.GetItems().Where(i => i != null).Select(i => i!.Name).ToList(), // TODO: Convert to item dto
             Equipment = p.Equipment.GetAllEquipped().ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Name)
         };
     }
 
-    public void Broadcast(GameState state) => BroadcastState();
+    public void Broadcast(GameStateDto state) => BroadcastState();
     public void Attach(IStateObserver observer) => _observers.Add(observer);
     public void Detach(IStateObserver observer) => _observers.Remove(observer);
     public void Notify() { foreach (var obs in _observers) obs.Update(); }
