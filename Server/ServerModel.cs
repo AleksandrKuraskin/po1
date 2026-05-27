@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Channels;
 using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Map;
 using ConsoleRpg.Shared.Entities;
@@ -24,8 +25,19 @@ public class ServerModel(
     string logFilePath,
     int port) : IServerModel
 {
+    private class ClientContext(TcpClient client, Player player)
+    {
+        public TcpClient Client { get; } = client;
+        public Player Player { get; } = player;
+        public Channel<NetworkMessage> SendChannel { get; } = Channel.CreateUnbounded<NetworkMessage>(new UnboundedChannelOptions
+        {
+            SingleReader = true,
+            SingleWriter = false
+        });
+    }
+
     private readonly List<IStateObserver> _observers = [];
-    private readonly Dictionary<TcpClient, Player> _clients = [];
+    private readonly ConcurrentDictionary<TcpClient, ClientContext> _clients = new();
     private readonly Dictionary<Player, long> _playerLastLogId = [];
     private readonly CommandDispatcher _dispatcher = dispatcher;
     private readonly MapContext _mapContext = mapContext;
@@ -36,7 +48,7 @@ public class ServerModel(
     
     private readonly ConcurrentQueue<(Player player, NetworkMessage message)> _commandQueue = new();
 
-    public Player Player => _clients.Values.FirstOrDefault() ?? new Player(0, 0, "Server");
+    public Player Player => _clients.Values.Select(c => c.Player).FirstOrDefault() ?? new Player(0, 0, "Server");
     public MapContext MapContext => _mapContext;
     private TileDto[] _globalLastTiles = [];
     public ConsoleLogger Logger => _logger;
@@ -86,20 +98,18 @@ public class ServerModel(
     {
         while (_running)
         {
-            var stateChanged = false;
-            
             lock (_mapContext)
             {
                 while (_commandQueue.TryDequeue(out var req))
                 {
                     _dispatcher.Dispatch(req.message, this, req.player);
-                    stateChanged = true;
                 }
                 
                 ProcessEnemiesTurn();
                 
                 BroadcastUpdates();
             }
+
             await Task.Delay(16);
         }
     }
@@ -111,6 +121,9 @@ public class ServerModel(
         
         var spawn = _mapContext.SpawnPoint;
         var player = new Player(spawn.x, spawn.y, "Connecting...");
+        var context = new ClientContext(client, player);
+
+        _ = SenderLoop(context);
 
         try
         {
@@ -138,10 +151,10 @@ public class ServerModel(
                     {
                         lock (_mapContext)
                         {
-                            _clients[client] = player;
+                            _clients[client] = context;
                             _playerLastLogId[player] = 0;
                             _dispatcher.Dispatch(message, this, player);
-                            SendSync(client, player);
+                            SendSync(context);
                         }
                     }
                     else
@@ -163,12 +176,35 @@ public class ServerModel(
             lock (_mapContext)
             {
                 _mapContext.Map.GetTile(player.X, player.Y).Players.Remove(player);
-                _clients.Remove(client);
+                _clients.TryRemove(client, out _);
                 _playerLastLogId.Remove(player);
                 player.RemoveMediator();
             }
+            context.SendChannel.Writer.TryComplete();
             client.Close();
         }
+    }
+
+    private async Task SenderLoop(ClientContext context)
+    {
+        try
+        {
+            var stream = context.Client.GetStream();
+            while (await context.SendChannel.Reader.WaitToReadAsync())
+            {
+                while (context.SendChannel.Reader.TryRead(out var msg))
+                {
+                    var json = JsonSerializer.Serialize(msg);
+                    var data = Encoding.UTF8.GetBytes(json);
+                    var lengthPrefix = BitConverter.GetBytes(data.Length);
+                    
+                    await stream.WriteAsync(lengthPrefix, 0, lengthPrefix.Length);
+                    await stream.WriteAsync(data, 0, data.Length);
+                    await stream.FlushAsync();
+                }
+            }
+        }
+        catch { }
     }
 
     public void ProcessEnemiesTurn()
@@ -185,8 +221,9 @@ public class ServerModel(
         }
     }
     
-    private void SendSync(TcpClient client, Player player)
+    private void SendSync(ClientContext context)
     {
+        var player = context.Player;
         var activeTiles = new List<TileDto>();
         for (var y = 0; y < _mapContext.Map.Height; y++)
         {
@@ -204,14 +241,14 @@ public class ServerModel(
 
         var state = new GameStateDto {
             LocalPlayer = MapPlayerToDto(player),
-            OtherPlayers = _clients.Values.Where(p => p != player).Select(MapPlayerToDto).ToList(),
+            OtherPlayers = _clients.Values.Where(c => c.Player != player).Select(c => MapPlayerToDto(c.Player)).ToList(),
             ActiveTiles = activeTiles,
             Logs = GetNewLogs(player),
             Itemized = _mapContext.Itemized,
             Dangerous = _mapContext.Dangerous,
             IsGameOver = !player.Alive
         };
-        SendToClient(client, new NetworkMessage("SYNC", JsonSerializer.Serialize(state)));
+        context.SendChannel.Writer.TryWrite(new NetworkMessage("SYNC", JsonSerializer.Serialize(state)));
     }
     
     private void BroadcastUpdates()
@@ -230,31 +267,18 @@ public class ServerModel(
         }
         _mapContext.Map.ClearDirtyTiles();
 
-        foreach (var (client, player) in _clients.ToList())
+        foreach (var context in _clients.Values)
         {
+            var player = context.Player;
             var update = new GameUpdateDto {
                 LocalPlayer = MapPlayerToDto(player),
-                OtherPlayers = _clients.Values.Where(p => p != player).Select(MapPlayerToDto).ToList(),
+                OtherPlayers = _clients.Values.Where(c => c.Player != player).Select(c => MapPlayerToDto(c.Player)).ToList(),
                 UpdatedTiles = updatedTiles,
                 Logs = GetNewLogs(player),
                 IsGameOver = !player.Alive
             };
-            SendToClient(client, new NetworkMessage("UPDATE", JsonSerializer.Serialize(update)));
+            context.SendChannel.Writer.TryWrite(new NetworkMessage("UPDATE", JsonSerializer.Serialize(update)));
         }
-    }
-    
-    private void SendToClient(TcpClient client, NetworkMessage msg)
-    {
-        try
-        {
-            var json = JsonSerializer.Serialize(msg);
-            var data = Encoding.UTF8.GetBytes(json);
-            var lengthPrefix = BitConverter.GetBytes(data.Length);
-            var stream = client.GetStream();
-            stream.Write(lengthPrefix, 0, lengthPrefix.Length);
-            stream.Write(data, 0, data.Length);
-        }
-        catch { }
     }
     
     private bool AreTilesEqual(TileDto a, TileDto b)
@@ -271,7 +295,7 @@ public class ServerModel(
         return true;
     }
 
-    public IEnumerable<Player> GetAllPlayers() => _clients.Values;
+    public IEnumerable<Player> GetAllPlayers() => _clients.Values.Select(c => c.Player);
 
     private PlayerDto MapPlayerToDto(Player p)
     {

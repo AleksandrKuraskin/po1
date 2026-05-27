@@ -1,4 +1,5 @@
 using ConsoleRpg.Shared.Entities;
+using ConsoleRpg.Shared.Systems.Sound.SoundEvents;
 
 namespace ConsoleRpg.Server.CommandHandlers;
 
@@ -13,6 +14,7 @@ public class PickUpCommandHandler : IServerCommandHandler
         if (item != null && item.TryPickUp(player, item))
         {
             tile.RemoveTopItem();
+            player.MakeNoise(new PickUpSound(player, item));
             server.MapContext.Map.MarkDirty(player.X, player.Y);
         }
     }

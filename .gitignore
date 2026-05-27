@@ -482,7 +482,3 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-
-
-full_project.txt
-generate_full_project.sh

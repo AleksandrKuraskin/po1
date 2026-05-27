@@ -1,4 +1,5 @@
 using ConsoleRpg.Shared.Entities;
+using ConsoleRpg.Shared.Systems.Sound.SoundEvents;
 
 namespace ConsoleRpg.Server.CommandHandlers;
 
@@ -17,6 +18,7 @@ public class DropCommandHandler : IServerCommandHandler
         if (item != null)
         {
             item.OnDrop(player, server.MapContext.Map, item);
+            player.MakeNoise(new DropSound(player, item));
             server.MapContext.Map.MarkDirty(player.X, player.Y);
         }
     }
