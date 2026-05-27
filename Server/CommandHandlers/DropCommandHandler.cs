@@ -1,0 +1,25 @@
+using ConsoleRpg.Shared.Entities;
+using ConsoleRpg.Shared.Systems.Sound.SoundEvents;
+
+namespace ConsoleRpg.Server.CommandHandlers;
+
+public class DropCommandHandler : IServerCommandHandler
+{
+    public string CommandName => "DROP";
+
+    public void Handle(string payload, IServerModel server, Player player)
+    {
+        if (!int.TryParse(payload, out var index))
+        {
+            index = player.Inventory.SelectedIndex;
+        }
+
+        var item = player.Inventory.RemoveItemAt(index);
+        if (item != null)
+        {
+            item.OnDrop(player, server.MapContext.Map, item);
+            player.MakeNoise(new DropSound(player, item));
+            server.MapContext.Map.MarkDirty(player.X, player.Y);
+        }
+    }
+}

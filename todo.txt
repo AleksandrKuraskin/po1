@@ -1,3 +1,2 @@
-1. SpeciesGroup is observer - change Enemies to ISoundReceiver
-2. Make abstract class between ISoundEvent and concrete Sounds.
-3 (bonus). Make GraphManipulations class for managing dungeon coordination.
+1. Logging should be fixed;
+2. Let's fight other players :)
