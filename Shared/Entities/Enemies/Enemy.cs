@@ -30,9 +30,11 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
     public Equipment Equipment { get; } = new Equipment();
 
     public bool ActedThisTurn { get; set; }
+    public event Action<int, int>? DirtyMarked;
     
     private void Die()
     {
+        DirtyMarked?.Invoke(X, Y);
         _group.NotifyMemberDeath(this);
         _group.Detach(this);
         _mediator?.RemoveReceiver(this);
@@ -42,6 +44,7 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
     {
         if (member == this) return;
         _group.Behavior.ApplyDeathReaction(this);
+        DirtyMarked?.Invoke(X, Y);
         LogManager.Instance.Log($"({Name}) alters its stats since group member died.", type: LogType.Action);
     }
 
@@ -55,7 +58,7 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
     {
         if (!Alive || ActedThisTurn) return;
         var rng = new Random();
-        if (rng.Next(100) < 50) return;
+        if (rng.Next(100) < 99) return;
 
         var dx = 0;
         var dy = 0;
@@ -113,6 +116,7 @@ public class Enemy(string name, char symbol, int maxHealth, int strength, int ar
     {
         var hpStat = Stats.GetStat(StatType.Health);
         hpStat.Decrease(amount);
+        DirtyMarked?.Invoke(X, Y);
         if (!Alive) Die();
     }
     

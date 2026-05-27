@@ -12,6 +12,7 @@ public class Map
     public int Height { get; }
 
     private Tile[,] _tiles;
+    private readonly HashSet<(int x, int y)> _dirtyTiles = new();
 
     public Map(int width = 40, int height = 20)
     {
@@ -24,6 +25,17 @@ public class Map
         _tiles[0, 1].IsWall = false;
         _tiles[1, 0].IsWall = false;
     }
+
+    public void MarkDirty(int x, int y)
+    {
+        if (x >= 0 && x < Width && y >= 0 && y < Height)
+        {
+            _dirtyTiles.Add((x, y));
+        }
+    }
+
+    public IEnumerable<(int x, int y)> GetDirtyTiles() => _dirtyTiles;
+    public void ClearDirtyTiles() => _dirtyTiles.Clear();
 
     private void InitializeTiles()
     {
@@ -44,6 +56,7 @@ public class Map
     public void SpawnPlayer(Player player)
     {
         _tiles[player.Y, player.X].Players.Add(player);
+        MarkDirty(player.X, player.Y);
     }
 
     public (int x, int y) GetRandomFreeTile()
@@ -82,9 +95,11 @@ public class Map
             return false;
         }
 
+        MarkDirty(player.X, player.Y);
         _tiles[player.Y, player.X].Players.Remove(player);
         targetTile.Players.Add(player);
         player.SetPosition(newX, newY);
+        MarkDirty(newX, newY);
         return true;
     }
 
@@ -104,9 +119,11 @@ public class Map
             return false;
         }
 
+        MarkDirty(enemy.X, enemy.Y);
         _tiles[enemy.Y, enemy.X].Enemy = null;
         targetTile.Enemy = enemy;
         enemy.SetPosition(newX, newY);
+        MarkDirty(newX, newY);
         return true;
     }
     

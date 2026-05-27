@@ -17,6 +17,7 @@ public class DropCommandHandler : IServerCommandHandler
         if (item != null)
         {
             item.OnDrop(player, server.MapContext.Map, item);
+            server.MapContext.Map.MarkDirty(player.X, player.Y);
         }
     }
 }

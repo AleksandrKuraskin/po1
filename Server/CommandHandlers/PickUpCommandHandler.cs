@@ -13,6 +13,7 @@ public class PickUpCommandHandler : IServerCommandHandler
         if (item != null && item.TryPickUp(player, item))
         {
             tile.RemoveTopItem();
+            server.MapContext.Map.MarkDirty(player.X, player.Y);
         }
     }
 }

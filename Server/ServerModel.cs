@@ -53,6 +53,11 @@ public class ServerModel(
             }
         }
 
+        foreach (var enemy in _mapContext.Map.GetAllEnemies())
+        {
+            enemy.DirtyMarked += (x, y) => _mapContext.Map.MarkDirty(x, y);
+        }
+
         _ = ServerLoop();
 
         _listener.Start();
@@ -212,20 +217,18 @@ public class ServerModel(
     private void BroadcastUpdates()
     {
         var updatedTiles = new List<TileDto>();
-        for (var y = 0; y < _mapContext.Map.Height; y++)
+        foreach (var (x, y) in _mapContext.Map.GetDirtyTiles())
         {
-            for (var x = 0; x < _mapContext.Map.Width; x++)
+            var newDto = MapTileToDto(_mapContext.Map.GetTile(x, y));
+            var idx = y * _mapContext.Map.Width + x;
+            
+            if (!AreTilesEqual(_globalLastTiles[idx], newDto))
             {
-                var newDto = MapTileToDto(_mapContext.Map.GetTile(x, y));
-                var idx = y * _mapContext.Map.Width + x;
-                
-                if (!AreTilesEqual(_globalLastTiles[idx], newDto))
-                {
-                    updatedTiles.Add(newDto);
-                    _globalLastTiles[idx] = newDto;
-                }
+                updatedTiles.Add(newDto);
+                _globalLastTiles[idx] = newDto;
             }
         }
+        _mapContext.Map.ClearDirtyTiles();
 
         foreach (var (client, player) in _clients.ToList())
         {

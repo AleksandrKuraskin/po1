@@ -84,12 +84,14 @@ public class AttackCommandHandler : IServerCommandHandler
         var damageDealt = Math.Max(0, stats.Attack - enemyArmor);
         
         enemy.TakeDamage(damageDealt);
+        server.MapContext.Map.MarkDirty(player.X, player.Y);
         LogManager.Instance.Log($"Attacking ({enemy.Name}) for {damageDealt} dmg. ({stats.Attack} reduced by {enemyArmor} armor)", recipientName: player.Name, type: LogType.Combat);
         
         if (!enemy.Alive)
         {
             LogManager.Instance.Log($"Slayed {enemy.Name}!", entity: player.Name, type: LogType.Success);
             tile.Enemy = null;
+            server.MapContext.Map.MarkDirty(player.X, player.Y);
             server.ProcessEnemiesTurn();
             return;
         }
