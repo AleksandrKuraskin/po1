@@ -8,7 +8,12 @@ public class DropCommandHandler : IServerCommandHandler
 
     public void Handle(string payload, IServerModel server, Player player)
     {
-        var item = player.Inventory.RemoveItemAt(player.Inventory.SelectedIndex);
+        if (!int.TryParse(payload, out var index))
+        {
+            index = player.Inventory.SelectedIndex;
+        }
+
+        var item = player.Inventory.RemoveItemAt(index);
         if (item != null)
         {
             item.OnDrop(player, server.MapContext.Map, item);

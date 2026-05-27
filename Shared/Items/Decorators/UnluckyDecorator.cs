@@ -7,6 +7,8 @@ namespace ConsoleRpg.Shared.Items.Decorators;
 public class UnluckyDecorator(IItem item) : ItemDecorator(item)
 {
     private readonly IStatModifier _luckPenalty = new FlatModifier(-5);
+    public const string Id = "unlucky";
+    public override string decoratorId { get; } = Id;
 
     public override string Name => _item.Name + " (Unlucky)";
 

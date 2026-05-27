@@ -6,6 +6,7 @@ using ConsoleRpg.Shared.Map;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Logging;
 using ConsoleRpg.Shared.Systems.Logging.Loggers;
+using ConsoleRpg.Shared.Systems.Network.Dtos;
 using ConsoleRpg.Shared.Systems.Network;
 using ConsoleRpg.Shared.Systems.Stats;
 using ConsoleRpg.Client.Controller.States;
@@ -31,9 +32,11 @@ public class ClientModel : IClientModel, INetworkObserver
     public IInputState CurrentInputState { get; private set; }
     public IInputHandler GlobalInputHandler { get; }
     public List<ActionInfo> GlobalInstructions { get; }
-    public GameState? LastState { get; private set; }
-    private readonly Dictionary<Guid, Player> _remotePlayers = new();
+    public GameStateDto? LastState { get; private set; }
+    private readonly Dictionary<string, Player> _remotePlayers = new();
     private bool _uiInitialized = false;
+    
+    public Dictionary<(int x, int y), TileDto> LocalActiveTiles { get; } = new();
 
     public ClientModel(string ip, int port, string playerName, IInputHandler globalInputHandler, List<ActionInfo> globalInstructions)
     {
@@ -74,17 +77,25 @@ public class ClientModel : IClientModel, INetworkObserver
         {
             try
             {
-                await _stream!.ReadExactlyAsync(lengthBuffer, 0, 4);
+                if (_stream == null) throw new Exception("Stream is null");
+                await _stream.ReadExactlyAsync(lengthBuffer, 0, 4);
                 var messageLength = BitConverter.ToInt32(lengthBuffer, 0);
 
                 var payloadBuffer = new byte[messageLength];
                 await _stream.ReadExactlyAsync(payloadBuffer, 0, messageLength);
 
                 var json = Encoding.UTF8.GetString(payloadBuffer);
-                var state = JsonSerializer.Deserialize<GameState>(json);
-                if (state != null)
+                var message = JsonSerializer.Deserialize<NetworkMessage>(json);
+                
+                if (message?.CommandName == "SYNC")
                 {
-                    OnStateReceived(state);
+                    var state = JsonSerializer.Deserialize<GameStateDto>(message.Payload);
+                    if (state != null) HandleSync(state);
+                }
+                else if (message?.CommandName == "UPDATE")
+                {
+                    var update = JsonSerializer.Deserialize<GameUpdateDto>(message.Payload);
+                    if (update != null) HandleUpdate(update);
                 }
             }
             catch (Exception ex)
@@ -97,10 +108,33 @@ public class ClientModel : IClientModel, INetworkObserver
             }
         }
     }
-
-    public void OnStateReceived(GameState state)
+    
+    private void HandleSync(GameStateDto state)
     {
+        LocalActiveTiles.Clear();
+        foreach (var t in state.ActiveTiles) LocalActiveTiles[(t.X, t.Y)] = t;
         UpdateFromState(state);
+    }
+    
+    private void HandleUpdate(GameUpdateDto update)
+    {
+        foreach (var t in update.UpdatedTiles) LocalActiveTiles[(t.X, t.Y)] = t;
+        
+        if (LastState != null)
+        {
+            LastState.LocalPlayer = update.LocalPlayer;
+            LastState.OtherPlayers = update.OtherPlayers;
+            LastState.Logs = update.Logs;
+            LastState.IsGameOver = update.IsGameOver;
+            LastState.ActiveTiles = LocalActiveTiles.Values.ToList();
+            
+            UpdateFromState(LastState);
+        }
+    }
+
+    public void OnStateReceived(GameStateDto state)
+    {
+        HandleSync(state);
     }
 
     private void InitializeUI()
@@ -129,7 +163,7 @@ public class ClientModel : IClientModel, INetworkObserver
         _uiInitialized = true;
     }
 
-    private void UpdateFromState(GameState state)
+    private void UpdateFromState(GameStateDto state)
     {
         var flagsChanged = MapContext.Itemized != state.Itemized || MapContext.Dangerous != state.Dangerous;
         
@@ -150,23 +184,17 @@ public class ClientModel : IClientModel, INetworkObserver
         Player.Wallet.GoldValue = state.LocalPlayer.Gold;
         Player.Wallet.CoinValue = state.LocalPlayer.Coins;
 
-        foreach (var (key, stat) in state.LocalPlayer.Stats)
+        foreach (var (type, stat) in state.LocalPlayer.Stats)
         {
-            if (Enum.TryParse<StatType>(key, out var type))
-            {
-                Player.Stats.GetStat(type).SetBaseValue(stat.BaseValue);
-            }
+            Player.Stats.GetStat(type).SetBaseValue(stat.BaseValue);
         }
         
         foreach (var log in state.Logs)
         {
-            if (Logger.GetLogs().All(l => l.Id != log.Id))
-            {
-                LogManager.Instance.Notify(log);
-            }
+            LogManager.Instance.Notify(log);
         }
 
-        if (state.IsGameOver)
+        if (state.IsGameOver && CurrentInputState is not GameOverState)
         {
             ChangeInputState(new GameOverState(LogFilePath));
         }
@@ -176,7 +204,7 @@ public class ClientModel : IClientModel, INetworkObserver
         Notify();
     }
 
-    private void SyncPlayers(GameState state)
+    private void SyncPlayers(GameStateDto state)
     {
         for (int y = 0; y < MapContext.Map.Height; y++)
         {
@@ -188,28 +216,25 @@ public class ClientModel : IClientModel, INetworkObserver
 
         MapContext.Map.GetTile(Player.X, Player.Y).Players.Add(Player);
 
-        var currentRemoteIds = state.OtherPlayers.Select(p => p.Id).ToHashSet();
-        var idsToRemove = _remotePlayers.Keys.Where(id => !currentRemoteIds.Contains(id)).ToList();
-        foreach (var id in idsToRemove) _remotePlayers.Remove(id);
+        var currentRemoteNames = state.OtherPlayers.Select(p => p.Name).ToHashSet();
+        var namesToRemove = _remotePlayers.Keys.Where(name => !currentRemoteNames.Contains(name)).ToList();
+        foreach (var name in namesToRemove) _remotePlayers.Remove(name);
 
         foreach (var dto in state.OtherPlayers)
         {
-            if (!_remotePlayers.TryGetValue(dto.Id, out var remotePlayer))
+            if (!_remotePlayers.TryGetValue(dto.Name, out var remotePlayer))
             {
                 remotePlayer = new Player(dto.X, dto.Y, dto.Name);
-                _remotePlayers[dto.Id] = remotePlayer;
+                _remotePlayers[dto.Name] = remotePlayer;
             }
 
             remotePlayer.Name = dto.Name;
             remotePlayer.X = dto.X;
             remotePlayer.Y = dto.Y;
             
-            foreach (var (key, stat) in dto.Stats)
+            foreach (var (type, stat) in dto.Stats)
             {
-                if (Enum.TryParse<StatType>(key, out var type))
-                {
-                    remotePlayer.Stats.GetStat(type).SetBaseValue(stat.BaseValue);
-                }
+                remotePlayer.Stats.GetStat(type).SetBaseValue(stat.BaseValue);
             }
             
             MapContext.Map.GetTile(remotePlayer.X, remotePlayer.Y).Players.Add(remotePlayer);

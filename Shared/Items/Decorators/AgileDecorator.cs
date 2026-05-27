@@ -8,6 +8,10 @@ public class AgileDecorator(IItem item) : ItemDecorator(item)
 {
     private readonly IStatModifier _agilityBoost = new FlatModifier(5);
 
+    public const string Id = "agile";
+    
+    public override string decoratorId { get; } = Id;
+
     public override string Name => _item.Name + " (Agile)";
 
     public override void OnEquip(Player player)

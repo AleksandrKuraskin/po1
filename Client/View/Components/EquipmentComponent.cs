@@ -1,5 +1,8 @@
+using System.Linq;
+using ConsoleRpg.Shared.Systems;
 using Spectre.Console;
 using Spectre.Console.Rendering;
+using ConsoleRpg.Shared.Systems.Network.Dtos;
 
 namespace ConsoleRpg.Client.View.Components;
 
@@ -14,40 +17,40 @@ public class EquipmentComponent : IUIComponent
         if (model.LastState != null)
         {
             var equip = model.LastState.LocalPlayer.Equipment;
-            leftHandText = equip.TryGetValue("LeftHand", out var left) ? left : "[grey]Empty[/]";
-            rightHandText = equip.TryGetValue("RightHand", out var right) ? right : "[grey]Empty[/]";
+            
+            ItemDto? left = equip.TryGetValue(EquipmentSlot.LeftHand, out var l) ? l : null;
+            ItemDto? right = equip.TryGetValue(EquipmentSlot.RightHand, out var r) ? r : null;
 
-            if (leftHandText != "[grey]Empty[/]" && leftHandText == rightHandText)
+            leftHandText = FormatItem(left);
+            rightHandText = FormatItem(right);
+
+            if (left != null && right != null && left.Name == right.Name && left.Decorators.SequenceEqual(right.Decorators))
             {
-                leftHandText = $"[magenta]{Markup.Escape(leftHandText)}[/]";
+                leftHandText = $"[magenta]{leftHandText}[/]";
                 rightHandText = leftHandText;
-            }
-            else
-            {
-                if (leftHandText != "[grey]Empty[/]") leftHandText = Markup.Escape(leftHandText);
-                if (rightHandText != "[grey]Empty[/]") rightHandText = Markup.Escape(rightHandText);
             }
         }
         else
         {
             var leftHandItem = model.Player.Equipment.LeftHand;
-            leftHandText = leftHandItem?.Name ?? "[grey]Empty[/]";
+            leftHandText = leftHandItem != null ? UIStyleRegistry.FormatItem(leftHandItem.GetState()) : "[grey]Empty[/]";
             var rightHandItem = model.Player.Equipment.RightHand;
-            rightHandText = rightHandItem?.Name ?? "[grey]Empty[/]";
+            rightHandText = rightHandItem != null ? UIStyleRegistry.FormatItem(rightHandItem.GetState()) : "[grey]Empty[/]";
 
             if (leftHandItem != null && leftHandItem == rightHandItem)
             {
-                leftHandText = $"[magenta]{Markup.Escape(leftHandItem.Name)}[/]";
+                leftHandText = $"[magenta]{leftHandText}[/]";
                 rightHandText = leftHandText;
-            }
-            else
-            {
-                if (leftHandItem != null) leftHandText = Markup.Escape(leftHandItem.Name);
-                if (rightHandItem != null) rightHandText = Markup.Escape(rightHandItem.Name);
             }
         }
 
         var innerText = $"[bold]Left Hand (L):[/] {leftHandText}\n[bold]Right Hand (R):[/] {rightHandText}";
         return new Panel(new Markup(innerText)).Header("[bold blue]Equipment[/]").RoundedBorder().Expand();
+    }
+
+    private string FormatItem(ItemDto? item)
+    {
+        if (item == null) return "[grey]Empty[/]";
+        return UIStyleRegistry.FormatItem(item);
     }
 }

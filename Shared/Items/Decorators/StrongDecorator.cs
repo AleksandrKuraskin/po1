@@ -8,6 +8,9 @@ public class StrongDecorator(IItem item) : ItemDecorator(item)
 {
     private readonly IStatModifier _strengthBoost = new FlatModifier(10);
 
+    public const string Id = "strong";
+    public override string decoratorId { get; } = Id;
+
     public override string Name => _item.Name + " (Strong)";
 
     public override void OnEquip(Player player)

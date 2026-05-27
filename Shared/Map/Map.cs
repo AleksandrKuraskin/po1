@@ -71,14 +71,14 @@ public class Map
 
         if (newX < 0 || newX >= Width || newY < 0 || newY >= Height)
         {
-            LogManager.Instance.Log("You cannot move outside the map.", recipientId: player.Id, type: LogType.Movement);
+            LogManager.Instance.Log("You cannot move outside the map.", recipientName: player.Name, type: LogType.Movement);
             return false;
         }
         
         var targetTile = _tiles[newY, newX];
         if (targetTile.IsWall)
         {
-            LogManager.Instance.Log("You just bumped into a wall...", recipientId: player.Id, type: LogType.Movement);
+            LogManager.Instance.Log("You just bumped into a wall...", recipientName: player.Name, type: LogType.Movement);
             return false;
         }
 

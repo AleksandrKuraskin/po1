@@ -6,6 +6,6 @@ public class DropSelectedCommand : IServerCommand
 {
     public void ExecuteServer(IClientModel model)
     {
-        model.SendMessage(new NetworkMessage("DROP", ""));
+        model.SendMessage(new NetworkMessage("DROP", model.Player.Inventory.SelectedIndex.ToString()));
     }
 }

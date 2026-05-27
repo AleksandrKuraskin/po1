@@ -9,6 +9,8 @@ public class GodlyDecorator : ItemDecorator
     private readonly Dictionary<StatType, IStatModifier> _playerModifiers;
 
     private readonly List<IStatModifier> _itemDamageModifiers;
+    public const string Id = "godly";
+    public override string decoratorId { get; } = Id;
     public override string Name => base.Name + " (Godly)";
 
     public GodlyDecorator(IItem innerItem) : base(innerItem)

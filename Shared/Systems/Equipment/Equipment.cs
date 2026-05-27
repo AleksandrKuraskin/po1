@@ -56,7 +56,7 @@ public class Equipment : IEquipment
                     "Can't equip nothing..." : 
                     $"Equipped {item.Name}.",
                 entity: player.Name,
-                recipientId: item == null ? (Guid?)player.Id : null,
+                recipientName: item == null ? player.Name : null,
                 type: item == null ? LogType.Warning : LogType.Action
                 );
         }
@@ -127,7 +127,7 @@ public class Equipment : IEquipment
                 var added = inventory.TryAddItem(oldRight);
                 if (!added)
                 {
-                    LogManager.Instance.Log($"No space in inventory to add {oldRight.Name}. Dropping this item...", entity: player.Name, recipientId: player.Id, type: LogType.Warning);
+                    LogManager.Instance.Log($"No space in inventory to add {oldRight.Name}. Dropping this item...", entity: player.Name, recipientName: player.Name, type: LogType.Warning);
                     return oldRight;
                 }
             }
@@ -142,11 +142,11 @@ public class Equipment : IEquipment
             (LeftHand, RightHand) = (RightHand, LeftHand);
     }
 
-    public Dictionary<string, IItem> GetAllEquipped()
+    public Dictionary<EquipmentSlot, IItem> GetAllEquipped()
     {
-        var dict = new Dictionary<string, IItem>();
-        if (LeftHand != null) dict["LeftHand"] = LeftHand;
-        if (RightHand != null) dict["RightHand"] = RightHand;
+        var dict = new Dictionary<EquipmentSlot, IItem>();
+        if (LeftHand != null) dict[EquipmentSlot.LeftHand] = LeftHand;
+        if (RightHand != null) dict[EquipmentSlot.RightHand] = RightHand;
         return dict;
     }
 }

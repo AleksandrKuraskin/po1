@@ -2,6 +2,7 @@ using ConsoleRpg.Shared.Map;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Attacking;
 using ConsoleRpg.Shared.Systems.Logging;
+using ConsoleRpg.Shared.Systems.Network.Dtos;
 using ConsoleRpg.Shared.Systems.Sound;
 using ConsoleRpg.Shared.Systems.Stats;
 using ConsoleRpg.Shared.Systems.Stats.Modifiers;
@@ -21,12 +22,42 @@ public abstract class Weapon(IEquipBehavior behavior) : IItem
     public abstract StatsManager ItemStats { get; }
     public abstract StatsManager GrantedStats { get; }
 
+    public ItemDto GetState()
+    {
+        var dto = new ItemDto
+        {
+            Name = Name,
+            Symbol = Symbol,
+            Quantity = 1
+        };
+
+        foreach (var statType in ItemStats.GetActiveStatTypes())
+        {
+            dto.ItemStats[statType] = new StatDto
+            {
+                BaseValue = ItemStats.GetStat(statType).BaseValue,
+                Value = ItemStats.GetStat(statType).Value
+            };
+        }
+
+        foreach (var statType in GrantedStats.GetActiveStatTypes())
+        {
+            dto.GrantedStats[statType] = new StatDto
+            {
+                BaseValue = GrantedStats.GetStat(statType).BaseValue,
+                Value = GrantedStats.GetStat(statType).Value
+            };
+        }
+
+        return dto;
+    }
+
     public bool TryPickUp(Player player, IItem item)
     {
         var added = player.Inventory.TryAddItem(item);
         if (!added)
         {
-            LogManager.Instance.Log($"Inventory full! Cannot pick up {Name}.", entity: player.Name, recipientId: player.Id, type: LogType.Warning);
+            LogManager.Instance.Log($"Inventory full! Cannot pick up {Name}.", entity: player.Name, recipientName: player.Name, type: LogType.Warning);
         }
         else
         {

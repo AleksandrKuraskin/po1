@@ -1,3 +1,4 @@
+using System;
 using ConsoleRpg.Shared.Systems.Stats;
 using Spectre.Console;
 using Spectre.Console.Rendering;
@@ -14,9 +15,9 @@ public class StatsComponent : IUIComponent
         var statsDto = model.LastState.LocalPlayer.Stats;
         
         
-        string FormatStat(string statName)
+        string FormatStat(StatType statType)
         {
-            if (!statsDto.TryGetValue(statName, out var stat)) return "0";
+            if (!statsDto.TryGetValue(statType, out var stat)) return "0";
             
             var total = stat.Value;
             var baseValue = stat.BaseValue;
@@ -30,17 +31,17 @@ public class StatsComponent : IUIComponent
             };
         }
        
-        var maxHealth = statsDto[nameof(StatType.MaxHealth)].Value;
-        var currentHealth = statsDto[nameof(StatType.Health)].Value;
+        var maxHealth = statsDto[StatType.MaxHealth].Value;
+        var currentHealth = statsDto[StatType.Health].Value;
         
         var innerText = $@"
         [bold]Health:[/]        [green]{currentHealth,-4}[/]/[green] {maxHealth}[/]
-        [bold]Armor:[/]         {FormatStat(nameof(StatType.Armor))}
-        [bold]Strength:[/]      {FormatStat(nameof(StatType.Strength))}
-        [bold]Aggression:[/]    {FormatStat(nameof(StatType.Aggression))}
-        [bold]Intelligence:[/]  {FormatStat(nameof(StatType.Intelligence))}
-        [bold]Agility:[/]       {FormatStat(nameof(StatType.Agility))}
-        [bold]Luck:[/]          {FormatStat(nameof(StatType.Luck))}
+        [bold]Armor:[/]         {FormatStat(StatType.Armor)}
+        [bold]Strength:[/]      {FormatStat(StatType.Strength)}
+        [bold]Aggression:[/]    {FormatStat(StatType.Aggression)}
+        [bold]Intelligence:[/]  {FormatStat(StatType.Intelligence)}
+        [bold]Agility:[/]       {FormatStat(StatType.Agility)}
+        [bold]Luck:[/]          {FormatStat(StatType.Luck)}
 
         [bold gold1]Gold:[/] {model.LastState.LocalPlayer.Gold,-5} | [bold silver]Coins:[/] {model.LastState.LocalPlayer.Coins,-5}";
         

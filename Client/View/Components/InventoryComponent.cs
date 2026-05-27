@@ -19,20 +19,14 @@ public class InventoryComponent : IUIComponent
 
             for (var i = 0; i < invCap; i++)
             {
-                var itemName = i < items.Count ? items[i] : "---";
-                var slotText = $"[[{(i + 1) % invCap}]] {Markup.Escape(itemName)}";
+                var itemDto = items.Count > i ? items[i] : null;
+                var formattedName = itemDto != null ? UIStyleRegistry.FormatItem(itemDto) : "---";
+                var slotText = $"[[{(i + 1) % invCap}]] {formattedName}";
 
                 if (i == selectedIndex)
-                {
                     invBuilder.AppendLine($"[green]> {slotText} <[/]");
-                }
                 else
-                {
-                    if (i >= items.Count)
-                        invBuilder.AppendLine($"[grey]{slotText}[/]");
-                    else
-                        invBuilder.AppendLine($"{slotText}");
-                }
+                    invBuilder.AppendLine(itemDto == null ? $"[grey]{slotText}[/]" : $"{slotText}");
             }
         }
         else
@@ -40,23 +34,18 @@ public class InventoryComponent : IUIComponent
             var inv = model.Player.Inventory;
             var items = inv.GetItems();
             var invCap = inv.Capacity;
+            var selectedIndex = inv.SelectedIndex;
 
             for (var i = 0; i < invCap; i++)
             {
-                var itemName = items[i]?.Name ?? "---";
-                var slotText = $"[[{(i + 1) % invCap}]] {Markup.Escape(itemName)}";
+                var item = items[i];
+                var formattedName = item != null ? UIStyleRegistry.FormatItem(item.GetState()) : "---";
+                var slotText = $"[[{(i + 1) % invCap}]] {formattedName}";
 
-                if (i == model.Player.Inventory.SelectedIndex)
-                {
+                if (i == selectedIndex)
                     invBuilder.AppendLine($"[green]> {slotText} <[/]");
-                }
                 else
-                {
-                    if (items[i] == null)
-                        invBuilder.AppendLine($"[grey]{slotText}[/]");
-                    else
-                        invBuilder.AppendLine($"{slotText}");
-                }
+                    invBuilder.AppendLine(item == null ? $"[grey]{slotText}[/]" : $"{slotText}");
             }
         }
         return new Panel(new Markup(invBuilder.ToString())).Header("[bold green]Inventory[/]").RoundedBorder().Expand();

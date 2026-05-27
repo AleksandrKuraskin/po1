@@ -11,7 +11,6 @@ public class Player : IEntity, ISoundEmitter, ISoundReceiver
 {
 
     private ISoundMediator? _mediator;
-    public Guid Id { get; } = Guid.NewGuid();
     public Guid? GroupId { get; set; }
     public string Name { get; set; }
     public char Symbol { get; } = '¶';
@@ -63,7 +62,7 @@ public class Player : IEntity, ISoundEmitter, ISoundReceiver
     public void OnHeardSound(ISoundEmitter emitter, (int X, int Y) origin, int distance, ISoundEvent sound)
     {
         if (emitter == this) return;
-        LogManager.Instance.Log($"You heard {sound.GetFullDescription()} from {origin.X}, {origin.Y} (dist: {distance})", recipientId: Id, type: LogType.Sound);
+        LogManager.Instance.Log($"You heard {sound.GetFullDescription()} from {origin.X}, {origin.Y} (dist: {distance})", recipientName: Name, type: LogType.Sound);
     }
 
     public void TakeDamage(int amount)

@@ -40,9 +40,9 @@ public class LogManager
             listener.OnNotify(entry);
     }
 
-    public void Log(string text, string? entity = null, Guid? recipientId = null, LogType type = LogType.Info)
+    public void Log(string text, string? entity = null, string? recipientName = null, LogType type = LogType.Info)
     {
-        var entry = new LogEntry(text, entity, recipientId, type, _nextId++);
+        var entry = new LogEntry(text, entity, recipientName, type, _nextId++);
         _logs.Add(entry);
         Notify(entry);
     }
@@ -50,9 +50,9 @@ public class LogManager
     public IEnumerable<LogEntry> GetRecentLogs(int count) => _logs.TakeLast(count);
     public IEnumerable<LogEntry> GetLogsSince(long id) => _logs.Where(l => l.Id > id);
     
-    public IEnumerable<LogEntry> GetLogsForPlayer(long lastId, Guid playerId)
+    public IEnumerable<LogEntry> GetLogsForPlayer(long lastId, string playerName)
     {
         return _logs.Where(l => l.Id > lastId && 
-                                (l.RecipientId == null || l.RecipientId == playerId));
+                                (l.RecipientName == null || l.RecipientName == playerName));
     }
 }

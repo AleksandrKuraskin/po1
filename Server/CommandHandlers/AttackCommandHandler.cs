@@ -56,7 +56,7 @@ public class AttackCommandHandler : IServerCommandHandler
 
         if (enemy == null)
         {
-            LogManager.Instance.Log("No enemies in sight to attack.", recipientId: player.Id);
+            LogManager.Instance.Log("No enemies in sight to attack.", recipientName: player.Name);
             return;
         }
 
@@ -84,7 +84,7 @@ public class AttackCommandHandler : IServerCommandHandler
         var damageDealt = Math.Max(0, stats.Attack - enemyArmor);
         
         enemy.TakeDamage(damageDealt);
-        LogManager.Instance.Log($"Attacking ({enemy.Name}) for {damageDealt} dmg. ({stats.Attack} reduced by {enemyArmor} armor)", recipientId: player.Id, type: LogType.Combat);
+        LogManager.Instance.Log($"Attacking ({enemy.Name}) for {damageDealt} dmg. ({stats.Attack} reduced by {enemyArmor} armor)", recipientName: player.Name, type: LogType.Combat);
         
         if (!enemy.Alive)
         {
@@ -103,7 +103,7 @@ public class AttackCommandHandler : IServerCommandHandler
 
         if (!player.Alive)
         {
-            LogManager.Instance.Log("You died! Game over.", entity: player.Name, recipientId: player.Id, type: LogType.Error);
+            LogManager.Instance.Log("You died! Game over.", entity: player.Name, recipientName: player.Name, type: LogType.Error);
         }
         
         server.ProcessEnemiesTurn();

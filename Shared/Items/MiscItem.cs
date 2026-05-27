@@ -1,6 +1,7 @@
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Attacking;
 using ConsoleRpg.Shared.Systems.Logging;
+using ConsoleRpg.Shared.Systems.Network.Dtos;
 using ConsoleRpg.Shared.Systems.Sound;
 using ConsoleRpg.Shared.Systems.Stats;
 
@@ -15,12 +16,21 @@ public class MiscItem(string name, char symbol) : IItem
     public StatsManager ItemStats { get; } = new StatsManager();
     public StatsManager GrantedStats { get; } = new StatsManager();
 
+    public ItemDto GetState()
+    {
+        return new ItemDto
+        {
+            Name = Name,
+            Quantity = 1
+        };
+    }
+
     public bool TryPickUp(Player player, IItem item)
     {
         var added = player.Inventory.TryAddItem(item);
         if (!added)
         {
-            LogManager.Instance.Log($"Inventory full! Cannot pick up {Name}.", entity: player.Name, recipientId: player.Id, type: LogType.Warning);
+            LogManager.Instance.Log($"Inventory full! Cannot pick up {Name}.", entity: player.Name, recipientName: player.Name, type: LogType.Warning);
         }
         else
         {

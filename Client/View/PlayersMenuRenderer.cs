@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using ConsoleRpg.Client.View.Components;
 using Spectre.Console;
 using ConsoleRpg.Shared.Entities;
-using ConsoleRpg.Shared.Systems.Network;
+using ConsoleRpg.Shared.Systems.Network.Dtos;
+using ConsoleRpg.Shared.Systems.Stats;
 
 namespace ConsoleRpg.Client.View;
 
@@ -52,10 +56,40 @@ public class PlayersMenuRenderer : IRenderer
         AnsiConsole.Write(layout);
     }
 
+    private string FormatStatValue(int total, int baseValue)
+    {
+        var bonus = total - baseValue;
+        return bonus switch
+        {
+            > 0 => $"[yellow]{total,-4}[/] ([grey]{baseValue}[/] + [green]{bonus}[/])",
+            < 0 => $"[grey]{total,-4}[/] ([grey]{baseValue}[/] - [red]{Math.Abs(bonus)}[/])",
+            _ => $"{total,-4}"
+        };
+    }
+
     private Panel CreatePlayerCard(Player p)
     {
-        var statsContent = string.Join("\n", p.Stats.GetActiveStatTypes().Select(s => $"[grey]{s}:[/] {p.Stats.GetStat(s).Value}"));
-        var equipContent = string.Join("\n", p.Equipment.GetAllEquipped().Select(e => $"[yellow]{e.Key}:[/] {e.Value.Name}"));
+        var stats = p.Stats;
+        string GetStatFormatted(StatType type) {
+            var s = stats.GetStat(type);
+            return FormatStatValue(s.Value, s.BaseValue);
+        }
+
+        var maxHealth = stats.GetStat(StatType.MaxHealth).Value;
+        var currentHealth = stats.GetStat(StatType.Health).Value;
+
+        var statsContent = $@"
+        [bold]Health:[/]        [green]{currentHealth,-4}[/]/[green] {maxHealth}[/]
+        [bold]Armor:[/]         {GetStatFormatted(StatType.Armor)}
+        [bold]Strength:[/]      {GetStatFormatted(StatType.Strength)}
+        [bold]Aggression:[/]    {GetStatFormatted(StatType.Aggression)}
+        [bold]Intelligence:[/]  {GetStatFormatted(StatType.Intelligence)}
+        [bold]Agility:[/]       {GetStatFormatted(StatType.Agility)}
+        [bold]Luck:[/]          {GetStatFormatted(StatType.Luck)}
+
+        [bold gold1]Gold:[/] {p.Wallet.GoldValue,-5} | [bold silver]Coins:[/] {p.Wallet.CoinValue,-5}";
+
+        var equipContent = string.Join("\n", p.Equipment.GetAllEquipped().Select(e => $"[yellow]{e.Key}:[/] {UIStyleRegistry.FormatItem(e.Value.GetState())}"));
         
         return new Panel(new Rows(
             new Markup($"[bold cyan]{Markup.Escape(p.Name)}[/]"),
@@ -71,8 +105,27 @@ public class PlayersMenuRenderer : IRenderer
 
     private Panel CreatePlayerCardDto(PlayerDto p)
     {
-        var statsContent = string.Join("\n", p.Stats.Select(s => $"[grey]{s.Key}:[/] {s.Value.Value}"));
-        var equipContent = string.Join("\n", p.Equipment.Select(e => $"[yellow]{e.Key}:[/] {e.Value}"));
+        var stats = p.Stats;
+        string GetStatFormatted(StatType type) {
+            if (!stats.TryGetValue(type, out var s)) return "0";
+            return FormatStatValue(s.Value, s.BaseValue);
+        }
+
+        var maxHealth = stats.TryGetValue(StatType.MaxHealth, out var mh) ? mh.Value : 100;
+        var currentHealth = stats.TryGetValue(StatType.Health, out var ch) ? ch.Value : 100;
+
+        var statsContent = $@"
+        [bold]Health:[/]        [green]{currentHealth,-4}[/]/[green] {maxHealth}[/]
+        [bold]Armor:[/]         {GetStatFormatted(StatType.Armor)}
+        [bold]Strength:[/]      {GetStatFormatted(StatType.Strength)}
+        [bold]Aggression:[/]    {GetStatFormatted(StatType.Aggression)}
+        [bold]Intelligence:[/]  {GetStatFormatted(StatType.Intelligence)}
+        [bold]Agility:[/]       {GetStatFormatted(StatType.Agility)}
+        [bold]Luck:[/]          {GetStatFormatted(StatType.Luck)}
+
+        [bold gold1]Gold:[/] {p.Gold,-5} | [bold silver]Coins:[/] {p.Coins,-5}";
+
+        var equipContent = string.Join("\n", p.Equipment.Select(e => $"[yellow]{e.Key}:[/] {UIStyleRegistry.FormatItem(e.Value)}"));
 
         return new Panel(new Rows(
             new Markup($"[bold cyan]{Markup.Escape(p.Name)}[/]"),

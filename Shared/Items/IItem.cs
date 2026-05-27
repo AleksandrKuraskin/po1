@@ -1,6 +1,7 @@
 using ConsoleRpg.Shared.Core;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Systems.Attacking;
+using ConsoleRpg.Shared.Systems.Network.Dtos;
 using ConsoleRpg.Shared.Systems.Sound;
 using ConsoleRpg.Shared.Systems.Stats;
 
@@ -10,6 +11,9 @@ public interface IItem : IGameObject, ISoundSource
 {
     public StatsManager ItemStats { get; }
     public StatsManager GrantedStats { get; }
+
+    ItemDto GetState();
+    
     bool TryPickUp(Player player, IItem item);
     IItem? TryEquip(Player player, IItem item, bool leftHand);
     
