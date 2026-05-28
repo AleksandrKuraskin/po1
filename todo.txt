@@ -1,2 +1,3 @@
-1. Logging should be fixed;
-2. Let's fight other players :)
+1. Add more logs
+2. Add item disconnect, death, connect to tile dirty marking
+3. Decorator dto for better clarity
