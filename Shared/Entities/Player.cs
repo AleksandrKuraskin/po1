@@ -26,6 +26,7 @@ public class Player : IEntity, ISoundEmitter, ISoundReceiver
     public Wallet Wallet { get; } =  new Wallet();
     public Inventory Inventory { get; } = new Inventory();
     public Equipment Equipment { get; } = new Equipment();
+    public event Action<int, int>? DirtyMarked;
 
     public Player(int startX = 0, int startY = 0, string name = "Player")
     {
@@ -70,6 +71,7 @@ public class Player : IEntity, ISoundEmitter, ISoundReceiver
     {
         var hpStat = Stats.GetStat(StatType.Health);
         hpStat.Decrease(amount);
+        if (!Alive) DirtyMarked?.Invoke(X, Y);
     }
     public void SetPosition(int newX, int newY)
     {

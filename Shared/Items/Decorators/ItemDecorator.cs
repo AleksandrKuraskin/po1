@@ -21,10 +21,12 @@ public abstract class ItemDecorator(IItem wrappee) : IItem
 
     public ItemDto GetState()
     {
-        var state = _item.GetState();
-        state.Name = Name;
-        state.Decorators.Add(decoratorId);
-        return state;
+        return new ItemDto
+        {
+            DecoratorId = decoratorId,
+            Wrappee = _item.GetState(),
+            Name = Name
+        };
     }
 
     public void OnDrop(Player player, Map.Map map, IItem item)
