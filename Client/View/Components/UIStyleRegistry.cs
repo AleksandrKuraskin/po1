@@ -23,14 +23,32 @@ public static class UIStyleRegistry
         { "unlucky", new UnluckyStyleStrategy() }
     };
 
+    public static bool AreItemsEqual(ItemDto? a, ItemDto? b)
+    {
+        if (a == b) return true;
+        if (a == null || b == null) return false;
+        if (a.Name != b.Name || a.DecoratorId != b.DecoratorId) return false;
+        return AreItemsEqual(a.Wrappee, b.Wrappee);
+    }
+
     public static string FormatItem(ItemDto item)
     {
         var style = new ItemUIStyle();
-        foreach (var tag in item.Decorators)
+        var current = item;
+        string? itemName = null;
+
+        while (current != null)
         {
-            if (_styles.TryGetValue(tag, out var strategy)) strategy.Apply(style);
+            if (current.DecoratorId != null)
+            {
+                if (_styles.TryGetValue(current.DecoratorId, out var strategy)) strategy.Apply(style);
+            }
+            
+            if (current.Name != null && itemName == null) itemName = current.Name;
+            
+            current = current.Wrappee;
         }
         
-        return $"[{style.TextColor}]{item.Name}[/]";
+        return $"[{style.TextColor}]{itemName ?? "Unknown"}[/]";
     }
 }

@@ -159,9 +159,11 @@ public class ServerModel(
                                 player.PlayerNumber = num;
                             }
                             
+                            player.DirtyMarked += (x, y) => _mapContext.Map.MarkDirty(x, y);
                             _clients[client] = context;
-                            _playerLastLogId[player] = 0;
+                            _playerLastLogId[player] = LogManager.Instance.CurrentId;
                             _dispatcher.Dispatch(message, this, player);
+                            LogManager.Instance.Log($"Player {player.Name} (id:{player.PlayerNumber}) joined from {client.Client.RemoteEndPoint}", type: LogType.System);
                             SendSync(context);
                         }
                     }
@@ -187,10 +189,12 @@ public class ServerModel(
                 {
                     _availableNumbers.Add(player.PlayerNumber);
                 }
+                _mapContext.Map.MarkDirty(player.X, player.Y);
                 _mapContext.Map.GetTile(player.X, player.Y).Players.Remove(player);
                 _clients.TryRemove(client, out _);
                 _playerLastLogId.Remove(player);
                 player.RemoveMediator();
+                LogManager.Instance.Log($"Player {player.Name} left the game.", type: LogType.System);
             }
             context.SendChannel.Writer.TryComplete();
             client.Close();

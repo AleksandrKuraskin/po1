@@ -24,6 +24,8 @@ public class LogManager
         }
     }
 
+    public long CurrentId => _nextId - 1;
+
     public void Attach(ILogListener listener)
     {
         _listeners.Add(listener);

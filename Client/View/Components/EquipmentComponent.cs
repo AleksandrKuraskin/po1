@@ -24,7 +24,7 @@ public class EquipmentComponent : IUIComponent
             leftHandText = FormatItem(left);
             rightHandText = FormatItem(right);
 
-            if (left != null && right != null && left.Name == right.Name && left.Decorators.SequenceEqual(right.Decorators))
+            if (left != null && right != null && UIStyleRegistry.AreItemsEqual(left, right))
             {
                 leftHandText = $"[magenta]{leftHandText}[/]";
                 rightHandText = leftHandText;

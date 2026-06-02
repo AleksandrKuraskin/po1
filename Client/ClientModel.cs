@@ -37,9 +37,15 @@ public class ClientModel : IClientModel, INetworkObserver
     private bool _uiInitialized = false;
     
     public Dictionary<(int x, int y), TileDto> LocalActiveTiles { get; } = new();
+    
+    private readonly string _serverIp;
+    private readonly int _serverPort;
+    private bool _isExiting = false;
 
     public ClientModel(string ip, int port, string playerName, IInputHandler globalInputHandler, List<ActionInfo> globalInstructions)
     {
+        _serverIp = ip;
+        _serverPort = port;
         Logger = new ConsoleLogger();
         LogManager.Instance.Attach(Logger);
         Player = new Player(0, 0, playerName);
@@ -49,14 +55,14 @@ public class ClientModel : IClientModel, INetworkObserver
         GlobalInstructions = globalInstructions;
         CurrentInputState = new MoveState(MapContext, GlobalInputHandler, GlobalInstructions);
 
-        Connect(ip, port);
+        Connect();
     }
 
-    private void Connect(string ip, int port)
+    private void Connect()
     {
         try
         {
-            _client = new TcpClient(ip, port);
+            _client = new TcpClient(_serverIp, _serverPort);
             _stream = _client.GetStream();
             
             _ = Task.Run(ListenForUpdates);
@@ -73,7 +79,7 @@ public class ClientModel : IClientModel, INetworkObserver
     private async Task ListenForUpdates()
     {
         var lengthBuffer = new byte[4];
-        while (_client?.Connected == true)
+        while (_client?.Connected == true && !_isExiting)
         {
             try
             {
@@ -100,13 +106,56 @@ public class ClientModel : IClientModel, INetworkObserver
             }
             catch (Exception ex)
             {
-                if (_client?.Connected == true)
+                if (_client?.Connected == true && !_isExiting)
                 {
                     LogManager.Instance.Log($"Error receiving update: {ex.Message}", entity: "Client", type: LogType.Error);
                 }
                 break;
             }
         }
+        
+        if (!_isExiting)
+        {
+            await TryReconnect();
+        }
+    }
+
+    private async Task TryReconnect()
+    {
+        LogManager.Instance.Log("Disconnected from server. Attempting to reconnect...", entity: "Client", type: LogType.Warning);
+        Notify();
+
+        for (int i = 1; i <= 10; i++)
+        {
+            if (_isExiting) return;
+            
+            await Task.Delay(1000);
+            try
+            {
+                _client?.Close();
+                _client = new TcpClient(_serverIp, _serverPort);
+                _stream = _client.GetStream();
+                
+                _ = Task.Run(ListenForUpdates);
+
+                var joinMsg = new NetworkMessage("JOIN", Player.Name);
+                SendMessage(joinMsg);
+                
+                LogManager.Instance.Log("Successfully reconnected!", entity: "Client", type: LogType.Success);
+                Notify();
+                return;
+            }
+            catch
+            {
+                LogManager.Instance.Log($"Reconnection attempt {i}/10 failed...", entity: "Client", type: LogType.Warning);
+                Notify();
+            }
+        }
+
+        LogManager.Instance.Log("Could not reconnect. Exiting game.", entity: "Client", type: LogType.Error);
+        Notify();
+        await Task.Delay(2000);
+        Environment.Exit(0);
     }
     
     private void HandleSync(GameStateDto state)
@@ -272,6 +321,7 @@ public class ClientModel : IClientModel, INetworkObserver
 
     public void Exit()
     {
+        _isExiting = true;
         _client?.Close();
         Environment.Exit(0);
     }
