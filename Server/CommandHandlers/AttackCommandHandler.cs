@@ -1,4 +1,5 @@
 using System.Text.Json;
+using ConsoleRpg.Shared.Systems.Combat;
 using ConsoleRpg.Shared.Entities;
 using ConsoleRpg.Shared.Items;
 using ConsoleRpg.Shared.Systems.Attacking;
@@ -78,35 +79,7 @@ public class AttackCommandHandler : IServerCommandHandler
             player.MakeNoise(sound);
         }
 
-        var stats = GetTotalStats(player, visitor);
-        
-        var enemyArmor = enemy.Stats.GetStat(StatType.Armor).Value;
-        var damageDealt = Math.Max(0, stats.Attack - enemyArmor);
-        
-        enemy.TakeDamage(damageDealt);
-        server.MapContext.Map.MarkDirty(player.X, player.Y);
-        LogManager.Instance.Log($"Attacking ({enemy.Name}) for {damageDealt} dmg. ({stats.Attack} reduced by {enemyArmor} armor)", recipientName: player.Name, type: LogType.Combat);
-        
-        if (!enemy.Alive)
-        {
-            LogManager.Instance.Log($"Slayed {enemy.Name}!", entity: player.Name, type: LogType.Success);
-            tile.Enemy = null;
-            server.MapContext.Map.MarkDirty(player.X, player.Y);
-            server.ProcessEnemiesTurn();
-            return;
-        }
-        
-        var enemyAttack = enemy.Stats.GetStat(StatType.Strength).Value;
-        var damageReceived = Math.Max(0, enemyAttack - stats.Defense);
-        
-        player.TakeDamage(damageReceived);
-        LogManager.Instance.Log($"{enemy.Name} fights back dealing {damageReceived} dmg. ({enemyAttack} reduced by your {stats.Defense} defense)", entity: player.Name, type: LogType.Combat);
-        enemy.ActedThisTurn = true;
-
-        if (!player.Alive)
-        {
-            LogManager.Instance.Log("You died! Game over.", entity: player.Name, recipientName: player.Name, type: LogType.Error);
-        }
+        CombatManager.PlayerAttacks(server.MapContext.Map, player, enemy, GetTotalStats(player, visitor));
         
         server.ProcessEnemiesTurn();
     }

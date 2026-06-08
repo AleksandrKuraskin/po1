@@ -30,12 +30,12 @@ public class ChessboardTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Black King", 'K', 100, 2, 5, _figuresGroup),
-        () => new Enemy("Black Queen", 'Q', 200, 50, 20, _figuresGroup),
-        () => new Enemy("Black Bishop", 'B', 60, 20, 8, _figuresGroup),
-        () => new Enemy("Black Knight", 'N', 40, 15, 5, _figuresGroup),
-        () => new Enemy("Black Rook", 'R', 60, 25, 10, _figuresGroup),
-        () => new Enemy("Black Pawn", 'P', 20, 5, 2, _figuresGroup),
+        () => new Enemy("Black King", 'K', 100, 2, 5, 5, _figuresGroup),
+        () => new Enemy("Black Queen", 'Q', 200, 50, 20, 20, _figuresGroup),
+        () => new Enemy("Black Bishop", 'B', 60, 20, 8, 15, _figuresGroup),
+        () => new Enemy("Black Knight", 'N', 40, 15, 5, 18, _figuresGroup),
+        () => new Enemy("Black Rook", 'R', 60, 25, 10, 10, _figuresGroup),
+        () => new Enemy("Black Pawn", 'P', 20, 5, 2, 8, _figuresGroup),
     ];
 
     public void ApplyGenerationStrategy(IMapDirector director)

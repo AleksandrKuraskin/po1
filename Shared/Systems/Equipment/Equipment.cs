@@ -40,7 +40,12 @@ public class Equipment : IEquipment
         
         if (oldItem != null)
         {
-            inventory.TryAddItem(oldItem, slotIndex);
+            var added = inventory.TryAddItem(oldItem, slotIndex);
+            if (!added)
+            {
+                LogManager.Instance.Log($"No space in inventory to add {oldItem.Name}. Dropping this item...", entity: player.Name, recipientName: player.Name, type: LogType.Warning);
+                return oldItem;
+            }
             LogManager.Instance.Log(
                 item == null ? 
                     $"Unequipped {oldItem.Name}" : 
@@ -91,55 +96,81 @@ public class Equipment : IEquipment
         LeftHand = item;
         RightHand = item;
 
+        IItem? droppedItem = null;
+
         if (oldLeft != null && oldLeft == oldRight)
         {
-            inventory.TryAddItem(oldLeft, slotIndex);
-            LogManager.Instance.Log(
-                item == null ? 
-                    $"Unequipped {oldLeft.Name}" : 
-                    $"Swapped {oldLeft.Name} for {item.Name}.",
-                entity: player.Name,
-                type: LogType.Action
-            );
-            return null;
-        }
-        else
-        {
-            oldLeft?.OnUnequip(player);
-            oldRight?.OnUnequip(player);
+            var added = inventory.TryAddItem(oldLeft, slotIndex);
+            if (!added)
+            {
+                LogManager.Instance.Log($"No space in inventory to add {oldLeft.Name}. Dropping this item...", entity: player.Name, recipientName: player.Name, type: LogType.Warning);
+                droppedItem = oldLeft;
+            }
+            else
+            {
+                LogManager.Instance.Log(
+                    item == null ? 
+                        $"Unequipped {oldLeft.Name}" : 
+                        $"Swapped {oldLeft.Name} for {item.Name}.",
+                    entity: player.Name,
+                    type: LogType.Action
+                );
+            }
+            return droppedItem;
         }
 
         var slotUsed = false;
 
         if (oldLeft != null)
         {
-            inventory.TryAddItem(oldLeft, slotIndex);
-            slotUsed = true;
-        }
-        if (oldRight != null)
-        {
-            if (!slotUsed)
+            var added = inventory.TryAddItem(oldLeft, slotIndex);
+            if (!added)
             {
-                inventory.TryAddItem(oldRight, slotIndex);
+                LogManager.Instance.Log($"No space in inventory to add {oldLeft.Name}. Dropping this item...", entity: player.Name, recipientName: player.Name, type: LogType.Warning);
+                droppedItem = oldLeft;
             }
             else
             {
-                var added = inventory.TryAddItem(oldRight);
-                if (!added)
-                {
-                    LogManager.Instance.Log($"No space in inventory to add {oldRight.Name}. Dropping this item...", entity: player.Name, recipientName: player.Name, type: LogType.Warning);
-                    return oldRight;
-                }
+                slotUsed = true;
             }
         }
-        if(item != null) LogManager.Instance.Log($"Equipped {item.Name}.", entity: player.Name, type: LogType.Action);
-        return null;
+
+        if (oldRight != null)
+        {
+            bool added;
+            if (!slotUsed)
+            {
+                added = inventory.TryAddItem(oldRight, slotIndex);
+            }
+            else
+            {
+                added = inventory.TryAddItem(oldRight);
+            }
+
+            if (!added)
+            {
+                LogManager.Instance.Log($"No space in inventory to add {oldRight.Name}. Dropping this item...", entity: player.Name, recipientName: player.Name, type: LogType.Warning);
+                // If we already dropped oldLeft, this might be a second drop. 
+                // In standard gameplay this shouldn't happen often, but for death we handle it.
+                // For now, return the most recent drop.
+                droppedItem = oldRight; 
+            }
+        }
+
+        if (item != null) LogManager.Instance.Log($"Equipped {item.Name}.", entity: player.Name, type: LogType.Action);
+        return droppedItem;
     }
 
     public void SwapHands()
     {
         if (RightHand != LeftHand)
             (LeftHand, RightHand) = (RightHand, LeftHand);
+    }
+
+    public void Clear()
+    {
+        LeftHand = null;
+        RightHand = null;
     }
 
     public Dictionary<EquipmentSlot, IItem> GetAllEquipped()

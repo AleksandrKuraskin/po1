@@ -18,11 +18,13 @@ public class EquipCommandHandler : IServerCommandHandler
         
         if (item != null)
         {
-            item.TryEquip(player, item, options.isLeftHand);
+            var dropped = item.TryEquip(player, item, options.isLeftHand);
+            if (dropped != null) dropped.OnDrop(player, server.MapContext.Map, dropped);
         }
         else
         {
-            player.Equipment.EquipOneHanded(player, null, options.isLeftHand);
+            var dropped = player.Equipment.EquipOneHanded(player, null, options.isLeftHand);
+            if (dropped != null) dropped.OnDrop(player, server.MapContext.Map, dropped);
         }
     }
 

@@ -34,9 +34,9 @@ public class BasementTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Rabid Rat", 'R', 10, 5, 0, _rats),
-        () => new Enemy("Feral Cat", 'C', 15, 8, 1, _cats),
-        () => new Enemy("Cave Bat", 'B', 8, 4, 0, _bats),
+        () => new Enemy("Rabid Rat", 'R', 10, 5, 0, 15, _rats),
+        () => new Enemy("Feral Cat", 'C', 15, 8, 1, 12, _cats),
+        () => new Enemy("Cave Bat", 'B', 8, 4, 0, 20, _bats),
     ];
 
     public void ApplyGenerationStrategy(IMapDirector director)

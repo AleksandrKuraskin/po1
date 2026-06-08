@@ -11,20 +11,24 @@ public class Inventory(int cap = 10) : IInventory
 
     public bool TryAddItem(IItem item, int index = -1)
     {
+        // If an index is specified, try that first.
         if (index >= 0 && index < _items.Length)
         {
-            if (_items[index] != null) return false;
-            _items[index] = item;
-            return true;
+            if (_items[index] == null)
+            {
+                _items[index] = item;
+                return true;
+            }
         }
+
+        // If specified index was full or not specified, find the first available slot.
         for (var i = 0; i < _items.Length; i++)
         {
-            if (_items[i] != null)
+            if (_items[i] == null)
             {
-                continue;
+                _items[i] = item;
+                return true;
             }
-            _items[i] = item;
-            return true;
         }
         return false;
     }
@@ -44,4 +48,9 @@ public class Inventory(int cap = 10) : IInventory
     }
 
     public IItem?[] GetItems() => _items;
+
+    public void Clear()
+    {
+        for (var i = 0; i < _items.Length; i++) _items[i] = null;
+    }
 }

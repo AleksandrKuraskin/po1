@@ -1,4 +1,5 @@
 using ConsoleRpg.Shared.Core;
+using ConsoleRpg.Shared.Items.Currency;
 using ConsoleRpg.Shared.Systems;
 using ConsoleRpg.Shared.Systems.Logging;
 using ConsoleRpg.Shared.Systems.Sound;
@@ -41,7 +42,8 @@ public class Player : IEntity, ISoundEmitter, ISoundReceiver
             .AddStat(StatType.Aggression, 10)
             .AddStat(StatType.Intelligence, 10)
             .AddStat(StatType.Agility, 10)
-            .AddStat(StatType.Luck, 10);
+            .AddStat(StatType.Luck, 10)
+            .AddStat(StatType.Speed, 10);
     }
 
     public void MakeNoise(ISoundEvent sound)
@@ -77,5 +79,55 @@ public class Player : IEntity, ISoundEmitter, ISoundReceiver
     {
         X = newX;
         Y = newY;
+    }
+public void DropAll(Map.Map map)
+{
+    var tile = map.GetTile(X, Y);
+
+    // 1. Unequip everything. Standard unequip logic moves to inventory or drops to ground if full.
+    if (Equipment.LeftHand != null && Equipment.LeftHand == Equipment.RightHand)
+    {
+        var dropped = Equipment.EquipTwoHanded(this, null);
+        if (dropped != null) tile.AddItem(dropped);
+    }
+    else
+    {
+        if (Equipment.LeftHand != null)
+        {
+            var dropped = Equipment.EquipOneHanded(this, null, true);
+            if (dropped != null) tile.AddItem(dropped);
+        }
+        if (Equipment.RightHand != null)
+        {
+            var dropped = Equipment.EquipOneHanded(this, null, false);
+            if (dropped != null) tile.AddItem(dropped);
+        }
+    }
+
+    // 2. Drop all items currently in the inventory
+    var items = Inventory.GetItems();
+    for (var i = 0; i < Inventory.Capacity; i++)
+    {
+        var item = items[i];
+        if (item == null) continue;
+
+        tile.AddItem(item);
+        Inventory.RemoveItemAt(i);
+    }
+
+    // 3. Drop currency
+    if (Wallet.GoldValue > 0) tile.AddItem(new Gold(Wallet.GoldValue));
+    if (Wallet.CoinValue > 0) tile.AddItem(new Coin(Wallet.CoinValue));
+
+    Wallet.GoldValue = 0;
+    Wallet.CoinValue = 0;
+
+    Equipment.Clear();
+}
+    public void Die(Map.Map map)
+    {
+        DropAll(map);
+        map.GetTile(X, Y).Players.Remove(this);
+        DirtyMarked?.Invoke(X, Y);
     }
 }

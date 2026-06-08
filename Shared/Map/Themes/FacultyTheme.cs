@@ -31,8 +31,8 @@ public class FacultyTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Calculus midterm", 'C', 30, 10, 0, _midterms),
-        () => new Enemy("sgit Repository", 'S', 15, 5, 2, _repos),
+        () => new Enemy("Calculus midterm", 'C', 30, 10, 0, 5, _midterms),
+        () => new Enemy("sgit Repository", 'S', 15, 5, 2, 15, _repos),
     ];
     
     public void ApplyGenerationStrategy(IMapDirector director)

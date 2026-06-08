@@ -31,9 +31,9 @@ public class DarkForestTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Dire Wolf", 'W', 25, 12, 1, _beasts),
-        () => new Enemy("Corrupted Treant", 'T', 60, 15, 8, _plants),
-        () => new Enemy("Shadow Weaver", 'S', 20, 10, 0, _plants),
+        () => new Enemy("Dire Wolf", 'W', 25, 12, 1, 15, _beasts),
+        () => new Enemy("Corrupted Treant", 'T', 60, 15, 8, 5, _plants),
+        () => new Enemy("Shadow Weaver", 'S', 20, 10, 0, 25, _plants),
     ];
     
     public void ApplyGenerationStrategy(IMapDirector director)

@@ -30,9 +30,9 @@ public class VoidTheme : IThemeFactory
 
     private readonly LootTable<Enemy> _enemies =
     [
-        () => new Enemy("Sagittarius A*", 'O', 100, 20, 5, _darkstars),
-        () => new Enemy("Void Aberration", 'V', 30, 12, 0, _darkstars),
-        () => new Enemy("Phantom Star", 'S', 20, 15, 0, _darkstars),
+        () => new Enemy("Sagittarius A*", 'O', 100, 20, 5, 2, _darkstars),
+        () => new Enemy("Void Aberration", 'V', 30, 12, 0, 12, _darkstars),
+        () => new Enemy("Phantom Star", 'S', 20, 15, 0, 18, _darkstars),
     ];
     
     public void ApplyGenerationStrategy(IMapDirector director)

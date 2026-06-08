@@ -11,4 +11,5 @@ public enum StatType
     Intelligence,
     Luck,
     Agility,
+    Speed,
 }
